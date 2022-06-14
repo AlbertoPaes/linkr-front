@@ -8,7 +8,7 @@ import {
 
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import HomePage from "./pages/HomePage";
+import Timeline from "./pages/Timeline";
 
 import GlobalStyle from "./styles/GlobalStyle";
 
@@ -30,9 +30,9 @@ const App = () => {
     <Router>
       <AuthProvider>
         <Routes>
-          <Route exact path="/" element={<HomePage />} />
-          <Route path="/signin" element={<SignIn />} />
+          <Route exact path="/" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/timeline" element={<Timeline />} />
         </Routes>
         <GlobalStyle />
       </AuthProvider>

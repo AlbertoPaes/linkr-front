@@ -88,7 +88,7 @@ const ContainerSignIn = styled.form`
     width: 80%;
 
     background-color: #FFFFFF;
-    color: #9F9F9F;
+    color: #151515;
     
     font-family: 'Oswald';
     font-weight: 700;
