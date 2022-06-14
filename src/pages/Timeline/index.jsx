@@ -15,7 +15,6 @@ export default function Timeline() {
   async function handlePublishPost(e) {
     e.preventDefault();
     setIsLoading(true);
-    //TODO: Pegar o userId pelo context e enviar junto como userId
     try {
       await publishPost({ ...formData });
       setIsLoading(false);
