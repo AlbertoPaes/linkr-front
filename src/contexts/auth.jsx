@@ -30,8 +30,10 @@ export const AuthProvider = ({ children }) => {
       const response = await makeSignIn(formData);
       console.log(response);
 
-      const loggedUser = response.data;
+      const loggedUser = response.data.token;
+      const userImage = response.data.image;
       localStorage.setItem("user", loggedUser);
+      localStorage.setItem("image", userImage);
 
       api.defaults.headers.Authorization = `Bearer ${loggedUser}`;
 
