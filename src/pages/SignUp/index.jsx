@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 import Loading from "../../components/Loading";
 
-// import { makeSignUp } from "../../services/api";
+import { makeSignUp } from "../../services/api";
 
 import { Wrapper, ContainerPresentation, Logo, Title, ContainerSignUp, StyledLink} from "./style";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
-    username: "",
-    pictureUrl: "",
+    image: "",
   });
   const [isLoading, setIsLoading] = useState({
     placeholder: "Sign Up",
@@ -32,9 +32,9 @@ const SignUp = () => {
     setIsLoading({ ...isLoading });
 
     try {
-      // await makeSignUp({ ...formData });
+      await makeSignUp({ ...formData });
       setIsLoading(false);
-      navigate("/sign-in");
+      navigate("/");
     } catch {
       alert("Please fill in the data correctly");
       isLoading.placeholder = "Sign Up";
@@ -70,18 +70,18 @@ const SignUp = () => {
         />
         <input
           type="text"
-          value={formData.username}
+          value={formData.name}
           onChange={handleInputChange}
-          name="username"
+          name="name"
           placeholder="username"
           disabled={isLoading.disabled && "disabled"}
           required
         />
         <input
-          type="url"
-          value={formData.pictureUrl}
+          type="text"
+          value={formData.image}
           onChange={handleInputChange}
-          name="pictureUrl"
+          name="image"
           placeholder="picture url"
           disabled={isLoading.disabled && "disabled"}
           required
@@ -89,7 +89,7 @@ const SignUp = () => {
         <button type="submit" disableButton={isLoading.disabled}>
           {isLoading.placeholder}
         </button>
-        <StyledLink to="/sign-in">Switch back to log in</StyledLink>
+        <StyledLink to="/">Switch back to log in</StyledLink>
       </ContainerSignUp>
     </Wrapper>
   );

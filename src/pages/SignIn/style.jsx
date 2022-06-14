@@ -70,7 +70,7 @@ const Title = styled.div`
   }
 `
 
-const ContainerSignUp = styled.form`
+const ContainerSignIn = styled.form`
   min-height: inherit;
   width: 37.16%;
 
@@ -182,6 +182,6 @@ export {
   ContainerPresentation,
   Logo,
   Title,
-  ContainerSignUp,
+  ContainerSignIn,
   StyledLink
 }
