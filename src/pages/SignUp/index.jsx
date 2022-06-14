@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import Loading from "../../components/Loading";
 
-// import { makeSignUp } from "../../services/api";
+import { makeSignUp } from "../../services/api";
 
 import { Wrapper, ContainerPresentation, Logo, Title, ContainerSignUp, StyledLink} from "./style";
 
@@ -32,9 +32,9 @@ const SignUp = () => {
     setIsLoading({ ...isLoading });
 
     try {
-      // await makeSignUp({ ...formData });
+      await makeSignUp({ ...formData });
       setIsLoading(false);
-      navigate("/sign-in");
+      navigate("/signin");
     } catch {
       alert("Please fill in the data correctly");
       isLoading.placeholder = "Sign Up";
@@ -89,7 +89,7 @@ const SignUp = () => {
         <button type="submit" disableButton={isLoading.disabled}>
           {isLoading.placeholder}
         </button>
-        <StyledLink to="/sign-in">Switch back to log in</StyledLink>
+        <StyledLink to="/signin">Switch back to log in</StyledLink>
       </ContainerSignUp>
     </Wrapper>
   );

@@ -70,7 +70,7 @@ const Title = styled.div`
   }
 `
 
-const ContainerSignUp = styled.form`
+const ContainerSignIn = styled.form`
   min-height: inherit;
   width: 37.16%;
 
@@ -88,7 +88,7 @@ const ContainerSignUp = styled.form`
     width: 80%;
 
     background-color: #FFFFFF;
-    color: #151515;
+    color: #9F9F9F;
     
     font-family: 'Oswald';
     font-weight: 700;
@@ -182,6 +182,6 @@ export {
   ContainerPresentation,
   Logo,
   Title,
-  ContainerSignUp,
+  ContainerSignIn,
   StyledLink
 }
