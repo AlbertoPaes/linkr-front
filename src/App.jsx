@@ -8,6 +8,7 @@ import { useContext } from "react";
 
 // import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import Timeline from "./pages/Timeline"
 // import HomePage from "./pages/HomePage";
 
 import GlobalStyle from "./styles/GlobalStyle";
@@ -29,12 +30,13 @@ const App = () => {
   return (
     <Router>
       {/* <AuthProvider> */}
-        <Routes>
-          {/* <Route exact path="/" element={<HomePage />} />
+      <Routes>
+        {/* <Route exact path="/" element={<HomePage />} />
           <Route path="/signin" element={<SignIn />} /> */}
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
-        <GlobalStyle />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/timeline" element={<Timeline />} />
+      </Routes>
+      <GlobalStyle />
       {/* </AuthProvider> */}
     </Router>
   );

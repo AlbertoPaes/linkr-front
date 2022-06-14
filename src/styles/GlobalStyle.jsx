@@ -53,6 +53,16 @@ strong {
 body {
   background-color: #FFFFFF;
 }
+
+//GLOBAL STYLES 
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #333333;
+	font-family: 'Lato', sans-serif;
+}
 `
 
 export default GlobalStyle;
