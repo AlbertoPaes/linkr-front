@@ -49,7 +49,7 @@ const SignUp = () => {
         <Logo>linkr</Logo>
         <Title>save, share and discover <br></br> the best links on the web</Title>
       </ContainerPresentation>
-      <ContainerSignUp onSubmit={handleSignUp}>     
+      <ContainerSignUp onSubmit={handleSignUp} disableButton={isLoading.disabled}>     
         <input
           type="email"
           value={formData.email}
@@ -86,7 +86,7 @@ const SignUp = () => {
           disabled={isLoading.disabled && "disabled"}
           required
         />
-        <button type="submit" disableButton={isLoading.disabled}>
+        <button type="submit">
           {isLoading.placeholder}
         </button>
         <StyledLink to="/">Switch back to log in</StyledLink>
