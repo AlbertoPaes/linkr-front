@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { publishPost } from "../../services/api";
 
+import Header from "./../Header"
+
 export default function Timeline() {
   const navigate = useNavigate();
   const token = localStorage.getItem("user");
@@ -30,13 +32,15 @@ export default function Timeline() {
       setIsLoading(false);
     }
   };
-
+  
   function handleInputChange(e) {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   };
 
   console.log(formData)
   return (
+    <>
+    <Header />  
     <Wrapper>
       <h2>timeline</h2>
       <ContainerPublishPost>
@@ -89,12 +93,13 @@ export default function Timeline() {
         </DivPost>
       </ContainerPost>
     </Wrapper>
+    </>
   )
 };
 
 const Wrapper = styled.section`
   position:absolute;
-  top: 72px;
+  top: 146px;
   left: 0; 
   right: 0;
   margin: 0 auto;
