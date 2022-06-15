@@ -34,7 +34,7 @@ const Login = () => {
         <Logo>linkr</Logo>
         <Title>save, share and discover <br></br> the best links on the web</Title>
       </ContainerPresentation>
-      <ContainerSignIn onSubmit={handleLogin}>    
+      <ContainerSignIn onSubmit={handleLogin} disableButton={isLoading.disabled}>    
           <input
             type="email"
             value={formData.email}
@@ -53,7 +53,7 @@ const Login = () => {
             disabled={isLoading.disabled && "disabled"}
             required
           />
-          <button type="submit" disableButton={isLoading.disabled}>
+          <button type="submit">
             {isLoading.placeholder}
           </button>
         <StyledLink to="/signup">First time? Create an account!</StyledLink>
