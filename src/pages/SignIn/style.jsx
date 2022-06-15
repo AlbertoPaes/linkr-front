@@ -70,7 +70,7 @@ const Title = styled.div`
   }
 `
 
-const ContainerSignIn = styled.form`
+const ContainerSignIn = styled.form(({ disableButton }) => `
   min-height: inherit;
   width: 37.16%;
 
@@ -112,8 +112,8 @@ const ContainerSignIn = styled.form`
   button {
     height: 65px;
     width: 80%;
-    background-color: ${props => typeof props.active !== 'boolean' || props.active ? "#1877F2" : "#888"};
-    opacity: ${props => props.disabledButton ? 0.7 : 1};
+    background-color: ${disableButton ? "#888" : "#1877F2"};
+    opacity: ${disableButton ? 0.7 : 1};
     color: #FFFFFF;
     
     display: flex;
@@ -131,8 +131,8 @@ const ContainerSignIn = styled.form`
     border-radius: 6px;
     border: none;
     
-    cursor: ${props => props.disableButton ? 'not-allowed' : 'pointer'};
-    pointer-events: ${props => props.disableButton ? 'none' : 'auto'};
+    cursor: ${disableButton ? 'not-allowed' : 'pointer'};
+    pointer-events: ${disableButton ? 'none' : 'auto'};
   }
 
   @media (max-width: 375px){
@@ -156,7 +156,7 @@ const ContainerSignIn = styled.form`
       font-size: 22px;
     }
   }
-`
+`);
 
 const StyledLink = styled(Link)`
   display: flex;
