@@ -3,41 +3,21 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-function Header(req, res) {
-
-    const { id } = useParams();
-
-    const URL = `http://localhost:4000/users/${id}`
+function Header() {
 
     const [search, setSearch] = useState("");
 
-    // Imagem usada pra testar o front-end
     const image = "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE"
 
-    // FAZER A REQUISIÇÃO NO BACKEND E SUBSTITUIR POR ESSE ARRAY;
-    // Ao mostrar usuários, eu preciso ter a informação do Id dele vindo da renderização
+   
+    // Array usada pra testar o front
     const usuarios = [
         // { name: "Usuário1", image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE" },
         // { name: "Usuário2", image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE" },
         // { name: "Usuário3", image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE" }
     ]
 
-// Ativar essa função ao clicar no link do nome
-
-    useEffect(() => {
-        async function getUserById() {
-
-            try {
-                const users = await axios.get(URL);
-                console.log(users.data);
-            }
-            catch (error) {
-                console.log(error);
-            }
-        }
-        getUserById();
-    }, [])
-
+   
     return (
         <>
             <Head>

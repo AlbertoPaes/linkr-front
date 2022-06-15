@@ -9,6 +9,7 @@ import {
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Header from "./pages/Header";
+import User from "./pages/User";
 
 // import HomePage from "./pages/HomePage";
 import Timeline from "./pages/Timeline";
@@ -35,8 +36,8 @@ const App = () => {
         <Routes>
           <Route exact path="/" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/posts/:id" element={<Header />} />
           <Route path="/timeline" element={<Timeline />} />
+          <Route path="/users/:id" element={<User />} />
         </Routes>
         <GlobalStyle />
       </AuthProvider>
