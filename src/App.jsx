@@ -33,15 +33,16 @@ const App = () => {
   return (
     <Router>
       <AuthProvider>
+        <GlobalStyle />
         <Routes>
           <Route exact path="/" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/users/:id" element={<User />} />
         </Routes>
-        <GlobalStyle />
       </AuthProvider>
     </Router>
+
   );
 };
 
