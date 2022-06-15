@@ -10,12 +10,15 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const recoveredUser = localStorage.getItem("user");
+  const recoveredUser = localStorage.getItem("user");
 
+  if (recoveredUser) {
+    api.defaults.headers.Authorization = `Bearer ${recoveredUser}`;
+  }
+
+  useEffect(() => {
     if (recoveredUser) {
       setUser(recoveredUser);
-      api.defaults.headers.Authorization = `Bearer ${recoveredUser}`;
     }
 
     setLoading(false);

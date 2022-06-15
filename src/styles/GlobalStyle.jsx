@@ -55,9 +55,6 @@ body {
 }
 
 //GLOBAL STYLES 
-* {
-	box-sizing: border-box;
-}
 
 body {
 	background-color: #333333;

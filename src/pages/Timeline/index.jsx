@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
-import { publishPost } from "../../services/api";
+import { publishPost, getAllPosts } from "../../services/api";
+import Posts from "../../components/timelineReceptacle/Posts";
+import Loading from "../../components/Loading";
 
 export default function Timeline() {
   const navigate = useNavigate();
@@ -10,12 +12,24 @@ export default function Timeline() {
   const image = localStorage.getItem("image");
 
   const [formData, setFormData] = useState({ link: "", description: "" });
+  const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [postLoadind, setPostLoading] = useState(false);
 
   useEffect(() => {
     if (!token) {
       navigate("/");
     }
+
+    setPostLoading(true);
+
+    (async () => {
+      console.log("timeline")
+      const response = await getAllPosts();
+      setPosts(response.data);
+      setPostLoading(false);
+    })();
+
   }, [isLoading, token, navigate]);
 
   async function handlePublishPost(e) {
@@ -31,11 +45,30 @@ export default function Timeline() {
     }
   };
 
+  function handlePost() {
+    if (postLoadind) return <Loading />
+    return posts.length !== 0 ?
+      (
+        posts.map(({ id, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
+          return (
+            <Posts
+              key={id}
+              link={link}
+              description={description}
+              name={name}
+              image={image}
+              urlTitle={urlTitle}
+              urlImage={urlImage}
+              urlDescription={urlDescription}
+            />
+          )
+        })
+      ) : <h5>There are no posts yet</h5>
+  }
+
   function handleInputChange(e) {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   };
-
-  console.log(formData)
   return (
     <Wrapper>
       <h2>timeline</h2>
@@ -71,24 +104,8 @@ export default function Timeline() {
           </Form>
         </DivPublishPost>
       </ContainerPublishPost>
-      <ContainerPost>
-        <DivPost>
-          <ImageLikes>
-            <img
-              src="https://pbs.twimg.com/media/EzsyfzJXEAAouNb.jpg"
-              alt="foto" />
-          </ImageLikes>
-
-          <PostInfos>
-            <h3>Juvenal Juvêncio</h3>
-            <p>
-              Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material
-            </p>
-
-          </PostInfos>
-        </DivPost>
-      </ContainerPost>
-    </Wrapper>
+      {handlePost()}
+    </Wrapper >
   )
 };
 
@@ -112,6 +129,17 @@ const Wrapper = styled.section`
     @media(min-width: 800px){
       margin-left:0;
     }
+  }
+
+  h5 {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 25px;
+    line-height: 64px;
+    color: #FFFFFF;
+    text-align: center;
+    margin-top: 20px;
   }
 `
 
@@ -280,32 +308,3 @@ const Form = styled.form`
   }
 `
 
-const ContainerPost = styled.article`
-  width: 100%;
-  height: 232px;
-  margin-top: 16px;
-  padding: 10px 15px 15x 15px;
-  background-color: #171717;
-
-  @media(min-width: 800px){
-      border-radius: 16px;
-    }
-`
-
-const DivPost = styled.div`
-  display:flex;
-  align-items:center;
-  width: 100%;
-  height: 100%;
-`
-
-const ImageLikes = styled.div`
-  img {
-    width: 40px;
-    height: 40px;
-    top: 348px;
-    border-radius: 26.5px;
-  }
-`
-const PostInfos = styled.div`
-`
