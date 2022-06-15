@@ -6,6 +6,8 @@ import { publishPost, getAllPosts } from "../../services/api";
 import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
 
+import Header from "./../Header"
+
 export default function Timeline() {
   const navigate = useNavigate();
   const token = localStorage.getItem("user");
@@ -70,6 +72,8 @@ export default function Timeline() {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   };
   return (
+    <>
+    <Header />  
     <Wrapper>
       <h2>timeline</h2>
       <ContainerPublishPost>
@@ -106,12 +110,13 @@ export default function Timeline() {
       </ContainerPublishPost>
       {handlePost()}
     </Wrapper >
+    </>
   )
 };
 
 const Wrapper = styled.section`
   position:absolute;
-  top: 72px;
+  top: 146px;
   left: 0; 
   right: 0;
   margin: 0 auto;
