@@ -113,7 +113,7 @@ const ContainerSignIn = styled.form(({ disableButton }) => `
     height: 65px;
     width: 80%;
     background-color: ${disableButton ? "#888" : "#1877F2"};
-    opacity: ${ disableButton ? 0.7 : 1 };
+    opacity: ${disableButton ? 0.7 : 1};
     color: #FFFFFF;
     
     display: flex;
@@ -131,8 +131,8 @@ const ContainerSignIn = styled.form(({ disableButton }) => `
     border-radius: 6px;
     border: none;
     
-    cursor: ${ disableButton ? 'not-allowed' : 'pointer' };
-    pointer-events: ${ disableButton ? 'none' : 'auto'};
+    cursor: ${disableButton ? 'not-allowed' : 'pointer'};
+    pointer-events: ${disableButton ? 'none' : 'auto'};
   }
 
   @media (max-width: 375px){
