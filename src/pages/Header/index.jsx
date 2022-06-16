@@ -2,14 +2,10 @@ import axios from "axios";
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-=======
 import { IconContext } from "react-icons";
 import { AuthContext } from '../../contexts/auth';
-
 import {AiOutlineDown} from "react-icons/ai";
 import {AiOutlineUp} from "react-icons/ai";
->>>>>>> main
 import styled from "styled-components";
 
 function Header() {
@@ -19,10 +15,6 @@ function Header() {
     const [userMenu,setUserMenu] = useState(true);
 
     const navigate = useNavigate();
-
-    const navigate = useNavigate();
-
-    const id = 18; // MUDAR DEPOIS PRA ID VINDO DA REQUISIÇÃO
 
     const image = "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE"
 
@@ -34,8 +26,6 @@ function Header() {
         // { name: "Usuário3", image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE" }
     ]
 
-<<<<<<< HEAD
-=======
     const handleUserMenu = (userMenuStatus) => {
         userMenuStatus ? setUserMenu(false) : setUserMenu(true);
     }
@@ -50,7 +40,6 @@ function Header() {
         return;
     }
    
->>>>>>> main
     return (
         <>
             <Head>
@@ -65,7 +54,7 @@ function Header() {
                                 return (
                                     <User>
                                         <UserImage src={usuario.image}></UserImage>
-                                        <p onClick={() => navigate(`/users/${id}`)}>{usuario.name}</p>
+                                        <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>
                                     </User>
                                 )
                             })}
@@ -104,7 +93,7 @@ function Header() {
                             return (
                                 <User>
                                     <UserImage src={usuario.image}></UserImage>
-                                    <p onClick={() => navigate(`/users/${id}`)}>{usuario.name}</p>                                </User>
+                                    <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>                                </User>
                             )
                         })}
                     </Users> :
@@ -269,12 +258,8 @@ const Head = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-<<<<<<< HEAD
     z-index: 10;
-`
-=======
 `;
->>>>>>> main
 
 const Logo = styled.p`
   font-family: 'Passion One';
