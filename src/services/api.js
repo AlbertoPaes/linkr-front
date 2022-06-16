@@ -29,6 +29,11 @@ export const getAllPosts = async () => {
 export const getMetadata = async (link) => {
   const urlMeta = await urlMetadata(link);
   return urlMeta;
+};
+
+export const getPosts = async (id) => {
+  const userPosts = await api.get(`/users/${id}`);
+  return userPosts;
 }
 
 export const getPostsByHashtag = async (hashtag) => {
