@@ -2,14 +2,11 @@ import axios from "axios";
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-=======
 import { IconContext } from "react-icons";
 import { AuthContext } from '../../contexts/auth';
 
 import {AiOutlineDown} from "react-icons/ai";
 import {AiOutlineUp} from "react-icons/ai";
->>>>>>> main
 import styled from "styled-components";
 
 function Header() {
@@ -17,8 +14,6 @@ function Header() {
 
     const [search, setSearch] = useState("");
     const [userMenu,setUserMenu] = useState(true);
-
-    const navigate = useNavigate();
 
     const navigate = useNavigate();
 
@@ -34,8 +29,6 @@ function Header() {
         // { name: "Usuário3", image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE" }
     ]
 
-<<<<<<< HEAD
-=======
     const handleUserMenu = (userMenuStatus) => {
         userMenuStatus ? setUserMenu(false) : setUserMenu(true);
     }
@@ -50,7 +43,6 @@ function Header() {
         return;
     }
    
->>>>>>> main
     return (
         <>
             <Head>
@@ -269,12 +261,8 @@ const Head = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-<<<<<<< HEAD
     z-index: 10;
 `
-=======
-`;
->>>>>>> main
 
 const Logo = styled.p`
   font-family: 'Passion One';
