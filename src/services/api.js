@@ -30,3 +30,13 @@ export const getMetadata = async (link) => {
   const urlMeta = await urlMetadata(link);
   return urlMeta;
 }
+
+export const getPostsByHashtag = async (hashtag) => {
+  const posts = await api.get(`/hashtag/${hashtag}`);
+  return posts;
+};
+
+export const getHashtagsByQuantity = async () => {
+  const posts = await api.get(`/hashtag`);
+  return posts;
+};

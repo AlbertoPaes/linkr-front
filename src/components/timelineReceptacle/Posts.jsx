@@ -1,13 +1,16 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import ReactHashtag from "@mdnm/react-hashtag";
 
 import noImage from "./noimage.png"
 
 export default function Posts({ link, description, image, name, urlTitle, urlImage, urlDescription }) {
+  const navigate = useNavigate();
+
   let urlDescriptionSplice = urlDescription.slice(0, 150);
   console.log(link)
   const pattern =
-    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
 
 
   if (urlDescription.length > 150) {
@@ -17,6 +20,12 @@ export default function Posts({ link, description, image, name, urlTitle, urlIma
   if (!urlImage || !urlImage.match(pattern)) {
     urlImage = noImage;
   }
+
+  function handlHashtag(value) {
+    const hastag = value.replace("#", "");
+    navigate(`/hashtag/${hastag}`);
+  }
+
   return (
     <ContainerPost>
       <DivPost>
@@ -28,7 +37,7 @@ export default function Posts({ link, description, image, name, urlTitle, urlIma
 
         <PostInfos>
           <h3>{name}</h3>
-          <p><ReactHashtag>{description}</ReactHashtag></p>
+          <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{description}</ReactHashtag></p>
           <UrlInfos href={link} target="blank">
             <div>
               <h4>{urlTitle}</h4>
@@ -114,8 +123,9 @@ const PostInfos = styled.div`
     line-height: 18px;
     color: #FFFFFF;
     margin-bottom: 7px;
+    cursor: pointer;
     }
-  }
+  };
 
   @media(min-width: 800px){
     h3 {
@@ -158,7 +168,7 @@ const UrlInfos = styled.a`
     overflow: hidden;
 
     @media(min-width: 800px){
-      max-width: 350px; 
+      max-width: 320px; 
       justify-content: center;
     }
 

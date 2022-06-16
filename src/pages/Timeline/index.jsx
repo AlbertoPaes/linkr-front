@@ -7,6 +7,7 @@ import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
 
 import Header from "./../Header"
+import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 
 export default function Timeline() {
   const navigate = useNavigate();
@@ -73,55 +74,63 @@ export default function Timeline() {
   };
   return (
     <>
-    <Header />  
-    <Wrapper>
-      <h2>timeline</h2>
-      <ContainerPublishPost>
-        <DivImage>
-          <img src={image} alt="User" />
-        </DivImage >
+      <Header />
+      <TimelineBox>
+        <WrapperTimeline>
+          <h2>timeline</h2>
+          <ContainerPublishPost>
+            <DivImage>
+              <img src={image} alt="User" />
+            </DivImage >
 
-        <DivPublishPost>
-          <h3>What are you going to share today?</h3>
-          <Form onSubmit={handlePublishPost}>
-            <input
-              type="url"
-              value={formData.link}
-              placeholder="http://..."
-              name="link"
-              onChange={handleInputChange}
-              required
-              disabled={isLoading}
-            />
+            <DivPublishPost>
+              <h3>What are you going to share today?</h3>
+              <Form onSubmit={handlePublishPost}>
+                <input
+                  type="url"
+                  value={formData.link}
+                  placeholder="http://..."
+                  name="link"
+                  onChange={handleInputChange}
+                  required
+                  disabled={isLoading}
+                />
 
-            <textarea
-              type="text"
-              value={formData.description}
-              placeholder="Awesome article about #javascript"
-              name="description"
-              onChange={handleInputChange}
-              disabled={isLoading}
-            />
-            <button disabled={isLoading} >
-              {isLoading ? "Publishing..." : "Publish"}
-            </button>
-          </Form>
-        </DivPublishPost>
-      </ContainerPublishPost>
-      {handlePost()}
-    </Wrapper >
+                <textarea
+                  type="text"
+                  value={formData.description}
+                  placeholder="Awesome article about #javascript"
+                  name="description"
+                  onChange={handleInputChange}
+                  disabled={isLoading}
+                />
+                <button disabled={isLoading} >
+                  {isLoading ? "Publishing..." : "Publish"}
+                </button>
+              </Form>
+            </DivPublishPost>
+          </ContainerPublishPost>
+          {handlePost()}
+        </WrapperTimeline >
+        <HashtagBox />
+      </TimelineBox>
     </>
-  )
+  );
 };
 
-const Wrapper = styled.section`
-  position:absolute;
+const TimelineBox = styled.main`
+  position:relative;
+  display:flex;
   top: 146px;
   left: 0; 
   right: 0;
   margin: 0 auto;
   max-width: 611px;
+`
 
+const WrapperTimeline = styled.section`
+  width: 100%;
+  
   h2 {
     font-family: 'Oswald';
     font-style: normal;
