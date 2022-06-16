@@ -1,14 +1,17 @@
 import styled from "styled-components";
 import ReactHashtag from "@mdnm/react-hashtag";
+import { useNavigate } from "react-router-dom";
 
 import noImage from "./noimage.png"
 
-export default function Posts({ link, description, image, name, urlTitle, urlImage, urlDescription }) {
+export default function Posts({id, link, description, image, name, urlTitle, urlImage, urlDescription }) {
+  console.log(id);
   let urlDescriptionSplice = urlDescription.slice(0, 150);
   console.log(link)
   const pattern =
     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
 
+  const navigate = useNavigate();
 
   if (urlDescription.length > 150) {
     urlDescriptionSplice += "..."
@@ -27,13 +30,13 @@ export default function Posts({ link, description, image, name, urlTitle, urlIma
         </ImageLikes>
 
         <PostInfos>
-          <h3>{name}</h3>
+          <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
           <p><ReactHashtag>{description}</ReactHashtag></p>
           <UrlInfos href={link} target="blank">
             <div>
               <h4>{urlTitle}</h4>
               <p>{urlDescriptionSplice}</p>
-              <span>{link}</span>
+              <span>{link}</span> 
             </div>
 
             <div>
@@ -54,6 +57,7 @@ const ContainerPost = styled.article`
   padding: 10px 15px 15px 15px;
   background-color: #171717;
 
+
   @media(min-width: 800px){
       border-radius: 16px;
       height: 276px;
@@ -64,6 +68,7 @@ const DivPost = styled.div`
   display:flex;
   width: 100%;
   height: 100%;
+
 `
 
 const ImageLikes = styled.div`
@@ -86,6 +91,7 @@ const PostInfos = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 503px;
+
 
   h3 {
     font-family: 'Lato';
