@@ -1,11 +1,16 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 function Header() {
 
     const [search, setSearch] = useState("");
+
+    const navigate = useNavigate();
+
+    const id = 18; // MUDAR DEPOIS PRA ID VINDO DA REQUISIÇÃO
 
     const image = "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE"
 
@@ -17,7 +22,6 @@ function Header() {
         // { name: "Usuário3", image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE" }
     ]
 
-   
     return (
         <>
             <Head>
@@ -32,7 +36,7 @@ function Header() {
                                 return (
                                     <User>
                                         <UserImage src={usuario.image}></UserImage>
-                                        <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>
+                                        <p onClick={() => navigate(`/users/${id}`)}>{usuario.name}</p>
                                     </User>
                                 )
                             })}
@@ -59,7 +63,7 @@ function Header() {
                             return (
                                 <User>
                                     <UserImage src={usuario.image}></UserImage>
-                                    <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>                                </User>
+                                    <p onClick={() => navigate(`/users/${id}`)}>{usuario.name}</p>                                </User>
                             )
                         })}
                     </Users> :
@@ -176,6 +180,7 @@ const Head = styled.div`
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 10;
 `
 
 const Logo = styled.p`
