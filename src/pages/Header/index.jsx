@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { IconContext } from "react-icons";
 import { AuthContext } from '../../contexts/auth';
-
 import {AiOutlineDown} from "react-icons/ai";
 import {AiOutlineUp} from "react-icons/ai";
 import styled from "styled-components";
@@ -57,7 +56,7 @@ function Header() {
                                 return (
                                     <User>
                                         <UserImage src={usuario.image}></UserImage>
-                                        <p onClick={() => navigate(`/users/${id}`)}>{usuario.name}</p>
+                                        <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>
                                     </User>
                                 )
                             })}
@@ -96,7 +95,7 @@ function Header() {
                             return (
                                 <User>
                                     <UserImage src={usuario.image}></UserImage>
-                                    <p onClick={() => navigate(`/users/${id}`)}>{usuario.name}</p>                                </User>
+                                    <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>                                </User>
                             )
                         })}
                     </Users> :
@@ -263,6 +262,7 @@ const Head = styled.div`
     left: 0;
     z-index: 10;
 `
+
 
 const Logo = styled.p`
   font-family: 'Passion One';
