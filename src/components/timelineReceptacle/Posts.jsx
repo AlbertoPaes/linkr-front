@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import ReactHashtag from "@mdnm/react-hashtag";
+import { FiHeart } from "react-icons/fi";
+import { IconContext } from "react-icons";
 
 import noImage from "./noimage.png"
 
@@ -33,6 +35,10 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
           <img
             src={image}
             alt="foto" />
+          <IconContext.Provider value={{ color: "#FFFFFF", className: "heart-icon", size: "25px" }}>
+            <FiHeart />
+          </IconContext.Provider>
+          <p>15 Likes</p>
         </ImageLikes>
 
         <PostInfos>
@@ -77,6 +83,9 @@ const DivPost = styled.div`
 
 const ImageLikes = styled.div`
   margin-right: 18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   img {
     width: 40px;
     height: 40px;
@@ -88,7 +97,20 @@ const ImageLikes = styled.div`
     }
   }
 
-  
+  .heart-icon {
+    margin-top: 20px;
+  }
+
+  p {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 9px;
+    line-height: 11px;
+    text-align: center;
+    color: #FFFFFF;
+    margin-top: 12px;
+  }
 `
 const PostInfos = styled.div`
   display: flex;
