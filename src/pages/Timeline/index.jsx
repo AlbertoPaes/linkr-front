@@ -119,18 +119,21 @@ export default function Timeline() {
 };
 
 const TimelineBox = styled.main`
-  position:relative;
+  position:absolute;
   display:flex;
   top: 146px;
   left: 0; 
   right: 0;
   margin: 0 auto;
-  max-width: 611px;
+  max-width: 1042px;
+  
 `
 
 const WrapperTimeline = styled.section`
   width: 100%;
-  
+  margin-right: 25px;
+  max-width: 611px;
+
   h2 {
     font-family: 'Oswald';
     font-style: normal;
