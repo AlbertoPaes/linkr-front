@@ -28,7 +28,7 @@ export default function Timeline() {
     (async () => {
       console.log("timeline")
       const response = await getAllPosts();
-      console.log(response.data);
+      // console.log(response.data);
       setPosts(response.data);
       setPostLoading(false);
     })();
