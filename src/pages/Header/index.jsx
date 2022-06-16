@@ -1,12 +1,24 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
+=======
+import { IconContext } from "react-icons";
+import { AuthContext } from '../../contexts/auth';
+
+import {AiOutlineDown} from "react-icons/ai";
+import {AiOutlineUp} from "react-icons/ai";
+>>>>>>> main
 import styled from "styled-components";
 
 function Header() {
+    const { logout } = useContext(AuthContext);
 
     const [search, setSearch] = useState("");
+    const [userMenu,setUserMenu] = useState(true);
+
+    const navigate = useNavigate();
 
     const navigate = useNavigate();
 
@@ -22,6 +34,23 @@ function Header() {
         // { name: "Usuário3", image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE" }
     ]
 
+<<<<<<< HEAD
+=======
+    const handleUserMenu = (userMenuStatus) => {
+        userMenuStatus ? setUserMenu(false) : setUserMenu(true);
+    }
+
+    const handleLogout = () => {
+        if(window.confirm("Do you want to leave the current session?")){
+            setUserMenu(true);
+            logout();
+            navigate("/");
+            window.location.reload(true);
+        }
+        return;
+    }
+   
+>>>>>>> main
     return (
         <>
             <Head>
@@ -44,15 +73,27 @@ function Header() {
                         <></>
                     }
                 </ContainerHead>
-
                 <Logout>
-                    <Icon>
-                        <ion-icon name="chevron-down-outline"></ion-icon>
-                    </Icon>
-                    <Image src={image}></Image>
+                    <AiOutlineWrap onClick={() => handleUserMenu(userMenu)}>
+                        { userMenu ?
+                           <IconContext.Provider value={{ color: "#FFFFFF", className: "global-class-name", size: "25px" }}>
+                                <AiOutlineDown />
+                            </IconContext.Provider>
+                        :   <IconContext.Provider value={{ color: "#FFFFFF", className: "global-class-name", size: "25px" }}>
+                                <AiOutlineUp />
+                            </IconContext.Provider>
+                        }
+                    </AiOutlineWrap>                        
+                    <Image src={image} onClick={() => handleUserMenu(userMenu)}></Image>
+                    {
+                        (userMenu === false) ?
+                        <Overlay onClick={() => setUserMenu(true)}>
+                            <UserMenu displayMenu={userMenu}> <span onClick={handleLogout}>Logout</span> </UserMenu>
+                        </Overlay> 
+                        : null
+                    }
                 </Logout>
             </Head>
-
             <Container>
                 <Input type="text" placeholder='Search for people and friends' required
                     onChange={(e) => setSearch(e.target.value)} value={search}>
@@ -120,12 +161,60 @@ const UserImage = styled.img`
     border-radius: 26px;
 `
 
-const Icon = styled.button`
-    font-size: 25px;
-    border: none;
-    color: white;
-    background-color: #151515;
+const AiOutlineWrap = styled.div`
+    position: absolute;
+    top: 25px;
+    right: 67px;
+    cursor: pointer;
+    z-index: 11;
 `
+
+const Overlay = styled.div`
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 12;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 19px;
+`;
+
+const UserMenu = styled.div(({ displayMenu }) => `
+    height: 47px;
+    width: 150px;
+
+    visibility: ${displayMenu ? "hidden" : "visible"};
+    z-index: 11;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #171717;
+
+    border-radius: 0px 0px 20px 20px;
+
+    position: fixed;
+    top: 72px;
+    right: -20px;
+    padding: 0px 20px 10px 0px;
+
+    span {
+        font-family: 'Lato';
+        font-weight: 700;
+        font-size: 17px;
+        line-height: 20px;
+        letter-spacing: 0.05em;
+
+        color: #FFFFFF;
+        cursor: pointer;
+    }
+`);
+
 const Image = styled.img`
     width: 41px;
     height: 41px;
@@ -180,8 +269,12 @@ const Head = styled.div`
     position: fixed;
     top: 0;
     left: 0;
+<<<<<<< HEAD
     z-index: 10;
 `
+=======
+`;
+>>>>>>> main
 
 const Logo = styled.p`
   font-family: 'Passion One';
@@ -200,6 +293,7 @@ const Container = styled.div`
     width: 100%;
 
     margin-top: 72px;
+    margin-top: 72px;
 
     position: relative;
     z-index: 10;
@@ -207,7 +301,8 @@ const Container = styled.div`
     @media (min-width: 800px) {
         display: none;
     }
-`
+`;
+
 const Input = styled.input`
     width: 95%;
     max-width: 563px;
