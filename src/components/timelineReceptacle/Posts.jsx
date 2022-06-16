@@ -4,7 +4,7 @@ import ReactHashtag from "@mdnm/react-hashtag";
 
 import noImage from "./noimage.png"
 
-export default function Posts({ link, description, image, name, urlTitle, urlImage, urlDescription }) {
+export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription }) {
   const navigate = useNavigate();
 
   let urlDescriptionSplice = urlDescription.slice(0, 150);
@@ -22,9 +22,9 @@ export default function Posts({ link, description, image, name, urlTitle, urlIma
   }
 
   function handlHashtag(value) {
-    const hastag = value.replace("#", "");
-    navigate(`/hashtag/${hastag}`);
-  }
+    const hashtag = value.replace("#", "");
+    navigate(`/hashtag/${hashtag}`);
+  };
 
   return (
     <ContainerPost>
@@ -36,7 +36,7 @@ export default function Posts({ link, description, image, name, urlTitle, urlIma
         </ImageLikes>
 
         <PostInfos>
-          <h3>{name}</h3>
+          <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
           <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{description}</ReactHashtag></p>
           <UrlInfos href={link} target="blank">
             <div>
@@ -104,6 +104,7 @@ const PostInfos = styled.div`
     line-height: 20px;
     color: #FFFFFF;
     margin-bottom: 7px;
+    cursor: pointer;
   }
 
   p {

@@ -44,6 +44,23 @@ function Header() {
 
     return (
         <>
+            <Container>
+                <Input type="text" placeholder='Search for people and friends' required
+                    onChange={(e) => setSearch(e.target.value)} value={search}>
+                </Input>
+                {usuarios.length > 0 ?
+                    <Users>
+                        {usuarios.map(usuario => {
+                            return (
+                                <User>
+                                    <UserImage src={usuario.image}></UserImage>
+                                    <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>                                </User>
+                            )
+                        })}
+                    </Users> :
+                    <></>
+                }
+            </Container>
             <Head>
                 <Logo>linkr</Logo>
                 <ContainerHead>
@@ -85,23 +102,6 @@ function Header() {
                     }
                 </Logout>
             </Head>
-            <Container>
-                <Input type="text" placeholder='Search for people and friends' required
-                    onChange={(e) => setSearch(e.target.value)} value={search}>
-                </Input>
-                {usuarios.length > 0 ?
-                    <Users>
-                        {usuarios.map(usuario => {
-                            return (
-                                <User>
-                                    <UserImage src={usuario.image}></UserImage>
-                                    <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>                                </User>
-                            )
-                        })}
-                    </Users> :
-                    <></>
-                }
-            </Container>
         </>
     )
 }

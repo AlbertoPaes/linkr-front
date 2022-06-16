@@ -18,6 +18,7 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [postLoadind, setPostLoading] = useState(false);
+  const [reloadPage, setRealoadPage] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -33,7 +34,7 @@ export default function Timeline() {
       setPostLoading(false);
     })();
 
-  }, [isLoading, token, navigate]);
+  }, [reloadPage, token, navigate]);
 
   async function handlePublishPost(e) {
     e.preventDefault();
@@ -42,6 +43,7 @@ export default function Timeline() {
       await publishPost({ ...formData });
       setIsLoading(false);
       setFormData({ link: "", description: "" });
+      setRealoadPage(!reloadPage);
     } catch (e) {
       alert("Houve um erro ao publicar seu link");
       setIsLoading(false);
@@ -105,7 +107,7 @@ export default function Timeline() {
                   onChange={handleInputChange}
                   disabled={isLoading}
                 />
-                <button disabled={isLoading} >
+                <button disabled={postLoadind} >
                   {isLoading ? "Publishing..." : "Publish"}
                 </button>
               </Form>
@@ -113,7 +115,7 @@ export default function Timeline() {
           </ContainerPublishPost>
           {handlePost()}
         </WrapperTimeline >
-        <HashtagBox />
+        <HashtagBox reloadPage={reloadPage} />
       </TimelineBox>
     </>
   );
@@ -122,18 +124,18 @@ export default function Timeline() {
 const TimelineBox = styled.main`
   position:absolute;
   display:flex;
-  top: 146px;
+  top: 160px;
+  width: fit-content;
+  max-width: 1042px;
   left: 0; 
   right: 0;
   margin: 0 auto;
-  max-width: 1042px;
-  
 `
 
 const WrapperTimeline = styled.section`
   width: 100%;
-  margin-right: 25px;
-  max-width: 611px;
+  min-width:375px;
+  margin-bottom: 30px;
 
   h2 {
     font-family: 'Oswald';
@@ -158,6 +160,10 @@ const WrapperTimeline = styled.section`
     color: #FFFFFF;
     text-align: center;
     margin-top: 20px;
+  }
+
+  @media(min-width: 800px){
+    width: 611px;
   }
 `
 
