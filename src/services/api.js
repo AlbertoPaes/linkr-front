@@ -41,3 +41,13 @@ export const getSearch = async (name) => {
   const searchUser = await api.get(`/search/${name}`);
   return searchUser
 }
+
+export const getPostsByHashtag = async (hashtag) => {
+  const posts = await api.get(`/hashtag/${hashtag}`);
+  return posts;
+};
+
+export const getHashtagsByQuantity = async () => {
+  const posts = await api.get(`/hashtag`);
+  return posts;
+};

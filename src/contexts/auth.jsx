@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     setLoading(false);
-  }, []);
+  }, [recoveredUser]);
 
   const login = async (email, password, isLoading, setIsLoading) => {
     const formData = {

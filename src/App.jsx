@@ -1,23 +1,17 @@
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  // Navigate,
+  Route
 } from "react-router-dom";
-// import { useContext } from "react";
 
+import { AuthProvider } from "./contexts/auth";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Header from "./pages/Header";
 import User from "./pages/User";
-
-// import HomePage from "./pages/HomePage";
 import Timeline from "./pages/Timeline";
+import Hashtag from "./pages/Hashtag";
 
 import GlobalStyle from "./styles/GlobalStyle";
-
-import { AuthProvider, AuthContext } from "./contexts/auth";
-
 
 const App = () => {
   // const Private = ({ children }) => {
@@ -39,6 +33,7 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/users/:id" element={<User />} />
+          <Route path="/hashtag/:hashtag" element={<Hashtag />} />
         </Routes>
       </AuthProvider>
     </Router>

@@ -16,12 +16,16 @@ export default function User() {
     const { id } = useParams();
 
     useEffect(() => {
+
+        setPostLoading(true);
+
         async function getUserPostsById() {
 
             try {
                 const users = await getPosts(id);
                 console.log(users.data);
                 setPosts(users.data);
+                setPostLoading(false);
             }
             catch (error) {
                 console.log(error);
@@ -58,15 +62,15 @@ export default function User() {
                         />
                     )
                 })
-            ) : <Loading />
+            ) : <h5>There are no posts yet</h5>
     }
 
     return (
         <>
             <Header />
             <Wrapper>
-                    {handleUser()}
-                    {handlePost()}
+                {handleUser()}
+                {handlePost()}
             </Wrapper>
         </>
     )
@@ -106,7 +110,7 @@ const Wrapper = styled.section`
   }
 
 `
-const UserContainer = styled.div `
+const UserContainer = styled.div`
       display: flex;
       align-items: center;
       gap: 18px;

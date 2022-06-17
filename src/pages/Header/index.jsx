@@ -1,6 +1,4 @@
-import axios from "axios";
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { IconContext } from "react-icons";
 import { AuthContext } from '../../contexts/auth';
@@ -10,7 +8,6 @@ import styled from "styled-components";
 import { DebounceInput } from 'react-debounce-input';
 
 import { getSearch } from "../../services/api";
-
 
 function Header() {
     const { logout } = useContext(AuthContext);
@@ -37,26 +34,48 @@ function Header() {
     }
 
     const handleSearch = async (value) => {
-        console.log("Entrou na função")
         try {
             if (value.length > 0) {
                 const search = await getSearch(value);
+                console.log("search: ", search.data);
                 setUsers(search.data)
             }
             else setUsers([])
-        } 
+        }
         catch (error) {
             alert("Error in server connection");
         }
     }
 
-    function goToUsersPage (id) {
+    function goToUsersPage(id) {
         navigate(`/users/${id}`);
         setUsers([]);
     }
 
     return (
         <>
+            <Container>
+                <DebounceInput
+                    minLength={3}
+                    debounceTimeout={300}
+                    className="debounce"
+                    placeholder='Search for people and friends' required
+                    onChange={(e) => handleSearch(e.target.value)} />
+
+                {users.length > 0 ?
+                    <Users>
+                        {users.map(user => {
+                            return (
+                                <User key={user.id}>
+                                    <UserImage src={user.image}></UserImage>
+                                    <p onClick={() => goToUsersPage(user.id)}>{user.name}</p>
+                                </User>
+                            )
+                        })}
+                    </Users> :
+                    <></>
+                }
+            </Container>
             <Head>
                 <Logo>linkr</Logo>
                 <ContainerHead>
@@ -67,12 +86,12 @@ function Header() {
                         placeholder='Search for people' required
                         onChange={(e) => handleSearch(e.target.value)} />
 
-                
+
                     {users.length > 0 ?
                         <UsersHead>
                             {users.map(user => {
                                 return (
-                                    <User>
+                                    <User key={user.id}>
                                         <UserImage src={user.image}></UserImage>
                                         <p onClick={() => goToUsersPage(user.id)}>{user.name}</p>
                                     </User>
@@ -103,37 +122,13 @@ function Header() {
                     }
                 </Logout>
             </Head>
-            <Container>
-            <DebounceInput
-                        minLength={3}
-                        debounceTimeout={300}
-                        className="debounce"
-                        placeholder='Search for people' required
-                        onChange={(e) => handleSearch(e.target.value)} />
-                {users.length > 0 ?
-                    <Users>
-                        {users.map(user => {
-                            return (
-                                <User>
-                                    <UserImage src={user.image}></UserImage>
-                                    <p onClick={() => navigate(`/users/${user.id}`)}>{user.name}</p>
-                                </User>
-                            )
-                        })}
-                    </Users> :
-                    <></>
-                }
-            </Container>
         </>
     )
 }
 
-
-
 const Logout = styled.div`
     margin: auto 0;
 `
-
 const ContainerHead = styled.div`
 
     display: none;
@@ -267,7 +262,7 @@ const Image = styled.img`
 `
 
 const User = styled.div`
-   
+
     display: flex;
     align-items: center;
     gap: 12px;
@@ -308,7 +303,6 @@ const Head = styled.div`
 
     display: flex;
     justify-content: space-between;
-    /* align-items: center; */
 
     position: fixed;
     top: 0;
@@ -364,6 +358,10 @@ const Container = styled.div`
 
     &::placeholder {
       color: #9F9F9F;
+        }
+
+        @media (min-width: 800px) {
+        display: none;
         }
     }
 
