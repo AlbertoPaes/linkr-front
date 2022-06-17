@@ -1,17 +1,19 @@
 import styled from "styled-components";
-import ReactHashtag from "@mdnm/react-hashtag";
 import { useNavigate } from "react-router-dom";
+import ReactHashtag from "@mdnm/react-hashtag";
+import { FiHeart } from "react-icons/fi";
+import { IconContext } from "react-icons";
 
 import noImage from "./noimage.png"
 
-export default function Posts({id, link, description, image, name, urlTitle, urlImage, urlDescription }) {
-  console.log(id);
+export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription }) {
+  const navigate = useNavigate();
+
   let urlDescriptionSplice = urlDescription.slice(0, 150);
   console.log(link)
   const pattern =
-    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
 
-  const navigate = useNavigate();
 
   if (urlDescription.length > 150) {
     urlDescriptionSplice += "..."
@@ -20,6 +22,12 @@ export default function Posts({id, link, description, image, name, urlTitle, url
   if (!urlImage || !urlImage.match(pattern)) {
     urlImage = noImage;
   }
+
+  function handlHashtag(value) {
+    const hashtag = value.replace("#", "");
+    navigate(`/hashtag/${hashtag}`);
+  };
+
   return (
     <ContainerPost>
       <DivPost>
@@ -27,16 +35,20 @@ export default function Posts({id, link, description, image, name, urlTitle, url
           <img
             src={image}
             alt="foto" />
+          <IconContext.Provider value={{ color: "#FFFFFF", className: "heart-icon", size: "25px" }}>
+            <FiHeart />
+          </IconContext.Provider>
+          <p>15 Likes</p>
         </ImageLikes>
 
         <PostInfos>
           <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
-          <p><ReactHashtag>{description}</ReactHashtag></p>
+          <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{description}</ReactHashtag></p>
           <UrlInfos href={link} target="blank">
             <div>
               <h4>{urlTitle}</h4>
               <p>{urlDescriptionSplice}</p>
-              <span>{link}</span> 
+              <span>{link}</span>
             </div>
 
             <div>
@@ -57,7 +69,6 @@ const ContainerPost = styled.article`
   padding: 10px 15px 15px 15px;
   background-color: #171717;
 
-
   @media(min-width: 800px){
       border-radius: 16px;
       height: 276px;
@@ -68,11 +79,13 @@ const DivPost = styled.div`
   display:flex;
   width: 100%;
   height: 100%;
-
 `
 
 const ImageLikes = styled.div`
   margin-right: 18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   img {
     width: 40px;
     height: 40px;
@@ -84,14 +97,26 @@ const ImageLikes = styled.div`
     }
   }
 
-  
+  .heart-icon {
+    margin-top: 20px;
+  }
+
+  p {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 9px;
+    line-height: 11px;
+    text-align: center;
+    color: #FFFFFF;
+    margin-top: 12px;
+  }
 `
 const PostInfos = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: 503px;
-
 
   h3 {
     font-family: 'Lato';
@@ -101,6 +126,7 @@ const PostInfos = styled.div`
     line-height: 20px;
     color: #FFFFFF;
     margin-bottom: 7px;
+    cursor: pointer;
   }
 
   p {
@@ -120,8 +146,9 @@ const PostInfos = styled.div`
     line-height: 18px;
     color: #FFFFFF;
     margin-bottom: 7px;
+    cursor: pointer;
     }
-  }
+  };
 
   @media(min-width: 800px){
     h3 {
@@ -164,7 +191,7 @@ const UrlInfos = styled.a`
     overflow: hidden;
 
     @media(min-width: 800px){
-      max-width: 350px; 
+      max-width: 320px; 
       justify-content: center;
     }
 

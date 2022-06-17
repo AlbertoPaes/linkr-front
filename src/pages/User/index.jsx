@@ -65,8 +65,8 @@ export default function User() {
         <>
             <Header />
             <Wrapper>
-                    {handleUser()}
-                    {handlePost()}
+                {handleUser()}
+                {handlePost()}
             </Wrapper>
         </>
     )
@@ -106,7 +106,7 @@ const Wrapper = styled.section`
   }
 
 `
-const UserContainer = styled.div `
+const UserContainer = styled.div`
       display: flex;
       align-items: center;
       gap: 18px;

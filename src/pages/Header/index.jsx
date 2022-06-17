@@ -4,23 +4,23 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { IconContext } from "react-icons";
 import { AuthContext } from '../../contexts/auth';
-import {AiOutlineDown} from "react-icons/ai";
-import {AiOutlineUp} from "react-icons/ai";
+import { AiOutlineDown } from "react-icons/ai";
+import { AiOutlineUp } from "react-icons/ai";
 import styled from "styled-components";
 
 function Header() {
     const { logout } = useContext(AuthContext);
 
-    const [search, setSearch] = useState("");
-    const [userMenu,setUserMenu] = useState(true);
-
     const navigate = useNavigate();
+
+    const [search, setSearch] = useState("");
+    const [userMenu, setUserMenu] = useState(true);
 
     const id = 18; // MUDAR DEPOIS PRA ID VINDO DA REQUISIÇÃO
 
     const image = "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE"
 
-   
+
     // Array usada pra testar o front
     const usuarios = [
         // { name: "Usuário1", image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE" },
@@ -33,7 +33,7 @@ function Header() {
     }
 
     const handleLogout = () => {
-        if(window.confirm("Do you want to leave the current session?")){
+        if (window.confirm("Do you want to leave the current session?")) {
             setUserMenu(true);
             logout();
             navigate("/");
@@ -41,9 +41,26 @@ function Header() {
         }
         return;
     }
-   
+
     return (
         <>
+            <Container>
+                <Input type="text" placeholder='Search for people and friends' required
+                    onChange={(e) => setSearch(e.target.value)} value={search}>
+                </Input>
+                {usuarios.length > 0 ?
+                    <Users>
+                        {usuarios.map(usuario => {
+                            return (
+                                <User>
+                                    <UserImage src={usuario.image}></UserImage>
+                                    <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>                                </User>
+                            )
+                        })}
+                    </Users> :
+                    <></>
+                }
+            </Container>
             <Head>
                 <Logo>linkr</Logo>
                 <ContainerHead>
@@ -66,42 +83,25 @@ function Header() {
                 </ContainerHead>
                 <Logout>
                     <AiOutlineWrap onClick={() => handleUserMenu(userMenu)}>
-                        { userMenu ?
-                           <IconContext.Provider value={{ color: "#FFFFFF", className: "global-class-name", size: "25px" }}>
+                        {userMenu ?
+                            <IconContext.Provider value={{ color: "#FFFFFF", className: "global-class-name", size: "25px" }}>
                                 <AiOutlineDown />
                             </IconContext.Provider>
-                        :   <IconContext.Provider value={{ color: "#FFFFFF", className: "global-class-name", size: "25px" }}>
+                            : <IconContext.Provider value={{ color: "#FFFFFF", className: "global-class-name", size: "25px" }}>
                                 <AiOutlineUp />
                             </IconContext.Provider>
                         }
-                    </AiOutlineWrap>                        
+                    </AiOutlineWrap>
                     <Image src={image} onClick={() => handleUserMenu(userMenu)}></Image>
                     {
                         (userMenu === false) ?
-                        <Overlay onClick={() => setUserMenu(true)}>
-                            <UserMenu displayMenu={userMenu}> <span onClick={handleLogout}>Logout</span> </UserMenu>
-                        </Overlay> 
-                        : null
+                            <Overlay onClick={() => setUserMenu(true)}>
+                                <UserMenu displayMenu={userMenu}> <span onClick={handleLogout}>Logout</span> </UserMenu>
+                            </Overlay>
+                            : null
                     }
                 </Logout>
             </Head>
-            <Container>
-                <Input type="text" placeholder='Search for people and friends' required
-                    onChange={(e) => setSearch(e.target.value)} value={search}>
-                </Input>
-                {usuarios.length > 0 ?
-                    <Users>
-                        {usuarios.map(usuario => {
-                            return (
-                                <User>
-                                    <UserImage src={usuario.image}></UserImage>
-                                    <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>                                </User>
-                            )
-                        })}
-                    </Users> :
-                    <></>
-                }
-            </Container>
         </>
     )
 }
@@ -214,7 +214,7 @@ const Image = styled.img`
 `
 
 const User = styled.div`
-   
+
     display: flex;
     align-items: center;
     gap: 12px;

@@ -7,6 +7,7 @@ import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
 
 import Header from "./../Header"
+import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 
 export default function Timeline() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [postLoadind, setPostLoading] = useState(false);
+  const [reloadPage, setRealoadPage] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -28,12 +30,11 @@ export default function Timeline() {
     (async () => {
       console.log("timeline")
       const response = await getAllPosts();
-      // console.log(response.data);
       setPosts(response.data);
       setPostLoading(false);
     })();
 
-  }, [isLoading, token, navigate]);
+  }, [reloadPage, token, navigate]);
 
   async function handlePublishPost(e) {
     e.preventDefault();
@@ -42,6 +43,7 @@ export default function Timeline() {
       await publishPost({ ...formData });
       setIsLoading(false);
       setFormData({ link: "", description: "" });
+      setRealoadPage(!reloadPage);
     } catch (e) {
       alert("Houve um erro ao publicar seu link");
       setIsLoading(false);
@@ -75,54 +77,65 @@ export default function Timeline() {
   };
   return (
     <>
-    <Header />  
-    <Wrapper>
-      <h2>timeline</h2>
-      <ContainerPublishPost>
-        <DivImage>
-          <img src={image} alt="User" />
-        </DivImage >
+      <Header />
+      <TimelineBox>
+        <WrapperTimeline>
+          <h2>timeline</h2>
+          <ContainerPublishPost>
+            <DivImage>
+              <img src={image} alt="User" />
+            </DivImage >
 
-        <DivPublishPost>
-          <h3>What are you going to share today?</h3>
-          <Form onSubmit={handlePublishPost}>
-            <input
-              type="url"
-              value={formData.link}
-              placeholder="http://..."
-              name="link"
-              onChange={handleInputChange}
-              required
-              disabled={isLoading}
-            />
+            <DivPublishPost>
+              <h3>What are you going to share today?</h3>
+              <Form onSubmit={handlePublishPost}>
+                <input
+                  type="url"
+                  value={formData.link}
+                  placeholder="http://..."
+                  name="link"
+                  onChange={handleInputChange}
+                  required
+                  disabled={isLoading}
+                />
 
-            <textarea
-              type="text"
-              value={formData.description}
-              placeholder="Awesome article about #javascript"
-              name="description"
-              onChange={handleInputChange}
-              disabled={isLoading}
-            />
-            <button disabled={isLoading} >
-              {isLoading ? "Publishing..." : "Publish"}
-            </button>
-          </Form>
-        </DivPublishPost>
-      </ContainerPublishPost>
-      {handlePost()}
-    </Wrapper >
+                <textarea
+                  type="text"
+                  value={formData.description}
+                  placeholder="Awesome article about #javascript"
+                  name="description"
+                  onChange={handleInputChange}
+                  disabled={isLoading}
+                />
+                <button disabled={postLoadind} >
+                  {isLoading ? "Publishing..." : "Publish"}
+                </button>
+              </Form>
+            </DivPublishPost>
+          </ContainerPublishPost>
+          {handlePost()}
+        </WrapperTimeline >
+        <HashtagBox reloadPage={reloadPage} />
+      </TimelineBox>
     </>
-  )
+  );
 };
 
-const Wrapper = styled.section`
+const TimelineBox = styled.main`
   position:absolute;
-  top: 146px;
+  display:flex;
+  top: 160px;
+  width: fit-content;
+  max-width: 1042px;
   left: 0; 
   right: 0;
   margin: 0 auto;
-  max-width: 611px;
+`
+
+const WrapperTimeline = styled.section`
+  width: 100%;
+  min-width:375px;
+  margin-bottom: 30px;
 
   h2 {
     font-family: 'Oswald';
@@ -147,6 +160,10 @@ const Wrapper = styled.section`
     color: #FFFFFF;
     text-align: center;
     margin-top: 20px;
+  }
+
+  @media(min-width: 800px){
+    width: 611px;
   }
 `
 
