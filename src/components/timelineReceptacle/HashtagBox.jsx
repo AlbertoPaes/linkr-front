@@ -5,13 +5,13 @@ import ReactHashtag from "@mdnm/react-hashtag";
 import { useEffect } from "react";
 
 import { getHashtagsByQuantity } from "../../services/api";
+import Loading from "../Loading";
 
 export default function HashtagBox({ reloadPage }) {
   const navigate = useNavigate();
 
   const [hashtags, setHashtags] = useState([]);
   const [postLoadind, setPostLoading] = useState(false);
-
 
   useEffect(() => {
     (async () => {
@@ -21,7 +21,6 @@ export default function HashtagBox({ reloadPage }) {
         setPostLoading(false);
       } catch (e) {
         console.log(e);
-        alert("An error occured while trying to fetch the posts, please refresh the page")
       }
     })();
   }, [reloadPage]);
@@ -31,21 +30,27 @@ export default function HashtagBox({ reloadPage }) {
     navigate(`/hashtag/${hashtag}`);
   }
 
-  console.log(hashtags)
+  console.log(hashtags.length)
 
   return (
     <WrapperHashtags>
       <h2>trendings</h2>
-      <div></div>
-      <ContainerHashtags>
-        {hashtags.map(({ name, hashtagId }) => {
-          return (
-            <ReactHashtag onHashtagClick={(value) => handlHashtag(value)} key={hashtagId}>{name}</ReactHashtag>
-          )
-        })}
-      </ContainerHashtags>
+      <div className="horizontal-line"></div>
+      {!postLoadind ? (
+        <ContainerHashtags>
+          {hashtags.lenght !== 0 ? (
+            hashtags.map(({ name, hashtagId }) => {
+              return (
+                <ReactHashtag onHashtagClick={(value) => handlHashtag(value)} key={hashtagId}>{name}</ReactHashtag>
+              )
+            })
+          ) : <h3>There are no hashtags yet</h3>}
+
+        </ContainerHashtags>
+      ) : <Loading />}
+
     </WrapperHashtags>
-  );
+  )
 };
 
 const WrapperHashtags = styled.aside`
@@ -69,7 +74,7 @@ const WrapperHashtags = styled.aside`
     color: #FFFFFF;
   }
 
-  div {
+  .horizontal-line {
     position: absolute;
     width: 100%;
     top: 60px;
@@ -98,5 +103,16 @@ const ContainerHashtags = styled.section`
     margin-bottom: 10px;
     color: #FFFFFF;
     cursor: pointer;
+  }
+
+  h3 {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 64px;
+    color: #FFFFFF;
+    text-align: center;
+    margin-top: 20px;
   }
 `
