@@ -32,9 +32,10 @@ export default function User() {
             }
         }
         getUserPostsById();
-    }, [])
+    }, [id])
 
     function handleUser() {
+        if (postLoadind) return <></>
         return posts.length !== 0 ?
             (
                 <UserContainer>
