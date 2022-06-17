@@ -66,7 +66,8 @@ export default function Timeline() {
               image={image}
               urlTitle={urlTitle}
               urlImage={urlImage}
-              urlDescription={urlDescription}/>
+              urlDescription={urlDescription}
+              postId={id}/>
               </>
           )
         })

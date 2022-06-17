@@ -4,16 +4,19 @@ import ReactHashtag from "@mdnm/react-hashtag";
 import { FiHeart } from "react-icons/fi";
 import { IconContext } from "react-icons";
 import { useState, useRef, useEffect } from 'react';
+import { updatePost } from "../../services/api";
 
 import noImage from "./noimage.png"
+import e from "cors";
 
-export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription }) {
+export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription, postId }) {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false)
   const [editedDescription, setEditedDescription] = useState(description)
 
   const inputRef = useRef(null);
 
+  const token = localStorage.getItem("user");
   const loggedUserId = localStorage.getItem("id");
   let urlDescriptionSplice = urlDescription.slice(0, 150);
 
@@ -35,14 +38,22 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     navigate(`/hashtag/${hashtag}`);
   };
 
-  function editPost(){
+  function editPost(id){
     setIsEditing(!isEditing);
+    updatePost(id)
   }
   useEffect(() => {
     if (isEditing) {
       inputRef.current.select();
     }
   }, [isEditing]);
+
+  function update(e, id, description){
+    if(e.keyCode===13){
+      updatePost(id, token, description)
+      setIsEditing(false)
+    }
+  }
 
   return (
     <ContainerPost>
@@ -73,6 +84,7 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
                   placeholder="Awesome article about #javascript"
                   name="description"
                   onChange={(e)=>setEditedDescription(e.target.value)}
+                  onKeyDown={(e)=>update(e, postId, editedDescription)}
                 />
               </>:
               <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{description}</ReactHashtag></p>
