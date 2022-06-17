@@ -62,7 +62,7 @@ function Header() {
                 }
             </Container>
             <Head>
-                <Logo>linkr</Logo>
+                <Logo onClick={() => navigate("/timeline")}>linkr</Logo>
                 <ContainerHead>
                     <Input type="text" placeholder='Search for people' required
                         onChange={(e) => setSearch(e.target.value)} value={search}>
@@ -211,6 +211,7 @@ const Image = styled.img`
     height: 41px;
     margin-right: 18px;
     border-radius: 26px;
+    cursor: pointer;
 `
 
 const User = styled.div`
@@ -275,13 +276,20 @@ const Logo = styled.p`
 
   padding-top: 13px;
   padding-left: 17px;
+  cursor: pointer;
 `
 
 const Container = styled.div`
     width: 100%;
+    display: flex;
 
     margin-top: 72px;
     margin-top: 72px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
     position: relative;
     z-index: 10;
