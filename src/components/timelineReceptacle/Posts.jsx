@@ -4,7 +4,7 @@ import ReactHashtag from "@mdnm/react-hashtag";
 import { FiHeart } from "react-icons/fi";
 import { IconContext } from "react-icons";
 import { useState, useRef, useEffect } from 'react';
-import { updatePost } from "../../services/api";
+import { updatePost, getAllPosts } from "../../services/api";
 
 import noImage from "./noimage.png"
 import e from "cors";
@@ -13,6 +13,7 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false)
   const [editedDescription, setEditedDescription] = useState(description)
+  const [isLoading, setIsLoading] = useState(false)
 
   const inputRef = useRef(null);
 
@@ -38,9 +39,9 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     navigate(`/hashtag/${hashtag}`);
   };
 
-  function editPost(id){
+  async function editPost(){
     setIsEditing(!isEditing);
-    updatePost(id)
+    setEditedDescription(description);
   }
   useEffect(() => {
     if (isEditing) {
@@ -48,10 +49,18 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     }
   }, [isEditing]);
 
-  function update(e, id, description){
+  async function update(e, id, descriptions){
     if(e.keyCode===13){
-      updatePost(id, token, description)
-      setIsEditing(false)
+      try {
+        setIsLoading(true)
+        await updatePost(id, token, descriptions)
+        setIsLoading(false)
+        setIsEditing(false)
+        description = descriptions;
+      } catch (error) {
+        
+      }
+      
     }
   }
 
@@ -77,7 +86,7 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
             </>:<></>}
             {isEditing ?
               <>
-                <textarea
+                <input
                   type="text"
                   ref={inputRef}
                   value={editedDescription}
@@ -85,9 +94,10 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
                   name="description"
                   onChange={(e)=>setEditedDescription(e.target.value)}
                   onKeyDown={(e)=>update(e, postId, editedDescription)}
+                  disabled={isLoading}
                 />
               </>:
-              <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{description}</ReactHashtag></p>
+              <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{editedDescription}</ReactHashtag></p>
             }
           <UrlInfos href={link} target="blank">
             <div>
