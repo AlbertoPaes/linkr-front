@@ -56,6 +56,7 @@ export default function Timeline() {
       (
         posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
           return (
+            <>
             <Posts
               key={id}
               id={userId}
@@ -65,8 +66,8 @@ export default function Timeline() {
               image={image}
               urlTitle={urlTitle}
               urlImage={urlImage}
-              urlDescription={urlDescription}
-            />
+              urlDescription={urlDescription}/>
+              </>
           )
         })
       ) : <h5>There are no posts yet</h5>
@@ -131,11 +132,11 @@ const TimelineBox = styled.main`
   right: 0;
   margin: 0 auto;
 `
-
 const WrapperTimeline = styled.section`
   width: 100%;
   min-width:375px;
   margin-bottom: 30px;
+
 
   h2 {
     font-family: 'Oswald';

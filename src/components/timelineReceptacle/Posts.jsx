@@ -8,8 +8,10 @@ import noImage from "./noimage.png"
 
 export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription }) {
   const navigate = useNavigate();
-
+  const loggedUserId = localStorage.getItem("id");
   let urlDescriptionSplice = urlDescription.slice(0, 150);
+  console.log("teste de id", loggedUserId, " ", id)
+
   console.log(link)
   const pattern =
     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
@@ -43,6 +45,12 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
 
         <PostInfos>
           <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
+          {id==loggedUserId ?
+            <>
+              <ion-icon class="edit" name="pencil"></ion-icon>
+              <ion-icon class="trash" name="trash"></ion-icon>
+            </>
+          :<></>}
           <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{description}</ReactHashtag></p>
           <UrlInfos href={link} target="blank">
             <div>
@@ -117,6 +125,19 @@ const PostInfos = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 503px;
+  position: relative;
+
+  .trash{
+    right: 5px;
+  }
+  .edit{
+    right: 25px;
+  }
+  ion-icon{
+    position: absolute;
+    top: 5px;
+    color: white;
+  }
 
   h3 {
     font-family: 'Lato';
