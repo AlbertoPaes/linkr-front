@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: 375px){
+  @media (max-width: 800px){
     flex-direction: column;
   }
 `
@@ -16,21 +16,21 @@ const Wrapper = styled.div`
 const ContainerPresentation = styled.div`
   width: 62.84%;
   min-height: inherit;
-
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: center;
   align-items: start;
 
-  padding: 29.39% 0px 0px 10%;
+  padding-left: 144px;
 
   background-color:#151515;
   color: #FFFFFF;
 
-  @media (max-width: 375px){
+  @media (max-width:800px){
+    position: absolute;
+    top:0;
     width: 100%;
     min-height: 175px;
-
     justify-content: center;
     align-items: center;
     padding: 0px;
@@ -46,7 +46,7 @@ const Logo = styled.p`
 
   color: #FFFFFF;
 
-  @media (max-width: 375px){
+  @media (max-width: 800px){
     font-size: 76px;
     line-height: 84px;
 
@@ -63,7 +63,7 @@ const Title = styled.div`
 
   color: #FFFFFF;
 
-  @media (max-width: 375px){
+  @media (max-width: 800px){
     font-size: 23px;
     line-height: 34px;
     text-align: center;
@@ -113,7 +113,7 @@ const ContainerSignUp = styled.form(({ disableButton }) => `
     height: 65px;
     width: 80%;
     background-color: ${disableButton ? "#888" : "#1877F2"};
-    opacity: ${disableButton ? 0.7 : 1 };
+    opacity: ${disableButton ? 0.7 : 1};
     color: #FFFFFF;
     
     display: flex;
@@ -131,15 +131,16 @@ const ContainerSignUp = styled.form(({ disableButton }) => `
     border-radius: 6px;
     border: none;
     
-    cursor: ${ disableButton ? 'not-allowed' : 'pointer'};
-    pointer-events: ${ disableButton ? 'none' : 'auto'};
+    cursor: ${disableButton ? 'not-allowed' : 'pointer'};
+    pointer-events: ${disableButton ? 'none' : 'auto'};
   }
 
-  @media (max-width: 375px){
+  @media (max-width: 800px){
     width: 100%;
     min-height: 492px;
 
     gap: 11px;
+    margin-top: 185px;
 
     justify-content: start;
     padding-top: 40px;
@@ -172,7 +173,7 @@ const StyledLink = styled(Link)`
 
   color: #FFFFFF;
 
-  @media (max-width: 375px){
+  @media (max-width: 800px){
     font-size: 17px;
   }
 `;

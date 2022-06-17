@@ -1,4 +1,5 @@
 import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Loading from "../../components/Loading";
 
@@ -7,6 +8,10 @@ import { Wrapper, ContainerPresentation, Logo, Title, ContainerSignIn, StyledLin
 import { AuthContext } from '../../contexts/auth';
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  const userStorage = localStorage.getItem("user")
+  if (userStorage) navigate("/timeline");
 
   const [formData, setFormData] = useState({
     email: "",

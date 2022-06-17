@@ -28,10 +28,15 @@ export default function Timeline() {
     setPostLoading(true);
 
     (async () => {
-      console.log("timeline")
-      const response = await getAllPosts();
-      setPosts(response.data);
-      setPostLoading(false);
+      try {
+        const response = await getAllPosts();
+        setPosts(response.data);
+        setPostLoading(false);
+      } catch (e) {
+        console.log(e);
+        alert("An error occured while trying to fetch the posts, please refresh the page")
+      }
+
     })();
 
   }, [reloadPage, token, navigate]);
@@ -323,6 +328,7 @@ const Form = styled.form`
     line-height: 16px;
     text-align: center;
     color: #FFFFFF;
+    cursor: pointer;
 
     @media(min-width: 800px){
       height: 31px;
