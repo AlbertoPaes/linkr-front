@@ -3,14 +3,19 @@ import { useNavigate } from "react-router-dom";
 import ReactHashtag from "@mdnm/react-hashtag";
 import { FiHeart } from "react-icons/fi";
 import { IconContext } from "react-icons";
+import { useState, useRef, useEffect } from 'react';
 
 import noImage from "./noimage.png"
 
 export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription }) {
   const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedDescription, setEditedDescription] = useState(description)
+
+  const inputRef = useRef(null);
+
   const loggedUserId = localStorage.getItem("id");
   let urlDescriptionSplice = urlDescription.slice(0, 150);
-  console.log("teste de id", loggedUserId, " ", id)
 
   console.log(link)
   const pattern =
@@ -30,6 +35,15 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     navigate(`/hashtag/${hashtag}`);
   };
 
+  function editPost(){
+    setIsEditing(!isEditing);
+  }
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+
   return (
     <ContainerPost>
       <DivPost>
@@ -47,11 +61,22 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
           <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
           {id==loggedUserId ?
             <>
-              <ion-icon class="edit" name="pencil"></ion-icon>
+              <ion-icon onClick={editPost} class="edit" name="pencil"></ion-icon>
               <ion-icon class="trash" name="trash"></ion-icon>
-            </>
-          :<></>}
-          <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{description}</ReactHashtag></p>
+            </>:<></>}
+            {isEditing ?
+              <>
+                <textarea
+                  type="text"
+                  ref={inputRef}
+                  value={editedDescription}
+                  placeholder="Awesome article about #javascript"
+                  name="description"
+                  onChange={(e)=>setEditedDescription(e.target.value)}
+                />
+              </>:
+              <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{description}</ReactHashtag></p>
+            }
           <UrlInfos href={link} target="blank">
             <div>
               <h4>{urlTitle}</h4>
