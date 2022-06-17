@@ -36,3 +36,8 @@ export const getPosts = async (id) => {
   const userPosts = await api.get(`/users/${id}`);
   return userPosts;
 }
+
+export const getSearch = async (name) => {
+  const searchUser = await api.get(`/search/${name}`);
+  return searchUser
+}

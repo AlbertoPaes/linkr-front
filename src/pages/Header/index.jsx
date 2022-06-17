@@ -4,36 +4,30 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { IconContext } from "react-icons";
 import { AuthContext } from '../../contexts/auth';
-import {AiOutlineDown} from "react-icons/ai";
-import {AiOutlineUp} from "react-icons/ai";
+import { AiOutlineDown } from "react-icons/ai";
+import { AiOutlineUp } from "react-icons/ai";
 import styled from "styled-components";
+import { DebounceInput } from 'react-debounce-input';
+
+import { getSearch } from "../../services/api";
+
 
 function Header() {
     const { logout } = useContext(AuthContext);
 
-    const [search, setSearch] = useState("");
-    const [userMenu,setUserMenu] = useState(true);
+    const [users, setUsers] = useState([]);
+    const [userMenu, setUserMenu] = useState(true);
 
     const navigate = useNavigate();
 
-    const id = 18; // MUDAR DEPOIS PRA ID VINDO DA REQUISIÇÃO
-
-    const image = "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE"
-
-   
-    // Array usada pra testar o front
-    const usuarios = [
-        // { name: "Usuário1", image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE" },
-        // { name: "Usuário2", image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE" },
-        // { name: "Usuário3", image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTJZdgr78rDXpqi86iP1t3PCFP751DDnMQyyD8HrMGg3n1DfEQjwi_airYznGgTe_swiOykmpyniB2OX6fF7LroFIKG7jhduXv9s6ySD9zI&usqp=CAE" }
-    ]
+    const userPicture = localStorage.getItem("image");
 
     const handleUserMenu = (userMenuStatus) => {
         userMenuStatus ? setUserMenu(false) : setUserMenu(true);
     }
 
     const handleLogout = () => {
-        if(window.confirm("Do you want to leave the current session?")){
+        if (window.confirm("Do you want to leave the current session?")) {
             setUserMenu(true);
             logout();
             navigate("/");
@@ -41,22 +35,46 @@ function Header() {
         }
         return;
     }
-   
+
+    const handleSearch = async (value) => {
+        console.log("Entrou na função")
+        try {
+            if (value.length > 0) {
+                const search = await getSearch(value);
+                setUsers(search.data)
+            }
+            else setUsers([])
+        } 
+        catch (error) {
+            alert("Error in server connection");
+        }
+    }
+
+    function goToUsersPage (id) {
+        navigate(`/users/${id}`);
+        setUsers([]);
+    }
+
     return (
         <>
             <Head>
                 <Logo>linkr</Logo>
                 <ContainerHead>
-                    <Input type="text" placeholder='Search for people' required
-                        onChange={(e) => setSearch(e.target.value)} value={search}>
-                    </Input>
-                    {usuarios.length > 0 ?
+                    <DebounceInput
+                        minLength={3}
+                        debounceTimeout={300}
+                        className="debounce"
+                        placeholder='Search for people' required
+                        onChange={(e) => handleSearch(e.target.value)} />
+
+                
+                    {users.length > 0 ?
                         <UsersHead>
-                            {usuarios.map(usuario => {
+                            {users.map(user => {
                                 return (
                                     <User>
-                                        <UserImage src={usuario.image}></UserImage>
-                                        <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>
+                                        <UserImage src={user.image}></UserImage>
+                                        <p onClick={() => goToUsersPage(user.id)}>{user.name}</p>
                                     </User>
                                 )
                             })}
@@ -66,36 +84,40 @@ function Header() {
                 </ContainerHead>
                 <Logout>
                     <AiOutlineWrap onClick={() => handleUserMenu(userMenu)}>
-                        { userMenu ?
-                           <IconContext.Provider value={{ color: "#FFFFFF", className: "global-class-name", size: "25px" }}>
+                        {userMenu ?
+                            <IconContext.Provider value={{ color: "#FFFFFF", className: "global-class-name", size: "25px" }}>
                                 <AiOutlineDown />
                             </IconContext.Provider>
-                        :   <IconContext.Provider value={{ color: "#FFFFFF", className: "global-class-name", size: "25px" }}>
+                            : <IconContext.Provider value={{ color: "#FFFFFF", className: "global-class-name", size: "25px" }}>
                                 <AiOutlineUp />
                             </IconContext.Provider>
                         }
-                    </AiOutlineWrap>                        
-                    <Image src={image} onClick={() => handleUserMenu(userMenu)}></Image>
+                    </AiOutlineWrap>
+                    <Image src={userPicture} onClick={() => handleUserMenu(userMenu)}></Image>
                     {
                         (userMenu === false) ?
-                        <Overlay onClick={() => setUserMenu(true)}>
-                            <UserMenu displayMenu={userMenu}> <span onClick={handleLogout}>Logout</span> </UserMenu>
-                        </Overlay> 
-                        : null
+                            <Overlay onClick={() => setUserMenu(true)}>
+                                <UserMenu displayMenu={userMenu}> <span onClick={handleLogout}>Logout</span> </UserMenu>
+                            </Overlay>
+                            : null
                     }
                 </Logout>
             </Head>
             <Container>
-                <Input type="text" placeholder='Search for people and friends' required
-                    onChange={(e) => setSearch(e.target.value)} value={search}>
-                </Input>
-                {usuarios.length > 0 ?
+            <DebounceInput
+                        minLength={3}
+                        debounceTimeout={300}
+                        className="debounce"
+                        placeholder='Search for people' required
+                        onChange={(e) => handleSearch(e.target.value)} />
+                {users.length > 0 ?
                     <Users>
-                        {usuarios.map(usuario => {
+                        {users.map(user => {
                             return (
                                 <User>
-                                    <UserImage src={usuario.image}></UserImage>
-                                    <p onClick={() => console.log("Nome clicado")}>{usuario.name}</p>                                </User>
+                                    <UserImage src={user.image}></UserImage>
+                                    <p onClick={() => navigate(`/users/${user.id}`)}>{user.name}</p>
+                                </User>
                             )
                         })}
                     </Users> :
@@ -106,6 +128,8 @@ function Header() {
     )
 }
 
+
+
 const Logout = styled.div`
     margin: auto 0;
 `
@@ -113,6 +137,35 @@ const Logout = styled.div`
 const ContainerHead = styled.div`
 
     display: none;
+
+    .debounce {
+         width: 95%;
+        max-width: 563px;
+        height: 45px;
+
+        background-color: #FFFFFF;
+        color: #151515;
+
+        font-family: 'Lato';
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 20px;
+
+        padding-left: 10px;
+        padding-right: 15px;
+        margin: 10px;
+
+        border: none;
+        border-radius: 8px;
+
+        position: relative;
+        z-index: 10;
+
+    &::placeholder {
+      color: #9F9F9F;
+        }
+    }
+   
 
     @media (min-width: 800px) {
         min-width: 563px;
@@ -285,6 +338,34 @@ const Container = styled.div`
 
     position: relative;
     z-index: 10;
+
+    .debounce {
+         width: 95%;
+        max-width: 563px;
+        height: 45px;
+
+        background-color: #FFFFFF;
+        color: #151515;
+
+        font-family: 'Lato';
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 20px;
+
+        padding-left: 10px;
+        padding-right: 15px;
+        margin: 10px;
+
+        border: none;
+        border-radius: 8px;
+
+        position: relative;
+        z-index: 10;
+
+    &::placeholder {
+      color: #9F9F9F;
+        }
+    }
 
     @media (min-width: 800px) {
         display: none;
