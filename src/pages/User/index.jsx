@@ -51,10 +51,11 @@ export default function User() {
         if (postLoadind) return <Loading />
         return posts.length !== 0 ?
             (
-                posts.map(({ id, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
+                posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
                     return (
                         <Posts
                             key={id}
+                            id={userId}
                             link={link}
                             description={description}
                             name={name}
@@ -62,6 +63,7 @@ export default function User() {
                             urlTitle={urlTitle}
                             urlImage={urlImage}
                             urlDescription={urlDescription}
+                            postId={id}
                         />
                     )
                 })

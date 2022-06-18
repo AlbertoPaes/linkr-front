@@ -24,10 +24,11 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, [recoveredUser]);
 
-  const login = async (email, password, isLoading, setIsLoading) => {
+  const login = async (email, password, id, isLoading, setIsLoading) => {
     const formData = {
       email: email,
       password: password,
+      id: id
     };
     try {
       const response = await makeSignIn(formData);
@@ -35,8 +36,11 @@ export const AuthProvider = ({ children }) => {
 
       const loggedUser = response.data.token;
       const userImage = response.data.image;
+      const loggedUserId = response.data.id;
+
       localStorage.setItem("user", loggedUser);
       localStorage.setItem("image", userImage);
+      localStorage.setItem("id", loggedUserId)
 
       api.defaults.headers.Authorization = `Bearer ${loggedUser}`;
 

@@ -3,13 +3,24 @@ import { useNavigate } from "react-router-dom";
 import ReactHashtag from "@mdnm/react-hashtag";
 import { FiHeart } from "react-icons/fi";
 import { IconContext } from "react-icons";
+import { useState, useRef, useEffect } from 'react';
+import { updatePost, getAllPosts } from "../../services/api";
 
 import noImage from "./noimage.png"
+import e from "cors";
 
-export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription }) {
+export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription, postId }) {
   const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedDescription, setEditedDescription] = useState(description)
+  const [isLoading, setIsLoading] = useState(false)
 
+  const inputRef = useRef(null);
+
+  const token = localStorage.getItem("user");
+  const loggedUserId = localStorage.getItem("id");
   let urlDescriptionSplice = urlDescription.slice(0, 150);
+
   console.log(link)
   const pattern =
     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
@@ -28,6 +39,30 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     navigate(`/hashtag/${hashtag}`);
   };
 
+  async function editPost(){
+    setIsEditing(!isEditing);
+    setEditedDescription(editedDescription);
+  }
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+
+  async function update(e, id, descriptions){
+    if(e.keyCode===13){
+      try {
+        setIsLoading(true)
+        await updatePost(id, descriptions)
+        setIsLoading(false)
+        setIsEditing(false)
+      } catch (error) {
+        
+      }
+      
+    }
+  }
+
   return (
     <ContainerPost>
       <DivPost>
@@ -45,7 +80,26 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
 
         <PostInfos>
           <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
-          <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{description}</ReactHashtag></p>
+          {id==loggedUserId ?
+            <>
+              <ion-icon onClick={editPost} class="edit" name="pencil"></ion-icon>
+              <ion-icon class="trash" name="trash"></ion-icon>
+            </>:<></>}
+            {isEditing ?
+              <>
+                <input
+                  type="text"
+                  ref={inputRef}
+                  value={editedDescription}
+                  placeholder="Awesome article about #javascript"
+                  name="description"
+                  onChange={(e)=>setEditedDescription(e.target.value)}
+                  onKeyDown={(e)=>update(e, postId, editedDescription)}
+                  disabled={isLoading}
+                />
+              </>:
+              <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{editedDescription}</ReactHashtag></p>
+            }
           <UrlInfos href={link} target="blank">
             <div>
               <h4>{urlTitle}</h4>
@@ -120,6 +174,19 @@ const PostInfos = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 503px;
+  position: relative;
+
+  .trash{
+    right: 5px;
+  }
+  .edit{
+    right: 25px;
+  }
+  ion-icon{
+    position: absolute;
+    top: 5px;
+    color: white;
+  }
 
   h3 {
     font-family: 'Lato';

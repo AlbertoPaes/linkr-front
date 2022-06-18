@@ -51,3 +51,7 @@ export const getHashtagsByQuantity = async () => {
   const posts = await api.get(`/hashtag`);
   return posts;
 };
+
+export const updatePost = async (id, description) => {
+  await api.put(`/post/${id}`, description)
+}
