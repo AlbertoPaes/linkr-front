@@ -53,7 +53,7 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     if(e.keyCode===13){
       try {
         setIsLoading(true)
-        await updatePost(id, token, descriptions)
+        await updatePost(id, descriptions)
         setIsLoading(false)
         setIsEditing(false)
       } catch (error) {

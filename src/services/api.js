@@ -46,11 +46,6 @@ export const getHashtagsByQuantity = async () => {
   return posts;
 };
 
-export const updatePost = async (id, token, description) => {
-  const config = {
-    headers: {
-        Authorization: `Bearer ${token}`
-    }
-  }
-  await api.put(`/post/${id}`, {description}, config)
+export const updatePost = async (id, description) => {
+  await api.put(`/post/${id}`, description)
 }
