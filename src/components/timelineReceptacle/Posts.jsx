@@ -41,7 +41,7 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
 
   async function editPost(){
     setIsEditing(!isEditing);
-    setEditedDescription(description);
+    setEditedDescription(editedDescription);
   }
   useEffect(() => {
     if (isEditing) {
@@ -56,7 +56,6 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
         await updatePost(id, token, descriptions)
         setIsLoading(false)
         setIsEditing(false)
-        description = descriptions;
       } catch (error) {
         
       }
