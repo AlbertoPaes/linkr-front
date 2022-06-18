@@ -69,7 +69,9 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
         <ImageLikes>
           <img
             src={image}
-            alt="foto" />
+            alt="foto"
+            onClick={() => navigate(`/users/${id}`)}
+          />
           <IconContext.Provider value={{ color: "#FFFFFF", className: "heart-icon", size: "25px" }}>
             <FiHeart />
           </IconContext.Provider>
@@ -144,6 +146,7 @@ const ImageLikes = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 26.5px;
+    cursor:pointer;
 
     @media(min-width: 800px){
       width: 50px;

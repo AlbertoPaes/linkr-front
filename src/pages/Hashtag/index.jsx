@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import Posts from "../../components/timelineReceptacle/Posts";
@@ -9,6 +9,9 @@ import { getPostsByHashtag } from "../../services/api";
 
 
 export default function Hashtag() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("user");
+
   const [posts, setPosts] = useState([]);
   const [postLoadind, setPostLoading] = useState(false);
   console.log(posts);
@@ -16,32 +19,41 @@ export default function Hashtag() {
   const { hashtag } = useParams();
 
   useEffect(() => {
+    if (!token) {
+      navigate("/");
+    }
+
     setPostLoading(true);
 
     (async () => {
-      console.log("timeline")
-      const response = await getPostsByHashtag(hashtag);
-      setPosts(response.data);
-      setPostLoading(false);
+      try {
+        const response = await getPostsByHashtag(hashtag);
+        setPosts(response.data);
+        setPostLoading(false);
+      } catch (e) {
+        console.log(e);
+        alert("An error occured while trying to fetch the posts, please refresh the page")
+      }
     })();
 
   }, [hashtag])
 
-  function handlePost() {
+  function handleHashtag() {
     if (postLoadind) return <Loading />
     return posts.length !== 0 ?
       (
-        posts.map(({ id, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
+        posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
           return (
             <Posts
               key={id}
+              id={userId}
               link={link}
               description={description}
               name={name}
               image={image}
-              urlTitle={urlTitle}
+              urlTitle={urlTitle || "No Title Found"}
               urlImage={urlImage}
-              urlDescription={urlDescription}
+              urlDescription={urlDescription || "No Description Found"}
             />
           )
         })
@@ -53,7 +65,7 @@ export default function Hashtag() {
       <Header />
       <Wrapper>
         <h2>{`# ${hashtag}`}</h2>
-        {handlePost()}
+        {handleHashtag()}
       </Wrapper>
     </>
   )
