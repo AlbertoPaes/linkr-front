@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactHashtag from "@mdnm/react-hashtag";
 import { FiHeart } from "react-icons/fi";
@@ -7,6 +8,7 @@ import { IconContext } from "react-icons";
 import noImage from "./noimage.png"
 
 export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription }) {
+  const [like,setLike] = useState(true);
   const navigate = useNavigate();
 
   let urlDescriptionSplice = urlDescription.slice(0, 150);
@@ -23,20 +25,25 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     urlImage = noImage;
   }
 
+  //Possa ser que quis dizer handleHashtag
   function handlHashtag(value) {
     const hashtag = value.replace("#", "");
     navigate(`/hashtag/${hashtag}`);
   };
 
+  const handleLike = (likeStatus) => {
+    likeStatus ? setLike(false) : setLike(true);
+  }
+
   return (
     <ContainerPost>
       <DivPost>
-        <ImageLikes>
+        <ImageLikes displayLike={like}>
           <img
             src={image}
             alt="foto" />
           <IconContext.Provider value={{ color: "#FFFFFF", className: "heart-icon", size: "25px" }}>
-            <FiHeart />
+            <FiHeart onClick={() => handleLike(like)} />
           </IconContext.Provider>
           <p>15 Likes</p>
         </ImageLikes>
@@ -81,7 +88,7 @@ const DivPost = styled.div`
   height: 100%;
 `
 
-const ImageLikes = styled.div`
+const ImageLikes = styled.div(({ displayLike }) => `
   margin-right: 18px;
   display:flex;
   flex-direction:column;
@@ -99,6 +106,9 @@ const ImageLikes = styled.div`
 
   .heart-icon {
     margin-top: 20px;
+    fill: ${displayLike ? "#171717" : "#AC0000"};
+    stroke: ${displayLike ? "#FFFFFF" : "#AC0000"};
+    cursor: pointer;
   }
 
   p {
@@ -111,7 +121,8 @@ const ImageLikes = styled.div`
     color: #FFFFFF;
     margin-top: 12px;
   }
-`
+`);
+
 const PostInfos = styled.div`
   display: flex;
   flex-direction: column;
