@@ -51,9 +51,9 @@ export default function Hashtag() {
               description={description}
               name={name}
               image={image}
-              urlTitle={urlTitle}
+              urlTitle={urlTitle || "No Title Found"}
               urlImage={urlImage}
-              urlDescription={urlDescription}
+              urlDescription={urlDescription || "No Description Found"}
             />
           )
         })
