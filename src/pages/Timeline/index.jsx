@@ -18,7 +18,7 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [postLoadind, setPostLoading] = useState(false);
-  const [reloadPage, setRealoadPage] = useState(false);
+  const [reloadPage, setReloadPage] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -28,10 +28,15 @@ export default function Timeline() {
     setPostLoading(true);
 
     (async () => {
-      console.log("timeline")
-      const response = await getAllPosts();
-      setPosts(response.data);
-      setPostLoading(false);
+      try {
+        const response = await getAllPosts();
+        setPosts(response.data);
+        setPostLoading(false);
+      } catch (e) {
+        console.log(e);
+        alert("An error occured while trying to fetch the posts, please refresh the page")
+      }
+
     })();
 
   }, [reloadPage, token, navigate]);
@@ -43,7 +48,7 @@ export default function Timeline() {
       await publishPost({ ...formData });
       setIsLoading(false);
       setFormData({ link: "", description: "" });
-      setRealoadPage(!reloadPage);
+      setReloadPage(!reloadPage);
     } catch (e) {
       alert("Houve um erro ao publicar seu link");
       setIsLoading(false);
@@ -56,6 +61,7 @@ export default function Timeline() {
       (
         posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
           return (
+            <>
             <Posts
               key={id}
               id={userId}
@@ -63,10 +69,11 @@ export default function Timeline() {
               description={description}
               name={name}
               image={image}
-              urlTitle={urlTitle}
+              urlTitle={urlTitle || "No Title Found"}
               urlImage={urlImage}
-              urlDescription={urlDescription}
-            />
+              urlDescription={urlDescription || "No Description Found"}
+              postId={id}/>
+              </>
           )
         })
       ) : <h5>There are no posts yet</h5>
@@ -131,11 +138,11 @@ const TimelineBox = styled.main`
   right: 0;
   margin: 0 auto;
 `
-
 const WrapperTimeline = styled.section`
   width: 100%;
   min-width:375px;
   margin-bottom: 30px;
+
 
   h2 {
     font-family: 'Oswald';
@@ -323,6 +330,7 @@ const Form = styled.form`
     line-height: 16px;
     text-align: center;
     color: #FFFFFF;
+    cursor: pointer;
 
     @media(min-width: 800px){
       height: 31px;

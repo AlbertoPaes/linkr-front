@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: 375px){
+  @media (max-width: 800px){
     flex-direction: column;
   }
 `
@@ -19,18 +19,21 @@ const ContainerPresentation = styled.div`
 
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: center;
   align-items: start;
 
-  padding: 29.39% 0px 0px 10%;
+  padding-left: 144px;
 
   background-color:#151515;
   color: #FFFFFF;
 
-  @media (max-width: 375px){
+  @media (max-width: 800px){
     width: 100%;
     min-height: 175px;
 
+    position: absolute;
+    top:0;
+    width: 100%;
     justify-content: center;
     align-items: center;
     padding: 0px;
@@ -46,7 +49,7 @@ const Logo = styled.p`
 
   color: #FFFFFF;
 
-  @media (max-width: 375px){
+  @media (max-width: 800px){
     font-size: 76px;
     line-height: 84px;
 
@@ -63,7 +66,7 @@ const Title = styled.div`
 
   color: #FFFFFF;
 
-  @media (max-width: 375px){
+  @media (max-width: 800px){
     font-size: 23px;
     line-height: 34px;
     text-align: center;
@@ -135,11 +138,12 @@ const ContainerSignIn = styled.form(({ disableButton }) => `
     pointer-events: ${disableButton ? 'none' : 'auto'};
   }
 
-  @media (max-width: 375px){
+  @media (max-width: 800px){
     width: 100%;
     min-height: 492px;
 
     gap: 11px;
+    margin-top: 185px;
 
     justify-content: start;
     padding-top: 40px;
@@ -172,7 +176,7 @@ const StyledLink = styled(Link)`
 
   color: #FFFFFF;
 
-  @media (max-width: 375px){
+  @media (max-width: 800px){
     font-size: 17px;
   }
 `;

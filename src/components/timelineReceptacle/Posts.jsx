@@ -1,15 +1,27 @@
 import styled from "styled-components";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactHashtag from "@mdnm/react-hashtag";
+import Like from "./Like";
+import { useState, useRef, useEffect } from 'react';
+import { updatePost , deletePost } from "../../services/api";
+import ReactModal from "react-modal";
 
 import noImage from "./noimage.png"
-import Like from "./Like";
+import Loading from "../Loading";
 
 export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription, postId }) {
   const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedDescription, setEditedDescription] = useState(description)
+  const [isLoading, setIsLoading] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [delPostId, setDelPostId] = useState()
 
+  const inputRef = useRef(null);
+
+  const loggedUserId = localStorage.getItem("id");
   let urlDescriptionSplice = urlDescription.slice(0, 150);
+
   console.log(link)
   const pattern =
     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
@@ -29,13 +41,74 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     navigate(`/hashtag/${hashtag}`);
   };
 
+  async function editPost(){
+    setIsEditing(!isEditing);
+    setEditedDescription(editedDescription);
+  }
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+
+  async function update(e, id, description){
+    if(e.keyCode===13){
+      try {
+        setIsLoading(true)
+        await updatePost(id, description)
+        setIsLoading(false)
+        setIsEditing(false)
+        window.location.reload();
+      } catch (error) {
+        alert(error)
+      }
+      
+    }
+  }
+  function handleModal(id){
+    setModalIsOpen(!modalIsOpen);
+    setDelPostId(id);
+  }
+  async function confirmed(){
+    setIsLoading(true)
+    try {
+      await deletePost(delPostId);
+      setIsLoading(false);
+      setModalIsOpen(false);
+      window.location.reload();
+    } catch (error) {
+      alert(error)
+    }
+    
+  }
+
   return (
+    <>
     <ContainerPost>
       <DivPost>
         <Like image={image} userId={id} postId={postId}/>
         <PostInfos>
           <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
-          <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{description}</ReactHashtag></p>
+          {id==loggedUserId ?
+            <>
+              <ion-icon onClick={editPost} class="edit" name="pencil"></ion-icon>
+              <ion-icon onClick={()=>handleModal(postId)} class="delete" name="trash"></ion-icon>
+            </>:<></>}
+            {isEditing ?
+              <>
+                <input
+                  type="text"
+                  ref={inputRef}
+                  value={editedDescription}
+                  placeholder="Awesome article about #javascript"
+                  name="description"
+                  onChange={(e)=>setEditedDescription(e.target.value)}
+                  onKeyDown={(e)=>update(e, postId, editedDescription)}
+                  disabled={isLoading}
+                />
+              </>:
+              <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{editedDescription}</ReactHashtag></p>
+            }
           <UrlInfos href={link} target="blank">
             <div>
               <h4>{urlTitle}</h4>
@@ -49,8 +122,74 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
         </PostInfos>
       </DivPost>
     </ContainerPost>
+    <ReactModal 
+      isOpen={ modalIsOpen}
+      shouldCloseOnEsc={true}
+      preventScroll={true}
+      style={{ overlay: {
+        overflowY: 'hidden',
+        height: '100%'
+      }, 
+      content: {
+        margin: 'auto',
+        padding: '0',
+        width: 'calc(59700px/1440%)',
+        maxWidth: '597px',
+        height: '262px',
+        borderRadius: '50px'
+      } }}
+      ariaHideApp={false}
+      >
+      {isLoading ?
+        <Loading/>
+        :<Delete>
+            <p>Are you sure you want to delete this post?</p>
+            <button onClick={()=>setModalIsOpen(false)} className="cancel">No, go back</button>
+            <button onClick={confirmed} className="confirm">Yes, delete it</button>
+        </Delete>
+    }
+</ReactModal>
+</>
   )
 };
+
+const Delete = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: #333333;
+    width: calc(59700px/1440%);
+    height: 262px;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 21.6px;
+    border-radius: 50px;
+    p{
+        width: 458px;
+        height: 82px;
+        color: #ffffff;
+        text-align: center;
+        font-size: 34px;
+        line-height: 40.8px;
+    }
+    button{
+      font-weight: 700;
+      width: 120px;
+      height: 37px;
+      border: none;
+      border-radius: 5px;
+    }
+    .cancel{
+        background-color: #fff;
+        color: #1877F2;
+        margin-right: 27px;
+    }
+    .confirm{
+        background-color: #1877F2;
+        color: #fff;
+    }
+`
 
 const ContainerPost = styled.article`
   width: 100%;
@@ -76,6 +215,19 @@ const PostInfos = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 503px;
+  position: relative;
+
+  .delete{
+    right: 5px;
+  }
+  .edit{
+    right: 25px;
+  }
+  ion-icon{
+    position: absolute;
+    top: 5px;
+    color: white;
+  }
 
   h3 {
     font-family: 'Lato';
