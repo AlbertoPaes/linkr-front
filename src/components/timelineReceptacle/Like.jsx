@@ -22,9 +22,10 @@ const Like = ({image,userId,postId}) => {
     }
   }
 
-  const statusLike = async (likeStatus,postId,userId) => {
+  const statusLike = async (likeStatus,postId) => {
+    console.log("postId:", postId);
     likeStatus ? setLike(false) : setLike(true);
-    await addOrRemoveLike(postId,userId);
+    await addOrRemoveLike(postId);
     requestLikes();
     ReactTooltip.rebuild();
   }
@@ -59,7 +60,7 @@ const Like = ({image,userId,postId}) => {
         src={image}
         alt="foto" />
       <IconContext.Provider value={{ color: "#FFFFFF", className: "heart-icon", size: "25px" }}>
-        <FiHeart onClick={() => statusLike(like,postId,userId)} />
+        <FiHeart onClick={() => statusLike(like,postId)} />
       </IconContext.Provider>
       { usersWhoLikes.length > 0 &&
         <p data-tip='tooltip' data-for={`postLikes-${postId}`}>
