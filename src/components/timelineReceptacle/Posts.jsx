@@ -4,20 +4,22 @@ import ReactHashtag from "@mdnm/react-hashtag";
 import { FiHeart } from "react-icons/fi";
 import { IconContext } from "react-icons";
 import { useState, useRef, useEffect } from 'react';
-import { updatePost, getAllPosts } from "../../services/api";
+import { updatePost , deletePost } from "../../services/api";
+import ReactModal from "react-modal";
 
 import noImage from "./noimage.png"
-import e from "cors";
+import Loading from "../Loading";
 
 export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription, postId }) {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false)
   const [editedDescription, setEditedDescription] = useState(description)
   const [isLoading, setIsLoading] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [delPostId, setDelPostId] = useState()
 
   const inputRef = useRef(null);
 
-  const token = localStorage.getItem("user");
   const loggedUserId = localStorage.getItem("id");
   let urlDescriptionSplice = urlDescription.slice(0, 150);
 
@@ -49,21 +51,39 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     }
   }, [isEditing]);
 
-  async function update(e, id, descriptions){
+  async function update(e, id, description){
     if(e.keyCode===13){
       try {
         setIsLoading(true)
-        await updatePost(id, descriptions)
+        await updatePost(id, description)
         setIsLoading(false)
         setIsEditing(false)
+        window.location.reload();
       } catch (error) {
-        
+        alert(error)
       }
       
     }
   }
+  function handleModal(id){
+    setModalIsOpen(!modalIsOpen);
+    setDelPostId(id);
+  }
+  async function confirmed(){
+    setIsLoading(true)
+    try {
+      await deletePost(delPostId);
+      setIsLoading(false);
+      setModalIsOpen(false);
+      window.location.reload();
+    } catch (error) {
+      alert(error)
+    }
+    
+  }
 
   return (
+    <>
     <ContainerPost>
       <DivPost>
         <ImageLikes>
@@ -83,7 +103,7 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
           {id==loggedUserId ?
             <>
               <ion-icon onClick={editPost} class="edit" name="pencil"></ion-icon>
-              <ion-icon class="trash" name="trash"></ion-icon>
+              <ion-icon onClick={()=>handleModal(postId)} class="delete" name="trash"></ion-icon>
             </>:<></>}
             {isEditing ?
               <>
@@ -115,8 +135,74 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
         </PostInfos>
       </DivPost>
     </ContainerPost>
+    <ReactModal 
+      isOpen={ modalIsOpen}
+      shouldCloseOnEsc={true}
+      preventScroll={true}
+      style={{ overlay: {
+        overflowY: 'hidden',
+        height: '100%'
+      }, 
+      content: {
+        margin: 'auto',
+        padding: '0',
+        width: 'calc(59700px/1440%)',
+        maxWidth: '597px',
+        height: '262px',
+        borderRadius: '50px'
+      } }}
+      ariaHideApp={false}
+      >
+      {isLoading ?
+        <Loading/>
+        :<Delete>
+            <p>Are you sure you want to delete this post?</p>
+            <button onClick={()=>setModalIsOpen(false)} className="cancel">No, go back</button>
+            <button onClick={confirmed} className="confirm">Yes, delete it</button>
+        </Delete>
+    }
+</ReactModal>
+</>
   )
 };
+
+const Delete = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: #333333;
+    width: calc(59700px/1440%);
+    height: 262px;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 21.6px;
+    border-radius: 50px;
+    p{
+        width: 458px;
+        height: 82px;
+        color: #ffffff;
+        text-align: center;
+        font-size: 34px;
+        line-height: 40.8px;
+    }
+    button{
+      font-weight: 700;
+      width: 120px;
+      height: 37px;
+      border: none;
+      border-radius: 5px;
+    }
+    .cancel{
+        background-color: #fff;
+        color: #1877F2;
+        margin-right: 27px;
+    }
+    .confirm{
+        background-color: #1877F2;
+        color: #fff;
+    }
+`
 
 const ContainerPost = styled.article`
   width: 100%;
@@ -176,7 +262,7 @@ const PostInfos = styled.div`
   max-width: 503px;
   position: relative;
 
-  .trash{
+  .delete{
     right: 5px;
   }
   .edit{

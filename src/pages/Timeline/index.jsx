@@ -18,7 +18,7 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [postLoadind, setPostLoading] = useState(false);
-  const [reloadPage, setRealoadPage] = useState(false);
+  const [reloadPage, setReloadPage] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -48,7 +48,7 @@ export default function Timeline() {
       await publishPost({ ...formData });
       setIsLoading(false);
       setFormData({ link: "", description: "" });
-      setRealoadPage(!reloadPage);
+      setReloadPage(!reloadPage);
     } catch (e) {
       alert("Houve um erro ao publicar seu link");
       setIsLoading(false);

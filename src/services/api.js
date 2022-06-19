@@ -53,5 +53,9 @@ export const getHashtagsByQuantity = async () => {
 };
 
 export const updatePost = async (id, description) => {
-  await api.put(`/post/${id}`, description)
+  await api.put(`/post/${id}`, {description})
+}
+
+export const deletePost = async (id) =>{
+  await api.delete(`/post/${id}`)
 }
