@@ -23,17 +23,23 @@ export const publishPost = async (formData) => {
 
 export const getAllPosts = async () => {
   const posts = await api.get("/timeline");
+  console.log("posts", posts.data)
   return posts;
 };
 
 export const getMetadata = async (link) => {
   const urlMeta = await urlMetadata(link);
   return urlMeta;
-};
+}
 
 export const getPosts = async (id) => {
   const userPosts = await api.get(`/users/${id}`);
   return userPosts;
+}
+
+export const getSearch = async (name) => {
+  const searchUser = await api.get(`/search/${name}`);
+  return searchUser
 }
 
 export const getPostsByHashtag = async (hashtag) => {
@@ -54,4 +60,11 @@ export const getLikes = async (postId) => {
 export const addOrRemoveLike = async (postId,userId) => {
   const toogleLike = await api.patch(`/likes/${postId}`, {userId});
   return toogleLike;
+}
+export const updatePost = async (id, description) => {
+  await api.put(`/post/${id}`, {description})
+}
+
+export const deletePost = async (id) =>{
+  await api.delete(`/post/${id}`)
 }
