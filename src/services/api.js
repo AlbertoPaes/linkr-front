@@ -4,8 +4,8 @@ import urlMetadata from "url-metadata";
 export const api = axios.create({
   /*Fix me: Ao criar uma nova instância do axios, a baseURL não está aceitando a variável de ambiente. */
   // baseURL: `${process.env.REACT_APP_API_BASE_URL}`,
-  baseURL: "https://linkr-driven-api.herokuapp.com",
-  //baseURL: "http://localhost:4000"
+  //baseURL: "https://linkr-driven-api.herokuapp.com",
+  baseURL: "http://localhost:4000"
 });
 
 export const makeSignUp = async (formData) => {
@@ -45,3 +45,13 @@ export const getHashtagsByQuantity = async () => {
   const posts = await api.get(`/hashtag`);
   return posts;
 };
+
+export const getLikes = async (postId) => {
+  const likes = await api.get(`/likes/${postId}`);
+  return likes;
+}
+
+export const addOrRemoveLike = async (postId,userId) => {
+  const toogleLike = await api.patch(`/likes/${postId}`, {userId});
+  return toogleLike;
+}

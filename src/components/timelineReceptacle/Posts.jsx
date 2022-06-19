@@ -2,13 +2,11 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactHashtag from "@mdnm/react-hashtag";
-import { FiHeart } from "react-icons/fi";
-import { IconContext } from "react-icons";
 
 import noImage from "./noimage.png"
+import Like from "./Like";
 
-export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription }) {
-  const [like,setLike] = useState(true);
+export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription, postId }) {
   const navigate = useNavigate();
 
   let urlDescriptionSplice = urlDescription.slice(0, 150);
@@ -31,23 +29,10 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     navigate(`/hashtag/${hashtag}`);
   };
 
-  const handleLike = (likeStatus) => {
-    likeStatus ? setLike(false) : setLike(true);
-  }
-
   return (
     <ContainerPost>
       <DivPost>
-        <ImageLikes displayLike={like}>
-          <img
-            src={image}
-            alt="foto" />
-          <IconContext.Provider value={{ color: "#FFFFFF", className: "heart-icon", size: "25px" }}>
-            <FiHeart onClick={() => handleLike(like)} />
-          </IconContext.Provider>
-          <p>15 Likes</p>
-        </ImageLikes>
-
+        <Like image={image} userId={id} postId={postId}/>
         <PostInfos>
           <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
           <p><ReactHashtag onHashtagClick={(value) => handlHashtag(value)}>{description}</ReactHashtag></p>
@@ -57,12 +42,10 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
               <p>{urlDescriptionSplice}</p>
               <span>{link}</span>
             </div>
-
             <div>
               <img src={urlImage} alt="url" />
             </div>
           </UrlInfos>
-
         </PostInfos>
       </DivPost>
     </ContainerPost>
@@ -87,41 +70,6 @@ const DivPost = styled.div`
   width: 100%;
   height: 100%;
 `
-
-const ImageLikes = styled.div(({ displayLike }) => `
-  margin-right: 18px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  img {
-    width: 40px;
-    height: 40px;
-    border-radius: 26.5px;
-
-    @media(min-width: 800px){
-      width: 50px;
-      height: 50px;
-    }
-  }
-
-  .heart-icon {
-    margin-top: 20px;
-    fill: ${displayLike ? "#171717" : "#AC0000"};
-    stroke: ${displayLike ? "#FFFFFF" : "#AC0000"};
-    cursor: pointer;
-  }
-
-  p {
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 9px;
-    line-height: 11px;
-    text-align: center;
-    color: #FFFFFF;
-    margin-top: 12px;
-  }
-`);
 
 const PostInfos = styled.div`
   display: flex;
