@@ -1,10 +1,12 @@
 import {
   BrowserRouter as Router,
   Routes,
-  Route
+  Route,
+  Navigate
 } from "react-router-dom";
+import { useContext } from "react";
 
-import { AuthProvider } from "./contexts/auth";
+import { AuthProvider,AuthContext } from "./contexts/auth";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import User from "./pages/User";
@@ -14,15 +16,15 @@ import Hashtag from "./pages/Hashtag";
 import GlobalStyle from "./styles/GlobalStyle";
 
 const App = () => {
-  // const Private = ({ children }) => {
-  //   const { authenticated } = useContext(AuthContext);
+  const Private = ({ children }) => {
+    const { authenticated } = useContext(AuthContext);
 
-  //   if (!authenticated) {
-  //     return <Navigate to="/signup" />;
-  //   }
+    if (!authenticated) {
+      return <Navigate to="/signup" />;
+    }
 
-  //   return children;
-  // };
+    return children;
+  };
 
   return (
     <Router>
@@ -32,7 +34,7 @@ const App = () => {
           <Route exact path="/" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/timeline" element={<Timeline />} />
-          <Route path="/users/:id" element={<User />} />
+          <Route path="/users/:id" element={<Private> <User /> </Private>} />
           <Route path="/hashtag/:hashtag" element={<Hashtag />} />
         </Routes>
       </AuthProvider>
