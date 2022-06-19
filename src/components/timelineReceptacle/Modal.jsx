@@ -39,8 +39,8 @@ export default function ModalScreen(status){
         >
             <Delete>
                 <p>Are you sure you want to delete this post?</p>
-                <button class="cancel">No, go back</button>
-                <button class="confirm">Yes, delete it</button>
+                <button onClick={()=>s} class="cancel">No, go back</button>
+                <button onClick={} class="confirm">Yes, delete it</button>
             </Delete>
         </ReactModal>
     )

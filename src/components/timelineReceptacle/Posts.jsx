@@ -4,10 +4,11 @@ import ReactHashtag from "@mdnm/react-hashtag";
 import { FiHeart } from "react-icons/fi";
 import { IconContext } from "react-icons";
 import { useState, useRef, useEffect } from 'react';
-import { updatePost } from "../../services/api";
+import { updatePost , deletePost } from "../../services/api";
 import ReactModal from "react-modal";
 
 import noImage from "./noimage.png"
+import Loading from "../Loading";
 
 export default function Posts({ id, link, description, image, name, urlTitle, urlImage, urlDescription, postId }) {
   const navigate = useNavigate();
@@ -15,10 +16,10 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
   const [editedDescription, setEditedDescription] = useState(description)
   const [isLoading, setIsLoading] = useState(false)
   const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [delPostId, setDelPostId] = useState()
 
   const inputRef = useRef(null);
 
-  const token = localStorage.getItem("user");
   const loggedUserId = localStorage.getItem("id");
   let urlDescriptionSplice = urlDescription.slice(0, 150);
 
@@ -57,14 +58,28 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
         await updatePost(id, descriptions)
         setIsLoading(false)
         setIsEditing(false)
+        navigate("/timeline")
       } catch (error) {
-        
+        alert(error)
       }
       
     }
   }
-  function handleModal(){
-    setModalIsOpen(!modalIsOpen)
+  function handleModal(id){
+    setModalIsOpen(!modalIsOpen);
+    setDelPostId(id);
+  }
+  async function confirmed(){
+    setIsLoading(true)
+    try {
+      await deletePost(delPostId);
+      setIsLoading(false);
+      setModalIsOpen(false);
+      window.location.reload();
+    } catch (error) {
+      
+    }
+    navigate("/timeline")
   }
 
   return (
@@ -88,7 +103,7 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
           {id==loggedUserId ?
             <>
               <ion-icon onClick={editPost} class="edit" name="pencil"></ion-icon>
-              <ion-icon onClick={handleModal} class="delete"  name="trash"></ion-icon>
+              <ion-icon onClick={()=>handleModal(postId)} class="delete" name="trash"></ion-icon>
             </>:<></>}
             {isEditing ?
               <>
@@ -136,12 +151,16 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
         height: '262px',
         borderRadius: '50px'
       } }}
+      ariaHideApp={false}
       >
-    <Delete>
-        <p>Are you sure you want to delete this post?</p>
-        <button class="cancel">No, go back</button>
-        <button class="confirm">Yes, delete it</button>
-    </Delete>
+      {isLoading ?
+        <Loading/>
+        :<Delete>
+            <p>Are you sure you want to delete this post?</p>
+            <button onClick={()=>setModalIsOpen(false)} className="cancel">No, go back</button>
+            <button onClick={confirmed} className="confirm">Yes, delete it</button>
+        </Delete>
+    }
 </ReactModal>
 </>
   )
