@@ -51,14 +51,14 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     }
   }, [isEditing]);
 
-  async function update(e, id, descriptions){
+  async function update(e, id, description){
     if(e.keyCode===13){
       try {
         setIsLoading(true)
-        await updatePost(id, descriptions)
+        await updatePost(id, description)
         setIsLoading(false)
         setIsEditing(false)
-        navigate("/timeline")
+        window.location.reload();
       } catch (error) {
         alert(error)
       }
@@ -77,9 +77,9 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
       setModalIsOpen(false);
       window.location.reload();
     } catch (error) {
-      
+      alert(error)
     }
-    navigate("/timeline")
+    
   }
 
   return (
