@@ -74,10 +74,10 @@ const ToolTip = ({postId,usersWhoLikes,like}) => {
     {
        (usersWhoLikes.length === 1 && like) ? <span>You</span>
       :(usersWhoLikes.length === 1 && !like) ? <span>{usersWhoLikes[0]}</span> 
-      :(usersWhoLikes.length === 2 && like) ? <span>`You and ${usersWhoLikes[0]}`</span>
-      :(usersWhoLikes.length === 2 && !like) ? <span>`${usersWhoLikes[0]} and ${usersWhoLikes[1]}`</span>
-      :(usersWhoLikes.length > 2 && like) ? <span>`You, ${usersWhoLikes[0]} and other ${usersWhoLikes.length - 2} people`</span>
-      :(usersWhoLikes.length > 2 && !like) ? <span>`${usersWhoLikes[0]}, ${usersWhoLikes[1]} and other ${usersWhoLikes.length - 2} people`</span>
+      :(usersWhoLikes.length === 2 && like) ? <span>You and {usersWhoLikes[0]}</span>
+      :(usersWhoLikes.length === 2 && !like) ? <span>{usersWhoLikes[0]} and {usersWhoLikes[1]}</span>
+      :(usersWhoLikes.length > 2 && like) ? <span>You, {usersWhoLikes[0]} and other {usersWhoLikes.length - 2} people</span>
+      :(usersWhoLikes.length > 2 && !like) ? <span>{usersWhoLikes[0]}, {usersWhoLikes[1]} and other {usersWhoLikes.length - 2} people</span>
       : ''
     }
     </ReactTooltip>
