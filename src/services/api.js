@@ -57,8 +57,8 @@ export const getLikes = async (postId) => {
   return likes;
 }
 
-export const addOrRemoveLike = async (postId) => {
-  const toogleLike = await api.post(`/likes/${postId}`, {});
+export const addOrRemoveLike = async (userId,postId) => {
+  const toogleLike = await api.patch(`/likes/${postId}`, {userId});
   return toogleLike;
 }
 export const updatePost = async (id, description) => {
