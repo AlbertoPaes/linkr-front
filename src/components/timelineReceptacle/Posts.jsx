@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import ReactHashtag from "@mdnm/react-hashtag";
-import { FiHeart } from "react-icons/fi";
-import { IconContext } from "react-icons";
+import Like from "./Like";
 import { useState, useRef, useEffect } from 'react';
 import { updatePost , deletePost } from "../../services/api";
 import ReactModal from "react-modal";
@@ -36,6 +35,7 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     urlImage = noImage;
   }
 
+  //Possa ser que quis dizer handleHashtag
   function handlHashtag(value) {
     const hashtag = value.replace("#", "");
     navigate(`/hashtag/${hashtag}`);
@@ -86,18 +86,7 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
     <>
     <ContainerPost>
       <DivPost>
-        <ImageLikes>
-          <img
-            src={image}
-            alt="foto"
-            onClick={() => navigate(`/users/${id}`)}
-          />
-          <IconContext.Provider value={{ color: "#FFFFFF", className: "heart-icon", size: "25px" }}>
-            <FiHeart />
-          </IconContext.Provider>
-          <p>15 Likes</p>
-        </ImageLikes>
-
+        <Like image={image} userId={id} postId={postId}/>
         <PostInfos>
           <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
           {id==loggedUserId ?
@@ -126,12 +115,10 @@ export default function Posts({ id, link, description, image, name, urlTitle, ur
               <p>{urlDescriptionSplice}</p>
               <span>{link}</span>
             </div>
-
             <div>
               <img src={urlImage} alt="url" />
             </div>
           </UrlInfos>
-
         </PostInfos>
       </DivPost>
     </ContainerPost>
@@ -223,38 +210,6 @@ const DivPost = styled.div`
   height: 100%;
 `
 
-const ImageLikes = styled.div`
-  margin-right: 18px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  img {
-    width: 40px;
-    height: 40px;
-    border-radius: 26.5px;
-    cursor:pointer;
-
-    @media(min-width: 800px){
-      width: 50px;
-      height: 50px;
-    }
-  }
-
-  .heart-icon {
-    margin-top: 20px;
-  }
-
-  p {
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 9px;
-    line-height: 11px;
-    text-align: center;
-    color: #FFFFFF;
-    margin-top: 12px;
-  }
-`
 const PostInfos = styled.div`
   display: flex;
   flex-direction: column;
