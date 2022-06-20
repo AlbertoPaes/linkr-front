@@ -30,8 +30,6 @@ export default function HashtagBox({ reloadPage }) {
     navigate(`/hashtag/${hashtag}`);
   }
 
-  console.log(hashtags.length)
-
   return (
     <WrapperHashtags>
       <h2>trendings</h2>

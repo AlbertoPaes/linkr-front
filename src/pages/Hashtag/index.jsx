@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import Posts from "../../components/timelineReceptacle/Posts";
@@ -9,37 +9,30 @@ import { getPostsByHashtag } from "../../services/api";
 
 
 export default function Hashtag() {
-  const navigate = useNavigate();
-  const token = localStorage.getItem("user");
-
   const [posts, setPosts] = useState([]);
-  const [postLoadind, setPostLoading] = useState(false);
-  console.log(posts);
+  const [reloadHashtag, setReloadHashtag] = useState(false);
+  const [reloadPage, setReloadPage] = useState(false);
 
   const { hashtag } = useParams();
 
   useEffect(() => {
-    if (!token) {
-      navigate("/");
-    }
-
-    setPostLoading(true);
+    setReloadHashtag(true);
 
     (async () => {
       try {
         const response = await getPostsByHashtag(hashtag);
         setPosts(response.data);
-        setPostLoading(false);
+        setReloadHashtag(false);
       } catch (e) {
         console.log(e);
         alert("An error occured while trying to fetch the posts, please refresh the page")
       }
     })();
 
-  }, [hashtag])
+  }, [reloadPage, hashtag])
 
   function handleHashtag() {
-    if (postLoadind) return <Loading />
+    if (reloadHashtag) return <Loading />
     return posts.length !== 0 ?
       (
         posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
@@ -53,7 +46,9 @@ export default function Hashtag() {
               image={image}
               urlTitle={urlTitle || "No Title Found"}
               urlImage={urlImage}
+              postId={id}
               urlDescription={urlDescription || "No Description Found"}
+              setReloadPage={() => { setReloadPage(!reloadPage) }}
             />
           )
         })

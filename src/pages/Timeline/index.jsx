@@ -11,7 +11,6 @@ import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 
 export default function Timeline() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("user");
   const image = localStorage.getItem("image");
 
   const [formData, setFormData] = useState({ link: "", description: "" });
@@ -21,10 +20,6 @@ export default function Timeline() {
   const [reloadPage, setReloadPage] = useState(false);
 
   useEffect(() => {
-    if (!token) {
-      navigate("/");
-    }
-
     setPostLoading(true);
 
     (async () => {
@@ -39,7 +34,7 @@ export default function Timeline() {
 
     })();
 
-  }, [reloadPage, token, navigate]);
+  }, [reloadPage, navigate]);
 
   async function handlePublishPost(e) {
     e.preventDefault();
@@ -61,7 +56,6 @@ export default function Timeline() {
       (
         posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
           return (
-            <>
             <Posts
               key={id}
               id={userId}
@@ -72,8 +66,8 @@ export default function Timeline() {
               urlTitle={urlTitle || "No Title Found"}
               urlImage={urlImage}
               urlDescription={urlDescription || "No Description Found"}
-              postId={id}/>
-              </>
+              postId={id}
+              setReloadPage={() => setReloadPage(!reloadPage)} />
           )
         })
       ) : <h5>There are no posts yet</h5>

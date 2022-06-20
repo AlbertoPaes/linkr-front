@@ -4,16 +4,15 @@ import { IconContext } from "react-icons";
 import { FiHeart } from "react-icons/fi";
 import ReactTooltip from 'react-tooltip';
 
-import { getLikes,addOrRemoveLike } from "../../services/api";
+import { getLikes, addOrRemoveLike } from "../../services/api";
 
-const Like = ({image,userId,postId}) => {
-  const [like,setLike] = useState(true);
-  const [usersWhoLikes,setUsersWhoLikes] = useState(0);
+const Like = ({ image, userId, postId }) => {
+  const [like, setLike] = useState(true);
+  const [usersWhoLikes, setUsersWhoLikes] = useState(0);
 
   const requestLikes = async () => {
     try {
       const response = await getLikes(postId);
-      console.log(response.data);
       setUsersWhoLikes(response.data);
 
     } catch (err) {
@@ -22,34 +21,33 @@ const Like = ({image,userId,postId}) => {
     }
   }
 
-  const statusLike = async (likeStatus,postId) => {
-    console.log("postId:", postId);
+  const statusLike = async (likeStatus, postId) => {
     likeStatus ? setLike(false) : setLike(true);
     await addOrRemoveLike(postId);
     requestLikes();
     ReactTooltip.rebuild();
   }
 
-  const ToolTip = ({postId,usersWhoLikes,like}) => {
+  const ToolTip = ({ postId, usersWhoLikes, like }) => {
     return (
-      <ReactTooltip 
-      id={`postLikes-${postId}`} 
-      place="bottom" 
-      effect="solid" 
-      type="info"
-      delay-hide={1000}
-      backgroundColor={"rgba(255, 255, 255, 0.9)"}	
-      textColor={"#505050"}
+      <ReactTooltip
+        id={`postLikes-${postId}`}
+        place="bottom"
+        effect="solid"
+        type="info"
+        delay-hide={1000}
+        backgroundColor={"rgba(255, 255, 255, 0.9)"}
+        textColor={"#505050"}
       >
-      {
-         (usersWhoLikes.length === 1 && like) ? <span>You</span>
-        :(usersWhoLikes.length === 1 && !like) ? <span>{usersWhoLikes[0]}</span> 
-        :(usersWhoLikes.length === 2 && like) ? <span>`You and ${usersWhoLikes[0]}`</span>
-        :(usersWhoLikes.length === 2 && !like) ? <span>`${usersWhoLikes[0]} and ${usersWhoLikes[1]}`</span>
-        :(usersWhoLikes.length > 2 && like) ? <span>`You, ${usersWhoLikes[0]} and other ${usersWhoLikes.length - 2} people`</span>
-        :(usersWhoLikes.length > 2 && !like) ? <span>`${usersWhoLikes[0]}, ${usersWhoLikes[1]} and other ${usersWhoLikes.length - 2} people`</span>
-        : ''
-      }
+        {
+          (usersWhoLikes.length === 1 && like) ? <span>You</span>
+            : (usersWhoLikes.length === 1 && !like) ? <span>{usersWhoLikes[0]}</span>
+              : (usersWhoLikes.length === 2 && like) ? <span>`You and ${usersWhoLikes[0]}`</span>
+                : (usersWhoLikes.length === 2 && !like) ? <span>`${usersWhoLikes[0]} and ${usersWhoLikes[1]}`</span>
+                  : (usersWhoLikes.length > 2 && like) ? <span>`You, ${usersWhoLikes[0]} and other ${usersWhoLikes.length - 2} people`</span>
+                    : (usersWhoLikes.length > 2 && !like) ? <span>`${usersWhoLikes[0]}, ${usersWhoLikes[1]} and other ${usersWhoLikes.length - 2} people`</span>
+                      : ''
+        }
       </ReactTooltip>
     );
   }
@@ -60,9 +58,9 @@ const Like = ({image,userId,postId}) => {
         src={image}
         alt="foto" />
       <IconContext.Provider value={{ color: "#FFFFFF", className: "heart-icon", size: "25px" }}>
-        <FiHeart onClick={() => statusLike(like,postId)} />
+        <FiHeart onClick={() => statusLike(like, postId)} />
       </IconContext.Provider>
-      { usersWhoLikes.length > 0 &&
+      {usersWhoLikes.length > 0 &&
         <p data-tip='tooltip' data-for={`postLikes-${postId}`}>
           {`${usersWhoLikes.length} {${usersWhoLikes.length === 1 ? "like" : "likes"}}`}
         </p>
