@@ -32,7 +32,6 @@ export const AuthProvider = ({ children }) => {
     };
     try {
       const response = await makeSignIn(formData);
-      console.log(response);
 
       const loggedUser = response.data.token;
       const userImage = response.data.image;

@@ -13,7 +13,7 @@ export default function User() {
 
     const [posts, setPosts] = useState([]);
     const [postLoadind, setPostLoading] = useState(false);
-    const [reloadPage, setRealoadPage] = useState(false);
+    const [reloadPage, setReloadPage] = useState(false);
 
     const { id } = useParams();
 
@@ -27,14 +27,13 @@ export default function User() {
                 const users = await getPosts(id);
                 setPosts(users.data);
                 setPostLoading(false);
-                setRealoadPage(!reloadPage);
             }
             catch (error) {
                 console.log(error);
             }
         }
         getUserPostsById();
-    }, [id])
+    }, [reloadPage, id])
 
     function handleUser() {
         if (postLoadind) return <></>
@@ -64,6 +63,7 @@ export default function User() {
                             urlImage={urlImage}
                             urlDescription={urlDescription}
                             postId={id}
+                            setReloadPage={() => { setReloadPage(!reloadPage) }}
                         />
                     )
                 })
@@ -79,7 +79,7 @@ export default function User() {
                     {handlePost()}
                 </WrapperTimeline >
                 <HashtagBox reloadPage={reloadPage} />
-            </TimelineBox>        
+            </TimelineBox>
         </>
     )
 }

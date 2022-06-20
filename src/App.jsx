@@ -4,9 +4,8 @@ import {
   Route,
   Navigate
 } from "react-router-dom";
-import { useContext } from "react";
 
-import { AuthProvider,AuthContext } from "./contexts/auth";
+import { AuthProvider } from "./contexts/auth";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import User from "./pages/User";
@@ -17,10 +16,10 @@ import GlobalStyle from "./styles/GlobalStyle";
 
 const App = () => {
   const Private = ({ children }) => {
-    const { authenticated } = useContext(AuthContext);
+    const authenticated = localStorage.getItem("user")
 
     if (!authenticated) {
-      return <Navigate to="/signup" />;
+      return <Navigate to="/" />;
     }
 
     return children;
