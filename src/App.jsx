@@ -33,9 +33,9 @@ const App = () => {
         <Routes>
           <Route exact path="/" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/timeline" element={<Timeline />} />
+          <Route path="/timeline" element={<Private> <Timeline /> </Private>} />
           <Route path="/users/:id" element={<Private> <User /> </Private>} />
-          <Route path="/hashtag/:hashtag" element={<Hashtag />} />
+          <Route path="/hashtag/:hashtag" element={<Private> <Hashtag /> </Private>} />
         </Routes>
       </AuthProvider>
     </Router>
