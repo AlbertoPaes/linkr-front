@@ -75,7 +75,8 @@ export default function Posts({
       } catch (error) {
         alert(error)
       }
-
+    } else if (e.keyCode === 27) {
+      setIsEditing(false)
     }
   }
   function handleModal(id) {
@@ -98,7 +99,7 @@ export default function Posts({
     <>
       <ContainerPost>
         <DivPost>
-          <Like image={image} userId={id} postId={postId} />
+          <Like image={image} userId={loggedUserId} postId={postId} />
           <PostInfos>
             <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
             {id === parseInt(loggedUserId) ?

@@ -4,6 +4,7 @@ import { IconContext } from "react-icons";
 import { AuthContext } from '../../contexts/auth';
 import { AiOutlineDown } from "react-icons/ai";
 import { AiOutlineUp } from "react-icons/ai";
+import { BsSearch } from "react-icons/bs";
 import styled from "styled-components";
 import { DebounceInput } from 'react-debounce-input';
 
@@ -37,7 +38,6 @@ function Header() {
         try {
             if (value.length > 0) {
                 const search = await getSearch(value);
-                console.log("search: ", search.data);
                 setUsers(search.data)
             }
             else setUsers([])
@@ -55,12 +55,19 @@ function Header() {
     return (
         <>
             <Container>
-                <DebounceInput
-                    minLength={3}
-                    debounceTimeout={300}
-                    className="debounce"
-                    placeholder='Search for people and friends' required
-                    onChange={(e) => handleSearch(e.target.value)} />
+                <ContainerInput>
+                    <DebounceInput
+                        minLength={3}
+                        debounceTimeout={300}
+                        className="debounce"
+                        placeholder='Search for people and friends' required
+                        onChange={(e) => handleSearch(e.target.value)} />
+                    <IconContext.Provider value={{ color: "#C6C6C6", className: "search-icon", size: "25px" }}>
+                        <BsSearch />
+                    </IconContext.Provider>
+                </ContainerInput>
+
+
 
                 {users.length > 0 ?
                     <Users>
@@ -79,13 +86,17 @@ function Header() {
             <Head>
                 <Logo onClick={() => navigate("/timeline")}>linkr</Logo>
                 <ContainerHead>
-                    <DebounceInput
-                        minLength={3}
-                        debounceTimeout={300}
-                        className="debounce"
-                        placeholder='Search for people' required
-                        onChange={(e) => handleSearch(e.target.value)} />
-
+                    <ContainerInput>
+                        <DebounceInput
+                            minLength={3}
+                            debounceTimeout={300}
+                            className="debounce"
+                            placeholder='Search for people' required
+                            onChange={(e) => handleSearch(e.target.value)} />
+                        <IconContext.Provider value={{ color: "#C6C6C6", className: "search-icon", size: "25px" }}>
+                            <BsSearch />
+                        </IconContext.Provider>
+                    </ContainerInput>
 
                     {users.length > 0 ?
                         <UsersHead>
@@ -146,9 +157,7 @@ const ContainerHead = styled.div`
         font-size: 17px;
         line-height: 20px;
 
-        padding-left: 10px;
-        padding-right: 15px;
-        margin: 10px;
+        
 
         border: none;
         border-radius: 8px;
@@ -378,37 +387,16 @@ const Container = styled.div`
     }
 `;
 
-const Input = styled.input`
+const ContainerInput = styled.div`
+    display: flex;
     width: 95%;
-    max-width: 563px;
+    align-items:center;
+    background-color: #ffffff;
+    border-radius: 8px;
     height: 45px;
-
-    background-color: #FFFFFF;
-    color: #151515;
-
-    font-family: 'Lato';
-    font-weight: 400;
-    font-size: 17px;
-    line-height: 20px;
-
     padding-left: 10px;
     padding-right: 15px;
     margin: 10px;
-
-    border: none;
-    border-radius: 8px;
-
-    position: relative;
-    z-index: 10;
-
-    &::placeholder {
-      color: #9F9F9F;
-    }
-    /* &::disabled {
-      background-color: #F2F2F2;
-      color: #AFAFAF;
-    } */
-
 `
 
 export default Header;

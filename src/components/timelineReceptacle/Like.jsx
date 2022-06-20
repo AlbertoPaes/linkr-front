@@ -12,15 +12,15 @@ const Like = ({ image, userId, postId }) => {
 
   useEffect(() => {
     (async () => {
-      getLikes(postId)
+      await getLikes(postId)
     })();
+    requestLikes();
   }, [postId]);
 
   const requestLikes = async () => {
     try {
       const { data: users } = await getLikes(postId);
-      console.log(users);
-      const statusLike = hasUser(users)
+      const statusLike = hasUser(users);
       setUsersWhoLikes(users.map(({ name }) => name));
       setLike(statusLike);
     } catch (err) {
@@ -37,11 +37,11 @@ const Like = ({ image, userId, postId }) => {
 
   const hasUser = (users) => {
     for (let i = 0; i < users.length; i++) {
-      if (users[i].userId === userId) {
+      if (users[i].userId === parseInt(userId)) {
         return true;
       }
-      return false;
     }
+    return false;
   }
 
   return (
