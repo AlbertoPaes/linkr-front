@@ -180,6 +180,7 @@ function checkVisible (visible) {
 }
 
 const Div = styled.div`
+    position: sticky;
     margin-top: -69px;
 `
 
@@ -191,7 +192,6 @@ const SubContainer = styled.div`
 const UserContainer = styled.div`
       display: flex;
       align-items: center;
-      justify-content: space-between;
       padding-left: 15px;
 
         div {
@@ -232,9 +232,10 @@ const Follow = styled.button`
 
     display: ${(props) => checkVisible(props.visible)};
 
-    position: absolute;
-    top: 16px;
-    right: 0;
+     position: absolute;
+     top: 16px;
+    right: 0;  
+    z-index: 20; 
 `
 const TimelineBox = styled.main`
   position:absolute;
