@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getPosts } from "../../services/api";
-
+import { getPosts, getFollow, postFollow, deleteFollow } from "../../services/api";
 import styled from "styled-components";
 
 import Header from "./../Header";
@@ -14,8 +13,14 @@ export default function User() {
     const [posts, setPosts] = useState([]);
     const [postLoadind, setPostLoading] = useState(false);
     const [reloadPage, setReloadPage] = useState(false);
+    const [follow, setFollow] = useState("Loading"); // README: VERIFICAR COMO FICA AO CARREGAR
+    const [toggle, setToggle] = useState(true);
 
     const { id } = useParams();
+
+    const loggedUserId = localStorage.getItem("id");
+
+    console.log("logged: ",loggedUserId )
 
     useEffect(() => {
 
@@ -33,15 +38,85 @@ export default function User() {
             }
         }
         getUserPostsById();
-    }, [reloadPage, id])
+    }, [reloadPage, id]);
+
+    useEffect(() => {
+
+        setPostLoading(true);
+
+        async function getFollows() {
+
+            try {
+                const loggedUser = await getFollow(loggedUserId, id);
+                console.log(loggedUser.data);
+                if (!loggedUser.data) {
+                    setToggle(false);
+                    setFollow("Follow");
+                }
+                else {
+                    setToggle(true);
+                    setFollow("Unfollow");
+                }
+            }
+            catch (error) {
+                console.log(error);
+                alert ("Não foi possível executar a operação")
+            }
+        }
+        getFollows();
+    }, [id]);
+
+    function toggleFollow () {
+        setToggle(!toggle);
+        if (toggle) {
+            setFollow("Follow");
+            handleDeleteFollow();
+        }
+        else {
+            setFollow("Unfollow");
+            handlePostFollow();
+        } 
+    }
+
+    async function handlePostFollow () {
+        try {
+            await postFollow({
+                userId: loggedUserId,
+                followId: id
+            });
+        }
+        catch (e) {
+            alert("Houve um erro ao seguir o usuário");
+          }
+    }
+
+    async function handleDeleteFollow () {
+        try {
+            await deleteFollow(loggedUserId, id);
+        }
+        catch (e) {
+            alert("Houve um erro ao parar de seguir o usuário");
+          }
+    }
+
+    function handleFollow() {
+        return (
+            <Follow selected={toggle} loading={postLoadind} onClick={() => toggleFollow()}>{follow}</Follow>
+        )
+    }
 
     function handleUser() {
         if (postLoadind) return <></>
         return posts.length !== 0 ?
             (
                 <UserContainer>
-                    <UserImage src={posts[0].image}></UserImage>
-                    <h2>{posts[0].name}'s posts</h2>
+                    <div>
+                        <UserImage src={posts[0].image}></UserImage>
+                        <UserName >{posts[0].name}'s posts</UserName>
+                    </div>
+                    <Follow onClick={() => console.log("Botão clicado")}>"Teste"</Follow>
+                    {/* <Follow>Unfollow</Follow> */}
+
                 </UserContainer>
             ) : <></>;
     }
@@ -74,18 +149,89 @@ export default function User() {
         <>
             <Header />
             <TimelineBox>
-                <WrapperTimeline>
-                    {handleUser()}
-                    {handlePost()}
-                </WrapperTimeline >
-                <HashtagBox reloadPage={reloadPage} />
+                {handleUser()}
+                <SubContainer>
+                    <WrapperTimeline>
+                        {handlePost()}
+                    </WrapperTimeline >
+                    <Div>
+                        <HashtagBox reloadPage={reloadPage} />
+                    </Div>
+                </SubContainer>
+                {handleFollow()}
             </TimelineBox>
         </>
     )
 }
+
+function setBackground (selected) {
+    if (selected) return "#FFFFFF";
+    else return "#1877F2";
+}
+
+function setText (selected) {
+    if (selected) return "#1877F2";
+    else return "#FFFFFF";
+}
+
+function setButton (loading) {
+    if (loading) return "none";
+    else return "auto";
+}
+
+const Div = styled.div`
+    margin-top: -69px;
+`
+
+const SubContainer = styled.div`
+    display: flex;
+    align-items: start;
+`
+
+const UserContainer = styled.div`
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 15px;
+
+        div {
+            display:flex;
+            align-items: center;
+            gap: 18px;
+        }
+`
+const UserImage = styled.img`
+    width: 50px;
+    height: 50px;
+    border-radius: 26px;
+`
+
+const UserName = styled.p`
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 43px;
+    line-height: 64px;
+    color: #FFFFFF;
+`
+
+const Follow = styled.button`
+    font-family: 'Lato';
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+    color: ${(props) => setText(props.selected)};
+    pointer-events: ${(props) => setButton(props.loading)};
+
+    width: 112px;
+    height: 31px;
+
+    border-radius: 5px;
+
+    background-color: ${(props) => setBackground(props.selected)};
+`
 const TimelineBox = styled.main`
   position:absolute;
-  display:flex;
   top: 160px;
   width: fit-content;
   max-width: 1042px;
@@ -128,15 +274,4 @@ const WrapperTimeline = styled.section`
   }
 `
 
-const UserContainer = styled.div`
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      margin-left: 15px;
-`
 
-const UserImage = styled.img`
-    width: 39px;
-    height: 39px;
-    border-radius: 26px;
-`
