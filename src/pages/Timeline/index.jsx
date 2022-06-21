@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { publishPost, getAllPosts } from "../../services/api";
 import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
+import {GrUpdate} from "react-icons/gr"
 
 import Header from "./../Header"
 import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
@@ -18,6 +19,7 @@ export default function Timeline() {
   const [isLoading, setIsLoading] = useState(false);
   const [postLoadind, setPostLoading] = useState(false);
   const [reloadPage, setReloadPage] = useState(false);
+  const [isNewPosts, setIsNewPosts] = useState([])
 
   useEffect(() => {
     setPostLoading(true);
@@ -114,6 +116,14 @@ export default function Timeline() {
               </Form>
             </DivPublishPost>
           </ContainerPublishPost>
+            <UpdateTimeline>
+              {isNewPosts ?
+                <button>{"new posts, load more!"} 
+                  <GrUpdate ClassName="update"/>
+                </button>:
+              <>
+              </>}
+              </UpdateTimeline>
           {handlePost()}
         </WrapperTimeline >
         <HashtagBox reloadPage={reloadPage} />
@@ -121,6 +131,29 @@ export default function Timeline() {
     </>
   );
 };
+
+const UpdateTimeline = styled.div`
+  display: flex;
+  align-items: center;
+  svg path{
+    stroke: #fff;
+  }
+  button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 611px;
+    height: 61px;
+    border: none;
+    border-radius: 16px;
+    background-color: #1877F2;
+    color: #ffffff;
+    font-family: 'Lato';
+    font-size: 16px;
+    line-height: 29px;
+    text-align: center;
+  }
+`
 
 const TimelineBox = styled.main`
   position:absolute;
