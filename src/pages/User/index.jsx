@@ -15,12 +15,11 @@ export default function User() {
     const [reloadPage, setReloadPage] = useState(false);
     const [follow, setFollow] = useState("Loading"); // README: VERIFICAR COMO FICA AO CARREGAR
     const [toggle, setToggle] = useState(true);
+    const [visible, setVisible] = useState(true);
 
     const { id } = useParams();
 
     const loggedUserId = localStorage.getItem("id");
-
-    console.log("logged: ",loggedUserId )
 
     useEffect(() => {
 
@@ -48,7 +47,9 @@ export default function User() {
 
             try {
                 const loggedUser = await getFollow(loggedUserId, id);
-                console.log(loggedUser.data);
+                if (loggedUser.data === "Myself") setVisible(false);
+                else setVisible(true);
+
                 if (!loggedUser.data) {
                     setToggle(false);
                     setFollow("Follow");
@@ -60,13 +61,13 @@ export default function User() {
             }
             catch (error) {
                 console.log(error);
-                alert ("Não foi possível executar a operação")
+                alert("Não foi possível executar a operação")
             }
         }
         getFollows();
     }, [id]);
 
-    function toggleFollow () {
+    function toggleFollow() {
         setToggle(!toggle);
         if (toggle) {
             setFollow("Follow");
@@ -75,10 +76,10 @@ export default function User() {
         else {
             setFollow("Unfollow");
             handlePostFollow();
-        } 
+        }
     }
 
-    async function handlePostFollow () {
+    async function handlePostFollow() {
         try {
             await postFollow({
                 userId: loggedUserId,
@@ -87,25 +88,19 @@ export default function User() {
         }
         catch (e) {
             alert("Houve um erro ao seguir o usuário");
-          }
+        }
     }
 
-    async function handleDeleteFollow () {
+    async function handleDeleteFollow() {
         try {
             await deleteFollow(loggedUserId, id);
         }
         catch (e) {
             alert("Houve um erro ao parar de seguir o usuário");
-          }
+        }
     }
 
-    function handleFollow() {
-        return (
-            <Follow selected={toggle} loading={postLoadind} onClick={() => toggleFollow()}>{follow}</Follow>
-        )
-    }
-
-    function handleUser() {
+    function handleUser() { // README: O BOTÃO ERA PRA ENTRAR AQUI
         if (postLoadind) return <></>
         return posts.length !== 0 ?
             (
@@ -114,9 +109,6 @@ export default function User() {
                         <UserImage src={posts[0].image}></UserImage>
                         <UserName >{posts[0].name}'s posts</UserName>
                     </div>
-                    <Follow onClick={() => console.log("Botão clicado")}>"Teste"</Follow>
-                    {/* <Follow>Unfollow</Follow> */}
-
                 </UserContainer>
             ) : <></>;
     }
@@ -148,7 +140,10 @@ export default function User() {
     return (
         <>
             <Header />
+
             <TimelineBox>
+                <Follow selected={toggle} loading={postLoadind} visible={visible}
+                    onClick={() => toggleFollow()}>{follow}</Follow>
                 {handleUser()}
                 <SubContainer>
                     <WrapperTimeline>
@@ -158,25 +153,30 @@ export default function User() {
                         <HashtagBox reloadPage={reloadPage} />
                     </Div>
                 </SubContainer>
-                {handleFollow()}
+                {/* {handleFollow()} */}
             </TimelineBox>
         </>
     )
 }
 
-function setBackground (selected) {
+function setBackground(selected) {
     if (selected) return "#FFFFFF";
     else return "#1877F2";
 }
 
-function setText (selected) {
+function setText(selected) {
     if (selected) return "#1877F2";
     else return "#FFFFFF";
 }
 
-function setButton (loading) {
+function setButton(loading) {
     if (loading) return "none";
     else return "auto";
+}
+
+function checkVisible (visible) {
+    if (visible) return "";
+    else return "none";
 }
 
 const Div = styled.div`
@@ -229,6 +229,12 @@ const Follow = styled.button`
     border-radius: 5px;
 
     background-color: ${(props) => setBackground(props.selected)};
+
+    display: ${(props) => checkVisible(props.visible)};
+
+    position: absolute;
+    top: 16px;
+    right: 0;
 `
 const TimelineBox = styled.main`
   position:absolute;
