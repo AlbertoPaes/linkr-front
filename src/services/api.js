@@ -74,3 +74,15 @@ export const getCommentByPostId = async (postId) => {
 export const postComment = async (postId, comment) => {
   await api.post(`/comments/${postId}`, { comment });
 }
+export const getFollow = async (loggedUserId, id) => {
+  const checkFollow = await api.get(`/follows/${loggedUserId}/${id}`);
+  return checkFollow;
+}
+
+export const postFollow = async (object) => {
+  await api.post("/follows/", object);
+}
+
+export const deleteFollow = async (loggedUserId, id) => {
+  await api.delete(`/follows/${loggedUserId}/${id}`);
+}
