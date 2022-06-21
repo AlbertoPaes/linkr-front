@@ -170,7 +170,6 @@ const WrapperTimeline = styled.section`
   min-width:375px;
   margin-bottom: 30px;
 
-
   h2 {
     font-family: 'Oswald';
     font-style: normal;
@@ -179,6 +178,7 @@ const WrapperTimeline = styled.section`
     line-height: 49px;
     color: #FFFFFF;
     margin: 19px 0 19px 17px;
+
 
     @media(min-width: 800px){
       margin-left:0;

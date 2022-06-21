@@ -2,8 +2,8 @@ import axios from "axios";
 import urlMetadata from "url-metadata";
 
 export const api = axios.create({
-  baseURL: "https://linkr-driven-api.herokuapp.com",
-  //baseURL: "http://localhost:4000"
+  // baseURL: "https://linkr-driven-api.herokuapp.com",
+  baseURL: "http://localhost:4000"
 });
 
 export const makeSignUp = async (formData) => {
@@ -64,4 +64,17 @@ export const updatePost = async (id, description) => {
 
 export const deletePost = async (id) => {
   await api.delete(`/post/${id}`)
+}
+
+export const getFollow = async (loggedUserId, id) => {
+  const checkFollow = await api.get(`/follows/${loggedUserId}/${id}`);
+  return checkFollow;
+}
+
+export const postFollow = async (object) => {
+  await api.post("/follows/", object);
+}
+
+export const deleteFollow = async (loggedUserId, id) => {
+  await api.delete(`/follows/${loggedUserId}/${id}`);
 }
