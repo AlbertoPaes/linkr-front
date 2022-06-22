@@ -432,7 +432,7 @@ const Container = styled.div`
     @media (min-width: 800px) {
         display: none;
     }
-`;
+`
 
 const ContainerInput = styled.div`
     display: flex;

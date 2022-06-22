@@ -2,14 +2,17 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import ReactHashtag from "@mdnm/react-hashtag";
 import { useState, useRef, useEffect } from 'react';
-import { updatePost, deletePost } from "../../services/api";
 import ReactModal from "react-modal";
 import { IconContext } from "react-icons";
 import { FaPencilAlt } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 
+import { updatePost, deletePost } from "../../services/api";
+import { getCommentByPostId } from "../../services/api";
 import Like from "./Like";
 import Loading from "../Loading";
+import Comments from "./CommentsIndex"
+import CommentsBox from "./CommentsBox"
 
 import noImage from "./noimage.png"
 
@@ -27,11 +30,14 @@ export default function Posts({
   setReloadPage
 }) {
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedDescription, setEditedDescription] = useState(description)
-  const [isLoading, setIsLoading] = useState(false)
-  const [modalIsOpen, setModalIsOpen] = useState(false)
-  const [delPostId, setDelPostId] = useState()
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedDescription, setEditedDescription] = useState(description);
+  const [isLoading, setIsLoading] = useState(false);
+  const [realoadComments, setRealodComments] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [delPostId, setDelPostId] = useState();
+  const [comments, setComments] = useState([]);
+  const [commentBox, setCommentBox] = useState(false);
 
   const inputRef = useRef(null);
 
@@ -64,6 +70,19 @@ export default function Posts({
       inputRef.current.select();
     }
   }, [isEditing]);
+
+  useEffect(() => {
+    setRealodComments(false);
+    async function getComments() {
+      try {
+        const response = await getCommentByPostId(postId)
+        setComments(response.data);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    getComments();
+  }, [realoadComments]);
 
   async function update(e, id, description) {
     if (e.keyCode === 13) {
@@ -99,7 +118,14 @@ export default function Posts({
     <>
       <ContainerPost>
         <DivPost>
-          <Like image={image} userId={loggedUserId} postId={postId} />
+          <LeftSideContainer>
+            <Like image={image} userId={loggedUserId} postId={postId} />
+            <Comments
+              comments={comments}
+              setCommentBox={() => setCommentBox(!commentBox)}
+              commentBox={commentBox}
+            />
+          </LeftSideContainer>
           <PostInfos>
             <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
             {id === parseInt(loggedUserId) ?
@@ -139,6 +165,14 @@ export default function Posts({
           </PostInfos>
         </DivPost>
       </ContainerPost>
+      <CommentsBox
+        comments={comments}
+        userPostId={id}
+        postId={postId}
+        setRealodComments={() => setRealodComments(true)}
+        commentBox={commentBox}
+      />
+
       <ReactModal
         isOpen={modalIsOpen}
         shouldCloseOnEsc={true}
@@ -181,6 +215,7 @@ const Delete = styled.div`
     width: calc(59700px/1440%);
     height: 262px;
     font-weight: 700;
+    z-index:2;
     font-size: 18px;
     line-height: 21.6px;
     border-radius: 50px;
@@ -216,6 +251,8 @@ const ContainerPost = styled.article`
   margin-top: 16px;
   padding: 10px 15px 15px 15px;
   background-color: #171717;
+  position:relative;
+  z-index: 2;
 
   @media(min-width: 800px){
       border-radius: 16px;
@@ -387,6 +424,20 @@ const UrlInfos = styled.a`
         width: 153.44px;
         height: 155px;
       }
+    }
+  }
+`
+
+const LeftSideContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  .comment {
+    margin-top: 15px;
+    margin-left: 12px;
+
+    @media (max-width: 800px) {
+      margin-left: 7px;
     }
   }
 `

@@ -110,11 +110,15 @@ const ImageLikes = styled.div(({ displayLike }) => `
   p {
     font-family: 'Lato';
     font-weight: 400;
-    font-size: 9px;
+    font-size: 13px;
     line-height: 11px;
     text-align: center;
     color: #FFFFFF;
     margin-top: 12px;
+
+    @media (max-width: 800px) {
+      font-size: 9px;
+    }
   }
 
   span {

@@ -13,7 +13,7 @@ export default function User() {
     const [posts, setPosts] = useState([]);
     const [postLoadind, setPostLoading] = useState(false);
     const [reloadPage, setReloadPage] = useState(false);
-    const [follow, setFollow] = useState("Loading"); // README: VERIFICAR COMO FICA AO CARREGAR
+    const [follow, setFollow] = useState("Loading"); //README: VERIFICAR COMO FICA AO CARREGAR
     const [toggle, setToggle] = useState(true);
     const [visible, setVisible] = useState(true);
 
@@ -173,7 +173,7 @@ function setButton(loading) {
     else return "auto";
 }
 
-function checkVisible (visible) {
+function checkVisible(visible) {
     if (visible) return "";
     else return "none";
 }
