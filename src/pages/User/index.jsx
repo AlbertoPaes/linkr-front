@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getPosts, getFollow, postFollow, deleteFollow } from "../../services/api";
+import { getPosts, getFollow, postFollow, deleteFollow, getUserName } from "../../services/api";
 import styled from "styled-components";
 
 import Header from "./../Header";
@@ -11,6 +11,7 @@ import Loading from "../../components/Loading";
 export default function User() {
 
     const [posts, setPosts] = useState([]);
+    const [user, setUser] = useState([]);
     const [postLoadind, setPostLoading] = useState(false);
     const [reloadPage, setReloadPage] = useState(false);
     const [follow, setFollow] = useState("Loading"); //README: VERIFICAR COMO FICA AO CARREGAR
@@ -22,13 +23,13 @@ export default function User() {
     const loggedUserId = localStorage.getItem("id");
 
     useEffect(() => {
-
         setPostLoading(true);
 
         async function getUserPostsById() {
-
             try {
                 const users = await getPosts(id);
+                const userName = await getUserName(id);
+                setUser(userName.data);
                 setPosts(users.data);
                 setPostLoading(false);
             }
@@ -101,16 +102,15 @@ export default function User() {
     }
 
     function handleUser() { // README: O BOTÃO ERA PRA ENTRAR AQUI
-        if (postLoadind) return <></>
-        return posts.length !== 0 ?
-            (
-                <UserContainer>
-                    <div>
-                        <UserImage src={posts[0].image}></UserImage>
-                        <UserName >{posts[0].name}'s posts</UserName>
-                    </div>
-                </UserContainer>
-            ) : <></>;
+        if (postLoadind || user.length === 0) return <></>
+        return (
+            <UserContainer>
+                <div>
+                    <UserImage src={user[0].image}></UserImage>
+                    <UserName >{user[0].name}'s posts</UserName>
+                </div>
+            </UserContainer>
+        )
     }
 
     function handlePost() {

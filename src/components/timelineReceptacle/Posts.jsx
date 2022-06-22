@@ -16,7 +16,6 @@ import CommentsBox from "./CommentsBox"
 
 import noImage from "./noimage.png"
 
-
 export default function Posts({
   id,
   link,
@@ -102,6 +101,7 @@ export default function Posts({
     setModalIsOpen(!modalIsOpen);
     setDelPostId(id);
   }
+
   async function confirmed() {
     setIsLoading(true)
     try {
@@ -115,7 +115,7 @@ export default function Posts({
   }
 
   return (
-    <>
+    <Wrapper>
       <ContainerPost>
         <DivPost>
           <LeftSideContainer>
@@ -174,6 +174,7 @@ export default function Posts({
       />
 
       <ReactModal
+        className="react-modal"
         isOpen={modalIsOpen}
         shouldCloseOnEsc={true}
         preventScroll={true}
@@ -183,12 +184,15 @@ export default function Posts({
             height: '100%'
           },
           content: {
+            top: '50%',
+            left: '50%',
             margin: 'auto',
             padding: '0',
             width: 'calc(59700px/1440%)',
             maxWidth: '597px',
             height: '262px',
-            borderRadius: '50px'
+            borderRadius: '50px',
+            transform: 'translate(0, 90%)'
           }
         }}
         ariaHideApp={false}
@@ -202,12 +206,18 @@ export default function Posts({
           </Delete>
         }
       </ReactModal>
-    </>
+    </Wrapper>
   )
 };
 
+
+const Wrapper = styled.section`
+  position: relative;
+  z-index:0;
+`
 const Delete = styled.div`
     display: flex;
+    position: relative;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
@@ -215,7 +225,7 @@ const Delete = styled.div`
     width: calc(59700px/1440%);
     height: 262px;
     font-weight: 700;
-    z-index:2;
+    z-index:10;
     font-size: 18px;
     line-height: 21.6px;
     border-radius: 50px;
@@ -274,6 +284,11 @@ const Icons = styled.div`
 
   .edit {
     margin-right: 10px;
+    cursor:pointer;
+  }
+
+  .delete {
+    cursor:pointer;
   }
 `
 
@@ -283,6 +298,7 @@ const PostInfos = styled.div`
   width: 100%;
   max-width: 503px;
   position: relative;
+  z-index:2;
 
   h3 {
     width: fit-content;

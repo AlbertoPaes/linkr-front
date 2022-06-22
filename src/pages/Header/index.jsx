@@ -192,9 +192,10 @@ const ContainerHead = styled.div`
     display: none;
 
     .debounce {
-         width: 95%;
+        width: 95%;
         max-width: 563px;
         height: 45px;
+        
 
         background-color: #FFFFFF;
         color: #151515;
@@ -209,11 +210,15 @@ const ContainerHead = styled.div`
 
         position: relative;
         z-index: 10;
-
-    &::placeholder {
-      color: #9F9F9F;
+        
+        &:focus {
+            outline: none;
         }
-    }
+
+        &::placeholder {
+        color: #9F9F9F;
+            }
+        }
 
     @media (min-width: 800px) {
         min-width: 563px;

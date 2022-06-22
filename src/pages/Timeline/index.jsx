@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
-import { publishPost, getAllPosts } from "../../services/api";
+import { publishPost, getAllPosts, getPostsByFollows } from "../../services/api";
 import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
 
@@ -11,6 +11,7 @@ import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 
 export default function Timeline() {
   const navigate = useNavigate();
+  const userId = localStorage.getItem("id");
   const image = localStorage.getItem("image");
 
   const [formData, setFormData] = useState({ link: "", description: "" });
@@ -21,10 +22,9 @@ export default function Timeline() {
 
   useEffect(() => {
     setPostLoading(true);
-
     (async () => {
       try {
-        const response = await getAllPosts();
+        const response = await getPostsByFollows(userId);
         setPosts(response.data);
         setPostLoading(false);
       } catch (e) {
@@ -33,6 +33,7 @@ export default function Timeline() {
       }
 
     })();
+
 
   }, [reloadPage, navigate]);
 
@@ -52,25 +53,28 @@ export default function Timeline() {
 
   function handlePost() {
     if (postLoadind) return <Loading />
-    return posts.length !== 0 ?
-      (
-        posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
-          return (
-            <Posts
-              key={id}
-              id={userId}
-              link={link}
-              description={description}
-              name={name}
-              image={image}
-              urlTitle={urlTitle || "No Title Found"}
-              urlImage={urlImage}
-              urlDescription={urlDescription || "No Description Found"}
-              postId={id}
-              setReloadPage={() => setReloadPage(!reloadPage)} />
-          )
-        })
-      ) : <h5>There are no posts yet</h5>
+    if (posts) {
+      return posts.length !== 0 ?
+        (
+          posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
+            return (
+              <Posts
+                key={id}
+                id={userId}
+                link={link}
+                description={description}
+                name={name}
+                image={image}
+                urlTitle={urlTitle || "No Title Found"}
+                urlImage={urlImage}
+                urlDescription={urlDescription || "No Description Found"}
+                postId={id}
+                setReloadPage={() => setReloadPage(!reloadPage)} />
+            )
+          })
+        ) : <h5>No posts found from your friends</h5>
+    }
+    return <h5>You don't follow anyone yet. Search for new friends!</h5>
   }
 
   function handleInputChange(e) {
@@ -136,6 +140,7 @@ const WrapperTimeline = styled.section`
   width: 100%;
   min-width:375px;
   margin-bottom: 30px;
+
 
   h2 {
     font-family: 'Oswald';
