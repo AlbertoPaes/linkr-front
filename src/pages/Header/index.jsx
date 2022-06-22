@@ -43,25 +43,15 @@ function Header() {
         try {
             if (userInitials.length > 0) {
                 const search = await getSearch(userInitials);
-                // console.log(search.data);
 
                 let searchFollow = await getFollowersById(userInitials, loggedUserId);
-                // console.log(searchFollow.data);
+
                 if (searchFollow.data.length > 0) {
                     searchFollow.data.forEach(search => {
                         followingUsers.set(search)
                     })
                 };
-
-                console.log(followingUsers);
-
                 setUsers(search.data);
-
-
-
-                // CRIAR UM MAPA COM OS IDS VINDOS DESSA REQUISIÇÃO, QUE SÃO
-                // OS IDS APENAS DOS USUÁRIOS QUE EU SIGO
-
             }
             else setUsers([])
         }
@@ -73,6 +63,61 @@ function Header() {
     function goToUsersPage(id) {
         navigate(`/users/${id}`);
         setUsers([]);
+    }
+
+    function handleUsersMobile() {
+        return (
+            <Users>
+                {users.map(user => {
+                    const { id, image, name } = user;
+                    const checkId = followingUsers.has(user.id);
+                    return handleFollowingUsers(id, image, name, checkId)
+                })}
+                {users.map(user => {
+                    const { id, image, name } = user;
+                    const checkId = followingUsers.has(user.id);
+                    return handleNotFollowingUsers(id, image, name, checkId)
+                })}
+            </Users>
+        )
+    }
+
+    function handleUsersDesktop() {
+        return (
+            <UsersHead>
+                {users.map(user => {
+                    const { id, image, name } = user;
+                    const checkId = followingUsers.has(user.id);
+                    return handleFollowingUsers(id, image, name, checkId)
+                })}
+                {users.map(user => {
+                    const { id, image, name } = user;
+                    const checkId = followingUsers.has(user.id);
+                    return handleNotFollowingUsers(id, image, name, checkId)
+                })}
+            </UsersHead>
+        )
+    }
+
+    function handleFollowingUsers(id, image, name, checkId) {
+        return checkId ?
+            (
+                <User key={id}>
+                    <UserImage src={image}></UserImage>
+                    <h1 onClick={() => goToUsersPage(id)}>{name}</h1>
+                    <Following> • following </Following>
+                </User>
+            ) : <></>;
+    }
+
+    function handleNotFollowingUsers(id, image, name, checkId) {
+        return !checkId ?
+            (
+                <User key={id}>
+                    <UserImage src={image}></UserImage>
+                    <h1 onClick={() => goToUsersPage(id)}>{name}</h1>
+                </User>
+            ) : <></>;
     }
 
     return (
@@ -89,25 +134,8 @@ function Header() {
                         <BsSearch />
                     </IconContext.Provider>
                 </ContainerInput>
-
-
-
                 {users.length > 0 ?
-                    <Users>
-                        {users.map(user => {
-
-                            const checkId = followingUsers.has(user.id);
-                            console.log(user.id, checkId);
-
-                            return (
-                                <User key={user.id}>
-                                    <UserImage src={user.image}></UserImage>
-                                    <h1 onClick={() => goToUsersPage(user.id)}>{user.name}</h1>
-                                    <Following checkId={checkId}> • following </Following>
-                                </User>
-                            )
-                        })}
-                    </Users> :
+                    handleUsersMobile() :
                     <></>
                 }
             </Container>
@@ -127,22 +155,7 @@ function Header() {
                     </ContainerInput>
 
                     {users.length > 0 ?
-                        <UsersHead>
-                            {users.map(user => {
-
-                                const checkId = followingUsers.has(user.id);
-                                console.log(user.id, checkId);
-
-                                return (
-
-                                    <User key={user.id}>
-                                        <UserImage src={user.image}></UserImage>
-                                        <h1 onClick={() => goToUsersPage(user.id)}>{user.name}</h1>
-                                        <Following checkId={checkId}> • following </Following>
-                                    </User>
-                                )
-                            })}
-                        </UsersHead> :
+                        handleUsersDesktop() :
                         <></>
                     }
                 </ContainerHead>
@@ -171,22 +184,6 @@ function Header() {
     )
 }
 
-function setFollowing(hasId) {
-    if (hasId) return "block";
-    else return "none";
-}
-
-const Following = styled.p`
-     font-family: 'Lato';
-        font-weight: 400;
-        font-size: 17px;
-        line-height: 23px;
-        color: #C5C5C5;
-        display: ${(props) => setFollowing(props.checkId)};
-
-        margin-left: -7px;
-`
-
 const Logout = styled.div`
     margin: auto 0;
 `
@@ -207,8 +204,6 @@ const ContainerHead = styled.div`
         font-size: 17px;
         line-height: 20px;
 
-        
-
         border: none;
         border-radius: 8px;
 
@@ -219,7 +214,6 @@ const ContainerHead = styled.div`
       color: #9F9F9F;
         }
     }
-   
 
     @media (min-width: 800px) {
         min-width: 563px;
@@ -229,7 +223,6 @@ const ContainerHead = styled.div`
         display: block;
     }
 `
-
 const UsersHead = styled.div`
 
     display: none;
@@ -258,13 +251,11 @@ const UsersHead = styled.div`
         margin-left: 10px;
         }
 `
-
 const UserImage = styled.img`
     width: 39px;
     height: 39px;
     border-radius: 26px;
 `
-
 const AiOutlineWrap = styled.div`
     position: absolute;
     top: 25px;
@@ -272,7 +263,6 @@ const AiOutlineWrap = styled.div`
     cursor: pointer;
     z-index: 11;
 `
-
 const Overlay = styled.div`
     width: 100vw;
     height: 100vh;
@@ -326,7 +316,6 @@ const Image = styled.img`
     border-radius: 26px;
     cursor: pointer;
 `
-
 const User = styled.div`
 
     display: flex;
@@ -344,7 +333,15 @@ const User = styled.div`
         color: #515151;
     }
 `
+const Following = styled.p`
+    font-family: 'Lato';
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 23px;
+    color: #C5C5C5;
 
+    margin-left: -7px;
+`
 const Users = styled.div`
     width: 95%;
     max-width: 563px;
@@ -357,9 +354,7 @@ const Users = styled.div`
     padding-bottom: 23px;
     margin-top:-25px;
     margin-left: 10px;
-
 `
-
 const Head = styled.div`
     width: 100%;
     height: 72px;
@@ -374,8 +369,6 @@ const Head = styled.div`
     left: 0;
     z-index: 10;
 `
-
-
 const Logo = styled.p`
   font-family: 'Passion One';
   font-weight: 700;
@@ -389,7 +382,6 @@ const Logo = styled.p`
   padding-left: 17px;
   cursor: pointer;
 `
-
 const Container = styled.div`
     width: 100%;
     display: flex;
@@ -454,5 +446,4 @@ const ContainerInput = styled.div`
     padding-right: 15px;
     margin: 10px;
 `
-
 export default Header;
