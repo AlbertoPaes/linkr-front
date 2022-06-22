@@ -8,17 +8,19 @@ import { BsSearch } from "react-icons/bs";
 import styled from "styled-components";
 import { DebounceInput } from 'react-debounce-input';
 
-import { getSearch } from "../../services/api";
+import { getSearch, getFollowersById } from "../../services/api";
 
 function Header() {
     const { logout } = useContext(AuthContext);
 
     const [users, setUsers] = useState([]);
     const [userMenu, setUserMenu] = useState(true);
+    const [followingUsers, SetFollowingUsers] = useState(new Map());
 
     const navigate = useNavigate();
 
     const userPicture = localStorage.getItem("image");
+    const loggedUserId = localStorage.getItem("id");
 
     const handleUserMenu = (userMenuStatus) => {
         userMenuStatus ? setUserMenu(false) : setUserMenu(true);
@@ -34,11 +36,32 @@ function Header() {
         return;
     }
 
-    const handleSearch = async (value) => {
+    const handleSearch = async (userInitials) => {
+
+        followingUsers.clear();
+
         try {
-            if (value.length > 0) {
-                const search = await getSearch(value);
-                setUsers(search.data)
+            if (userInitials.length > 0) {
+                const search = await getSearch(userInitials);
+                // console.log(search.data);
+
+                let searchFollow = await getFollowersById(userInitials, loggedUserId);
+                // console.log(searchFollow.data);
+                if (searchFollow.data.length > 0) {
+                    searchFollow.data.forEach(search => {
+                        followingUsers.set(search)
+                    })
+                };
+
+                console.log(followingUsers);
+
+                setUsers(search.data);
+
+
+
+                // CRIAR UM MAPA COM OS IDS VINDOS DESSA REQUISIÇÃO, QUE SÃO
+                // OS IDS APENAS DOS USUÁRIOS QUE EU SIGO
+
             }
             else setUsers([])
         }
@@ -72,10 +95,15 @@ function Header() {
                 {users.length > 0 ?
                     <Users>
                         {users.map(user => {
+
+                            const checkId = followingUsers.has(user.id);
+                            console.log(user.id, checkId);
+
                             return (
                                 <User key={user.id}>
                                     <UserImage src={user.image}></UserImage>
-                                    <p onClick={() => goToUsersPage(user.id)}>{user.name}</p>
+                                    <h1 onClick={() => goToUsersPage(user.id)}>{user.name}</h1>
+                                    <Following checkId={checkId}> • following </Following>
                                 </User>
                             )
                         })}
@@ -101,10 +129,16 @@ function Header() {
                     {users.length > 0 ?
                         <UsersHead>
                             {users.map(user => {
+
+                                const checkId = followingUsers.has(user.id);
+                                console.log(user.id, checkId);
+
                                 return (
+
                                     <User key={user.id}>
                                         <UserImage src={user.image}></UserImage>
-                                        <p onClick={() => goToUsersPage(user.id)}>{user.name}</p>
+                                        <h1 onClick={() => goToUsersPage(user.id)}>{user.name}</h1>
+                                        <Following checkId={checkId}> • following </Following>
                                     </User>
                                 )
                             })}
@@ -136,6 +170,22 @@ function Header() {
         </>
     )
 }
+
+function setFollowing(hasId) {
+    if (hasId) return "block";
+    else return "none";
+}
+
+const Following = styled.p`
+     font-family: 'Lato';
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 23px;
+        color: #C5C5C5;
+        display: ${(props) => setFollowing(props.checkId)};
+
+        margin-left: -7px;
+`
 
 const Logout = styled.div`
     margin: auto 0;
@@ -187,20 +237,26 @@ const UsersHead = styled.div`
     @media (min-width: 800px) {
         display: block;
         width: 95%;
-    max-width: 563px;
+        max-width: 563px;
 
-    border-radius: 8px;
+        border-radius: 8px;
+        background-color: #E7E7E7;
 
-    background-color: #E7E7E7;
+        overflow-y: scroll;
+        /* scrollbar-width: none; */
+/* 
+        ::-webkit-scrollbar {
+        width: 0px;
+        }      */
 
-    position: relative;
-    z-index: 5;
+        position: relative;
+        z-index: 15;
 
-    padding-top: 14px;
-    padding-bottom: 23px;
-    margin-top:-25px;
-    margin-left: 10px;
-    }
+        padding-top: 14px;
+        padding-bottom: 23px;
+        margin-top:-25px;
+        margin-left: 10px;
+        }
 `
 
 const UserImage = styled.img`
@@ -280,14 +336,13 @@ const User = styled.div`
     padding-top: 14px;
     padding-left: 17px;
 
-    p {
+    h1 {
         font-family: 'Lato';
         font-weight: 400;
         font-size: 17px;
         line-height: 23px;
         color: #515151;
     }
-
 `
 
 const Users = styled.div`
@@ -351,7 +406,7 @@ const Container = styled.div`
     z-index: 10;
 
     .debounce {
-         width: 95%;
+        width: 95%;
         max-width: 563px;
         height: 45px;
 
@@ -390,6 +445,7 @@ const Container = styled.div`
 const ContainerInput = styled.div`
     display: flex;
     width: 95%;
+    max-width: 563px;
     align-items:center;
     background-color: #ffffff;
     border-radius: 8px;
