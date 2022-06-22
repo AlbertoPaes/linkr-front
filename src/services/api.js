@@ -24,6 +24,11 @@ export const getAllPosts = async () => {
   return posts;
 };
 
+export const getPostsByFollows = async (id) => {
+  const userPosts = await api.get(`/timeline/${id}`);
+  return userPosts;
+}
+
 export const getMetadata = async (link) => {
   const urlMeta = await urlMetadata(link);
   return urlMeta;
@@ -37,6 +42,11 @@ export const getPosts = async (id) => {
 export const getSearch = async (name) => {
   const searchUser = await api.get(`/search/${name}`);
   return searchUser
+}
+
+export const getUserName = async (id) => {
+  const user = await api.get(`/profile/${id}`);
+  return user;
 }
 
 export const getPostsByHashtag = async (hashtag) => {
@@ -87,7 +97,7 @@ export const deleteFollow = async (loggedUserId, id) => {
   await api.delete(`/follows/${loggedUserId}/${id}`);
 }
 
-export const getFollowersById = async (name,loggedUserId) => {
+export const getFollowersById = async (name, loggedUserId) => {
   const followers = await api.get(`/follows/search/${name}/${loggedUserId}`);
   return followers;
 }

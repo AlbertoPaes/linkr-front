@@ -349,17 +349,17 @@ const Head = styled.div`
     z-index: 20;
 `
 const Logo = styled.p`
-  font-family: 'Passion One';
-  font-weight: 700;
-  font-size: 45px;
-  line-height: 50px;
-  letter-spacing: 0.05em;
+    font-family: 'Passion One';
+    font-weight: 700;
+    font-size: 45px;
+     line-height: 50px;
+    letter-spacing: 0.05em;
 
-  color: #FFFFFF;
+     color: #FFFFFF;
 
-  padding-top: 13px;
-  padding-left: 17px;
-  cursor: pointer;
+    padding-top: 13px;
+    padding-left: 17px;
+    cursor: pointer;
 `
 const MobileContainer = styled.div`
     width: 100%;
@@ -411,9 +411,13 @@ const ContainerInput = styled.div`
         border: none;
         border-radius: 8px;
 
-            &::placeholder {
+        &:focus {
+            outline: none;
+        }
+
+        &::placeholder {
             color: #9F9F9F;
-                }
+        }
     }
 `
 export default Header;
