@@ -2,7 +2,7 @@ import axios from "axios";
 import urlMetadata from "url-metadata";
 
 export const api = axios.create({
-  // baseURL: "https://linkr-driven-api.herokuapp.com",
+  // baseURL: "https://linkr-driven-api.herokuapp.com"
   baseURL: "http://localhost:4000"
 });
 
@@ -85,4 +85,9 @@ export const postFollow = async (object) => {
 
 export const deleteFollow = async (loggedUserId, id) => {
   await api.delete(`/follows/${loggedUserId}/${id}`);
+}
+
+export const getFollowersById = async (name,loggedUserId) => {
+  const followers = await api.get(`/follows/search/${name}/${loggedUserId}`);
+  return followers;
 }

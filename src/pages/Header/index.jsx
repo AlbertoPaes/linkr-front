@@ -8,17 +8,19 @@ import { BsSearch } from "react-icons/bs";
 import styled from "styled-components";
 import { DebounceInput } from 'react-debounce-input';
 
-import { getSearch } from "../../services/api";
+import { getSearch, getFollowersById } from "../../services/api";
 
 function Header() {
     const { logout } = useContext(AuthContext);
 
     const [users, setUsers] = useState([]);
     const [userMenu, setUserMenu] = useState(true);
+    const [followingUsers, SetFollowingUsers] = useState(new Map());
 
     const navigate = useNavigate();
 
     const userPicture = localStorage.getItem("image");
+    const loggedUserId = localStorage.getItem("id");
 
     const handleUserMenu = (userMenuStatus) => {
         userMenuStatus ? setUserMenu(false) : setUserMenu(true);
@@ -34,11 +36,22 @@ function Header() {
         return;
     }
 
-    const handleSearch = async (value) => {
+    const handleSearch = async (userInitials) => {
+
+        followingUsers.clear();
+
         try {
-            if (value.length > 0) {
-                const search = await getSearch(value);
-                setUsers(search.data)
+            if (userInitials.length > 0) {
+                const search = await getSearch(userInitials);
+
+                let searchFollow = await getFollowersById(userInitials, loggedUserId);
+
+                if (searchFollow.data.length > 0) {
+                    searchFollow.data.forEach(search => {
+                        followingUsers.set(search)
+                    })
+                };
+                setUsers(search.data);
             }
             else setUsers([])
         }
@@ -50,6 +63,61 @@ function Header() {
     function goToUsersPage(id) {
         navigate(`/users/${id}`);
         setUsers([]);
+    }
+
+    function handleUsersMobile() {
+        return (
+            <Users>
+                {users.map(user => {
+                    const { id, image, name } = user;
+                    const checkId = followingUsers.has(user.id);
+                    return handleFollowingUsers(id, image, name, checkId)
+                })}
+                {users.map(user => {
+                    const { id, image, name } = user;
+                    const checkId = followingUsers.has(user.id);
+                    return handleNotFollowingUsers(id, image, name, checkId)
+                })}
+            </Users>
+        )
+    }
+
+    function handleUsersDesktop() {
+        return (
+            <UsersHead>
+                {users.map(user => {
+                    const { id, image, name } = user;
+                    const checkId = followingUsers.has(user.id);
+                    return handleFollowingUsers(id, image, name, checkId)
+                })}
+                {users.map(user => {
+                    const { id, image, name } = user;
+                    const checkId = followingUsers.has(user.id);
+                    return handleNotFollowingUsers(id, image, name, checkId)
+                })}
+            </UsersHead>
+        )
+    }
+
+    function handleFollowingUsers(id, image, name, checkId) {
+        return checkId ?
+            (
+                <User key={id}>
+                    <UserImage src={image}></UserImage>
+                    <h1 onClick={() => goToUsersPage(id)}>{name}</h1>
+                    <Following> • following </Following>
+                </User>
+            ) : <></>;
+    }
+
+    function handleNotFollowingUsers(id, image, name, checkId) {
+        return !checkId ?
+            (
+                <User key={id}>
+                    <UserImage src={image}></UserImage>
+                    <h1 onClick={() => goToUsersPage(id)}>{name}</h1>
+                </User>
+            ) : <></>;
     }
 
     return (
@@ -66,18 +134,8 @@ function Header() {
                         <BsSearch />
                     </IconContext.Provider>
                 </ContainerInput>
-
                 {users.length > 0 ?
-                    <Users>
-                        {users.map(user => {
-                            return (
-                                <User key={user.id}>
-                                    <UserImage src={user.image}></UserImage>
-                                    <p onClick={() => goToUsersPage(user.id)}>{user.name}</p>
-                                </User>
-                            )
-                        })}
-                    </Users> :
+                    handleUsersMobile() :
                     <></>
                 }
             </Container>
@@ -97,16 +155,7 @@ function Header() {
                     </ContainerInput>
 
                     {users.length > 0 ?
-                        <UsersHead>
-                            {users.map(user => {
-                                return (
-                                    <User key={user.id}>
-                                        <UserImage src={user.image}></UserImage>
-                                        <p onClick={() => goToUsersPage(user.id)}>{user.name}</p>
-                                    </User>
-                                )
-                            })}
-                        </UsersHead> :
+                        handleUsersDesktop() :
                         <></>
                     }
                 </ContainerHead>
@@ -155,8 +204,6 @@ const ContainerHead = styled.div`
         font-size: 17px;
         line-height: 20px;
 
-        
-
         border: none;
         border-radius: 8px;
 
@@ -167,7 +214,6 @@ const ContainerHead = styled.div`
       color: #9F9F9F;
         }
     }
-   
 
     @media (min-width: 800px) {
         min-width: 563px;
@@ -177,7 +223,6 @@ const ContainerHead = styled.div`
         display: block;
     }
 `
-
 const UsersHead = styled.div`
 
     display: none;
@@ -185,28 +230,32 @@ const UsersHead = styled.div`
     @media (min-width: 800px) {
         display: block;
         width: 95%;
-    max-width: 563px;
+        max-width: 563px;
 
-    border-radius: 8px;
+        border-radius: 8px;
+        background-color: #E7E7E7;
 
-    background-color: #E7E7E7;
+        overflow-y: scroll;
+        /* scrollbar-width: none; */
+/* 
+        ::-webkit-scrollbar {
+        width: 0px;
+        }      */
 
-    position: relative;
-    z-index: 5;
+        position: relative;
+        z-index: 15;
 
-    padding-top: 14px;
-    padding-bottom: 23px;
-    margin-top:-25px;
-    margin-left: 10px;
-    }
+        padding-top: 14px;
+        padding-bottom: 23px;
+        margin-top:-25px;
+        margin-left: 10px;
+        }
 `
-
 const UserImage = styled.img`
     width: 39px;
     height: 39px;
     border-radius: 26px;
 `
-
 const AiOutlineWrap = styled.div`
     position: absolute;
     top: 25px;
@@ -214,7 +263,6 @@ const AiOutlineWrap = styled.div`
     cursor: pointer;
     z-index: 11;
 `
-
 const Overlay = styled.div`
     width: 100vw;
     height: 100vh;
@@ -268,7 +316,6 @@ const Image = styled.img`
     border-radius: 26px;
     cursor: pointer;
 `
-
 const User = styled.div`
 
     display: flex;
@@ -278,16 +325,23 @@ const User = styled.div`
     padding-top: 14px;
     padding-left: 17px;
 
-    p {
+    h1 {
         font-family: 'Lato';
         font-weight: 400;
         font-size: 17px;
         line-height: 23px;
         color: #515151;
     }
-
 `
+const Following = styled.p`
+    font-family: 'Lato';
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 23px;
+    color: #C5C5C5;
 
+    margin-left: -7px;
+`
 const Users = styled.div`
     width: 95%;
     max-width: 563px;
@@ -300,9 +354,7 @@ const Users = styled.div`
     padding-bottom: 23px;
     margin-top:-25px;
     margin-left: 10px;
-
 `
-
 const Head = styled.div`
     width: 100%;
     height: 72px;
@@ -317,8 +369,6 @@ const Head = styled.div`
     left: 0;
     z-index: 10;
 `
-
-
 const Logo = styled.p`
   font-family: 'Passion One';
   font-weight: 700;
@@ -332,7 +382,6 @@ const Logo = styled.p`
   padding-left: 17px;
   cursor: pointer;
 `
-
 const Container = styled.div`
     width: 100%;
     display: flex;
@@ -349,7 +398,7 @@ const Container = styled.div`
     z-index: 10;
 
     .debounce {
-         width: 95%;
+        width: 95%;
         max-width: 563px;
         height: 45px;
 
@@ -383,11 +432,12 @@ const Container = styled.div`
     @media (min-width: 800px) {
         display: none;
     }
-`;
+`
 
 const ContainerInput = styled.div`
     display: flex;
     width: 95%;
+    max-width: 563px;
     align-items:center;
     background-color: #ffffff;
     border-radius: 8px;
@@ -396,5 +446,4 @@ const ContainerInput = styled.div`
     padding-right: 15px;
     margin: 10px;
 `
-
 export default Header;
