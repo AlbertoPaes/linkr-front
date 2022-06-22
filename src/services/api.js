@@ -24,6 +24,11 @@ export const getAllPosts = async () => {
   return posts;
 };
 
+export const getPostsByFollows = async (id) => {
+  const userPosts = await api.get(`/timeline/${id}`);
+  return userPosts;
+}
+
 export const getMetadata = async (link) => {
   const urlMeta = await urlMetadata(link);
   return urlMeta;
