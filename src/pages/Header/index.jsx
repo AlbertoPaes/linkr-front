@@ -67,7 +67,7 @@ function Header() {
 
     function handleUsersMobile() {
         return (
-            <Users>
+            <UsersMobile>
                 {users.map(user => {
                     const { id, image, name } = user;
                     const checkId = followingUsers.has(user.id);
@@ -78,13 +78,13 @@ function Header() {
                     const checkId = followingUsers.has(user.id);
                     return handleNotFollowingUsers(id, image, name, checkId)
                 })}
-            </Users>
+            </UsersMobile>
         )
     }
 
     function handleUsersDesktop() {
         return (
-            <UsersHead>
+            <UsersDesktop>
                 {users.map(user => {
                     const { id, image, name } = user;
                     const checkId = followingUsers.has(user.id);
@@ -95,7 +95,7 @@ function Header() {
                     const checkId = followingUsers.has(user.id);
                     return handleNotFollowingUsers(id, image, name, checkId)
                 })}
-            </UsersHead>
+            </UsersDesktop>
         )
     }
 
@@ -122,7 +122,7 @@ function Header() {
 
     return (
         <>
-            <Container>
+            <MobileContainer>
                 <ContainerInput>
                     <DebounceInput
                         minLength={3}
@@ -138,7 +138,7 @@ function Header() {
                     handleUsersMobile() :
                     <></>
                 }
-            </Container>
+            </MobileContainer>
             <Head>
                 <Logo onClick={() => navigate("/timeline")}>linkr</Logo>
                 <ContainerHead>
@@ -191,68 +191,40 @@ const ContainerHead = styled.div`
 
     display: none;
 
-    .debounce {
-        width: 95%;
-        max-width: 563px;
-        height: 45px;
-        
-
-        background-color: #FFFFFF;
-        color: #151515;
-
-        font-family: 'Lato';
-        font-weight: 400;
-        font-size: 17px;
-        line-height: 20px;
-
-        border: none;
-        border-radius: 8px;
-
-        position: relative;
-        z-index: 10;
-        
-        &:focus {
-            outline: none;
-        }
-
-        &::placeholder {
-        color: #9F9F9F;
-            }
-        }
-
     @media (min-width: 800px) {
-        min-width: 563px;
 
+        min-width: 563px;
+        height: 72px;
+        display: block;
+        position: relative;
+
+        padding-top:3px;
         margin: 0 auto;
 
-        display: block;
     }
 `
-const UsersHead = styled.div`
+const UsersDesktop = styled.div`
 
     display: none;
 
     @media (min-width: 800px) {
         display: block;
         width: 95%;
+        max-height: 175px;
         max-width: 563px;
 
         border-radius: 8px;
         background-color: #E7E7E7;
 
-        overflow-y: scroll;
-        /* scrollbar-width: none; */
-/* 
+        overflow-y: scroll; 
+        
         ::-webkit-scrollbar {
         width: 0px;
-        }      */
-
-        position: relative;
-        z-index: 15;
+        }      
 
         padding-top: 14px;
         padding-bottom: 23px;
-        margin-top:-25px;
+        margin-top: -20px;
         margin-left: 10px;
         }
 `
@@ -336,6 +308,7 @@ const User = styled.div`
         font-size: 17px;
         line-height: 23px;
         color: #515151;
+        cursor: pointer;
     }
 `
 const Following = styled.p`
@@ -347,10 +320,10 @@ const Following = styled.p`
 
     margin-left: -7px;
 `
-const Users = styled.div`
+const UsersMobile = styled.div`
     width: 95%;
     max-width: 563px;
-
+    max-height: 125px;
     border-radius: 8px;
 
     background-color: #E7E7E7;
@@ -358,7 +331,12 @@ const Users = styled.div`
     padding-top: 14px;
     padding-bottom: 23px;
     margin-top:-25px;
-    margin-left: 10px;
+
+    overflow-y: scroll; 
+
+    ::-webkit-scrollbar {
+            width: 0px;
+        }   
 `
 const Head = styled.div`
     width: 100%;
@@ -372,22 +350,22 @@ const Head = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 10;
+    z-index: 20;
 `
 const Logo = styled.p`
-  font-family: 'Passion One';
-  font-weight: 700;
-  font-size: 45px;
-  line-height: 50px;
-  letter-spacing: 0.05em;
+    font-family: 'Passion One';
+    font-weight: 700;
+    font-size: 45px;
+     line-height: 50px;
+    letter-spacing: 0.05em;
 
-  color: #FFFFFF;
+     color: #FFFFFF;
 
-  padding-top: 13px;
-  padding-left: 17px;
-  cursor: pointer;
+    padding-top: 13px;
+    padding-left: 17px;
+    cursor: pointer;
 `
-const Container = styled.div`
+const MobileContainer = styled.div`
     width: 100%;
     display: flex;
 
@@ -402,8 +380,27 @@ const Container = styled.div`
     position: relative;
     z-index: 10;
 
+    @media (min-width: 800px) {
+        display: none;
+    }
+`
+
+const ContainerInput = styled.div`
+    display: flex;
+    width: 95%;
+    max-width: 563px;
+    align-items:center;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    height: 45px;
+    padding-left: 10px;
+    padding-right: 15px;
+    margin: 10px;
+
+    position: relative;
+
     .debounce {
-        width: 95%;
+         width: 95%;
         max-width: 563px;
         height: 45px;
 
@@ -415,40 +412,16 @@ const Container = styled.div`
         font-size: 17px;
         line-height: 20px;
 
-        padding-left: 10px;
-        padding-right: 15px;
-        margin: 10px;
-
         border: none;
         border-radius: 8px;
 
-        position: relative;
-        z-index: 10;
-
-    &::placeholder {
-      color: #9F9F9F;
+        &:focus {
+            outline: none;
         }
 
-        @media (min-width: 800px) {
-        display: none;
+        &::placeholder {
+            color: #9F9F9F;
         }
     }
-
-    @media (min-width: 800px) {
-        display: none;
-    }
-`
-
-const ContainerInput = styled.div`
-    display: flex;
-    width: 95%;
-    max-width: 563px;
-    align-items:center;
-    background-color: #ffffff;
-    border-radius: 8px;
-    height: 45px;
-    padding-left: 10px;
-    padding-right: 15px;
-    margin: 10px;
 `
 export default Header;
