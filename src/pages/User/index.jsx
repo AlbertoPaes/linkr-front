@@ -153,7 +153,6 @@ export default function User() {
                         <HashtagBox reloadPage={reloadPage} />
                     </Div>
                 </SubContainer>
-                {/* {handleFollow()} */}
             </TimelineBox>
         </>
     )
@@ -232,10 +231,16 @@ const Follow = styled.button`
 
     display: ${(props) => checkVisible(props.visible)};
 
-     position: absolute;
-     top: 16px;
+    position: absolute;
+    top: 16px;
     right: 0;  
     z-index: 20; 
+
+    @media (max-width: 800px) {
+        top: 23px;
+        right: -100px;
+        z-index: 0;
+    }
 `
 const TimelineBox = styled.main`
   position:absolute;
