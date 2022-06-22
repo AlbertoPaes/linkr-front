@@ -195,9 +195,12 @@ const ContainerHead = styled.div`
 
         min-width: 563px;
         height: 72px;
-        margin: 0 auto;
         display: block;
         position: relative;
+
+        padding-top:3px;
+        margin: 0 auto;
+
     }
 `
 const UsersDesktop = styled.div`
@@ -207,7 +210,7 @@ const UsersDesktop = styled.div`
     @media (min-width: 800px) {
         display: block;
         width: 95%;
-        height: 175px;
+        max-height: 175px;
         max-width: 563px;
 
         border-radius: 8px;
@@ -305,6 +308,7 @@ const User = styled.div`
         font-size: 17px;
         line-height: 23px;
         color: #515151;
+        cursor: pointer;
     }
 `
 const Following = styled.p`
@@ -319,7 +323,7 @@ const Following = styled.p`
 const UsersMobile = styled.div`
     width: 95%;
     max-width: 563px;
-    height: 125px;
+    max-height: 125px;
     border-radius: 8px;
 
     background-color: #E7E7E7;

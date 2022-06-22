@@ -233,6 +233,7 @@ const Follow = styled.button`
     background-color: ${(props) => setBackground(props.selected)};
 
     display: ${(props) => checkVisible(props.visible)};
+    cursor: pointer;
 
     position: absolute;
     top: 16px;
