@@ -44,6 +44,11 @@ export const getSearch = async (name) => {
   return searchUser
 }
 
+export const getUserName = async (id) => {
+  const user = await api.get(`/profile/${id}`);
+  return user;
+}
+
 export const getPostsByHashtag = async (hashtag) => {
   const posts = await api.get(`/hashtag/${hashtag}`);
   return posts;
@@ -92,7 +97,7 @@ export const deleteFollow = async (loggedUserId, id) => {
   await api.delete(`/follows/${loggedUserId}/${id}`);
 }
 
-export const getFollowersById = async (name,loggedUserId) => {
+export const getFollowersById = async (name, loggedUserId) => {
   const followers = await api.get(`/follows/search/${name}/${loggedUserId}`);
   return followers;
 }

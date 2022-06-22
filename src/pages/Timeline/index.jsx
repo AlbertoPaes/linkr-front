@@ -22,19 +22,6 @@ export default function Timeline() {
 
   useEffect(() => {
     setPostLoading(true);
-
-    // (async () => {
-    //   try {
-    //     const response = await getAllPosts();
-    //     setPosts(response.data);
-    //     setPostLoading(false);
-    //   } catch (e) {
-    //     console.log(e);
-    //     alert("An error occured while trying to fetch the posts, please refresh the page")
-    //   }
-
-    // })();
-
     (async () => {
       try {
         const response = await getPostsByFollows(userId);
