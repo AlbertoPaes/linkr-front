@@ -67,8 +67,6 @@ function Header() {
                     </IconContext.Provider>
                 </ContainerInput>
 
-
-
                 {users.length > 0 ?
                     <Users>
                         {users.map(user => {

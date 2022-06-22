@@ -66,6 +66,14 @@ export const deletePost = async (id) => {
   await api.delete(`/post/${id}`)
 }
 
+export const getCommentByPostId = async (postId) => {
+  const comments = await api.get(`/comments/${postId}`);
+  return comments;
+}
+
+export const postComment = async (postId, comment) => {
+  await api.post(`/comments/${postId}`, { comment });
+}
 export const getFollow = async (loggedUserId, id) => {
   const checkFollow = await api.get(`/follows/${loggedUserId}/${id}`);
   return checkFollow;
