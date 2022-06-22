@@ -1,15 +1,30 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import { getFollow } from "../../services/api";
 
 export default function Comment({ comment, name, image, userId, userPostId }) {
   const navigate = useNavigate();
+  const [followers, setFollowers] = useState(false);
+  console.log(followers)
+
   const loggedUserId = localStorage.getItem("id")
+
+  useEffect(() => {
+    async function getFollowers(loggedUserId, followId) {
+      const result = await getFollow(loggedUserId, followId);
+      setFollowers(result.data);
+    }
+    getFollowers(loggedUserId, userId)
+  }, [])
 
   return (
     <ContainerComment>
       <img src={image} alt="user" />
       <CommentInfos>
         <h4 onClick={() => navigate(`/users/${userId}`)}>{name}
+          {followers === true ? (<span> • following</span>) : ""}
           {userPostId === userId ? (<span> • post’s author</span>) : ""}
         </h4>
         <p>{comment}</p>

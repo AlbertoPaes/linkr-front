@@ -120,7 +120,11 @@ export default function Posts({
         <DivPost>
           <LeftSideContainer>
             <Like image={image} userId={loggedUserId} postId={postId} />
-            <Comments comments={comments} setCommentBox={() => setCommentBox(!commentBox)} />
+            <Comments
+              comments={comments}
+              setCommentBox={() => setCommentBox(!commentBox)}
+              commentBox={commentBox}
+            />
           </LeftSideContainer>
           <PostInfos>
             <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>

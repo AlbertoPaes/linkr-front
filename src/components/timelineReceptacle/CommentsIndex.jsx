@@ -5,12 +5,12 @@ import { IconContext } from "react-icons";
 
 import { getCommentByPostId } from "../../services/api";
 
-export default function Comments({ comments, setCommentBox }) {
+export default function Comments({ comments, setCommentBox, commentBox }) {
 
   return (
-    <Wrapper onClick={setCommentBox}>
-      <IconContext.Provider value={{ color: "#FFFFFF", className: "comment", size: "25px" }}>
-        <AiOutlineComment name="comment" />
+    <Wrapper onClick={setCommentBox} commentBox={commentBox}>
+      <IconContext.Provider value={{ color: "#FFFFFF", size: "25px" }}>
+        <AiOutlineComment className="comment" name="comment" />
       </IconContext.Provider>
       <p>{comments.length} {comments.length > 1 ? "comments" : "comment"}</p>
     </Wrapper>
@@ -21,6 +21,11 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   cursor: pointer;
+
+  .comment > * {
+    fill: ${({ commentBox }) => commentBox ? "#727272" : "#ffffff"};
+  }
+
 
   p {
     font-family: 'Lato';
