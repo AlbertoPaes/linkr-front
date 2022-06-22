@@ -12,6 +12,7 @@ export default function User() {
 
     const [posts, setPosts] = useState([]);
     const [postLoadind, setPostLoading] = useState(false);
+    const [followLoading, setFollowLoading] = useState(false);
     const [reloadPage, setReloadPage] = useState(false);
     const [follow, setFollow] = useState("Loading"); //README: VERIFICAR COMO FICA AO CARREGAR
     const [toggle, setToggle] = useState(true);
@@ -45,8 +46,11 @@ export default function User() {
 
         async function getFollows() {
 
+                setFollowLoading(true);
+
             try {
                 const loggedUser = await getFollow(loggedUserId, id);
+                setFollowLoading(false);
                 if (loggedUser.data === "Myself") setVisible(false);
                 else setVisible(true);
 
@@ -139,17 +143,19 @@ export default function User() {
 
     return (
         <>
+
             <Header />
 
             <TimelineBox>
-                <Follow selected={toggle} loading={postLoadind} visible={visible}
-                    onClick={() => toggleFollow()}>{follow}</Follow>
                 {handleUser()}
                 <SubContainer>
                     <WrapperTimeline>
                         {handlePost()}
                     </WrapperTimeline >
                     <Div>
+                        {followLoading? <></>: 
+                        <Follow selected={toggle} loading={postLoadind} visible={visible}
+                        onClick={() => toggleFollow()}>{follow}</Follow>}
                         <HashtagBox reloadPage={reloadPage} />
                     </Div>
                 </SubContainer>
@@ -179,13 +185,12 @@ function checkVisible(visible) {
 }
 
 const Div = styled.div`
-    position: sticky;
-    margin-top: -69px;
+    position: relative;
+    margin-top: -69px; 
 `
 
 const SubContainer = styled.div`
     display: flex;
-    align-items: start;
 `
 
 const UserContainer = styled.div`
@@ -224,17 +229,15 @@ const Follow = styled.button`
 
     width: 112px;
     height: 31px;
-
     border-radius: 5px;
-
     background-color: ${(props) => setBackground(props.selected)};
 
     display: ${(props) => checkVisible(props.visible)};
 
     position: absolute;
     top: 16px;
-    right: 0;  
-    z-index: 20; 
+    right: -0;  
+    z-index: 16; 
 
     @media (max-width: 800px) {
         top: 23px;
@@ -247,6 +250,7 @@ const TimelineBox = styled.main`
   top: 160px;
   width: fit-content;
   max-width: 1042px;
+  height: fit-content;
   left: 0; 
   right: 0;
   margin: 0 auto;
