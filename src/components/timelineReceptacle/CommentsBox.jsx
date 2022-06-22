@@ -86,7 +86,7 @@ const Wrapper = styled.section`
   position: relative;
   z-index: 1;
   top: -25px;
-  width: 611px;
+  width: 100%;
   height: fit-content;
   margin-bottom: -30px;
 
