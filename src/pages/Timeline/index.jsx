@@ -33,6 +33,7 @@ export default function Timeline() {
       try {
         const response = await getPostsByFollows(userId);
         setPosts(response.data);
+        setNow(dayjs().format("YYYY-MM-DD HH:mm:ss"))
         setPostLoading(false);
       } catch (e) {
         console.log(e);
@@ -70,7 +71,6 @@ export default function Timeline() {
 
   function updateTimeline(){
     setIsNewPosts([])
-    setNow(dayjs().format("YYYY-MM-DD HH-mm-ss"))
     setReloadPage(!reloadPage)
   }
 

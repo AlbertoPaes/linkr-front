@@ -103,7 +103,6 @@ export const getFollowersById = async (name, loggedUserId) => {
 }
 
 export const getNewPostsByFollows = async (time) => {
-console.log("🚀 ~ file: api.js ~ line 106 ~ getNewPostsByFollows ~ time", {time})
-  const newPosts = await api.get(`/new`,{time});
+  const newPosts = await api.post(`/new`,{time});
   return newPosts;
 }
