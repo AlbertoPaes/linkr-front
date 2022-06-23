@@ -111,7 +111,7 @@ export default function Timeline() {
           <h2>timeline</h2>
           <ContainerPublishPost>
             <DivImage>
-              <img src={image} alt="User" />
+              <img src={image} alt="User" onClick={() => navigate(`/users/${userId}`)} />
             </DivImage >
 
             <DivPublishPost>
@@ -249,7 +249,9 @@ const ContainerPublishPost = styled.article`
 `
 
 const DivImage = styled.div`
+  
   img {
+    cursor: pointer;
     display: none;
   }
   
