@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
-import { publishPost, getAllPosts, getPostsByFollows } from "../../services/api";
+import { publishPost, getPostsByFollows } from "../../services/api";
 import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
 
@@ -88,7 +88,7 @@ export default function Timeline() {
           <h2>timeline</h2>
           <ContainerPublishPost>
             <DivImage>
-              <img src={image} alt="User" />
+              <img src={image} alt="User" onClick={() => navigate(`/users/${userId}`)} />
             </DivImage >
 
             <DivPublishPost>
@@ -195,7 +195,9 @@ const ContainerPublishPost = styled.article`
 `
 
 const DivImage = styled.div`
+  
   img {
+    cursor: pointer;
     display: none;
   }
   
