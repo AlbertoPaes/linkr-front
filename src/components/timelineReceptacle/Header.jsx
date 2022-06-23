@@ -46,11 +46,8 @@ function Header() {
 
                 let searchFollow = await getFollowersById(userInitials, loggedUserId);
 
-                if (searchFollow.data.length > 0) {
-                    searchFollow.data.forEach(search => {
-                        followingUsers.set(search)
-                    })
-                };
+                if (searchFollow.data.length > 0)
+                    searchFollow.data.forEach(search => followingUsers.set(search));
                 setUsers(search.data);
             }
             else setUsers([])
@@ -65,9 +62,25 @@ function Header() {
         setUsers([]);
     }
 
+    function handleDebounceInput() {
+        return (
+            <ContainerInput>
+                <DebounceInput
+                    minLength={3}
+                    debounceTimeout={300}
+                    className="debounce"
+                    placeholder='Search for people and friends' required
+                    onChange={(e) => handleSearch(e.target.value)} />
+                <IconContext.Provider value={{ color: "#C6C6C6", className: "search-icon", size: "25px" }}>
+                    <BsSearch />
+                </IconContext.Provider>
+            </ContainerInput>
+        )
+    }
+
     function handleUsersMobile() {
         return (
-            <Users>
+            <UsersMobile>
                 {users.map(user => {
                     const { id, image, name } = user;
                     const checkId = followingUsers.has(user.id);
@@ -78,13 +91,13 @@ function Header() {
                     const checkId = followingUsers.has(user.id);
                     return handleNotFollowingUsers(id, image, name, checkId)
                 })}
-            </Users>
+            </UsersMobile>
         )
     }
 
     function handleUsersDesktop() {
         return (
-            <UsersHead>
+            <UsersDesktop>
                 {users.map(user => {
                     const { id, image, name } = user;
                     const checkId = followingUsers.has(user.id);
@@ -95,7 +108,7 @@ function Header() {
                     const checkId = followingUsers.has(user.id);
                     return handleNotFollowingUsers(id, image, name, checkId)
                 })}
-            </UsersHead>
+            </UsersDesktop>
         )
     }
 
@@ -122,38 +135,17 @@ function Header() {
 
     return (
         <>
-            <Container>
-                <ContainerInput>
-                    <DebounceInput
-                        minLength={3}
-                        debounceTimeout={300}
-                        className="debounce"
-                        placeholder='Search for people and friends' required
-                        onChange={(e) => handleSearch(e.target.value)} />
-                    <IconContext.Provider value={{ color: "#C6C6C6", className: "search-icon", size: "25px" }}>
-                        <BsSearch />
-                    </IconContext.Provider>
-                </ContainerInput>
+            <MobileContainer>
+                {handleDebounceInput()};
                 {users.length > 0 ?
                     handleUsersMobile() :
                     <></>
                 }
-            </Container>
+            </MobileContainer>
             <Head>
                 <Logo onClick={() => navigate("/timeline")}>linkr</Logo>
                 <ContainerHead>
-                    <ContainerInput>
-                        <DebounceInput
-                            minLength={3}
-                            debounceTimeout={300}
-                            className="debounce"
-                            placeholder='Search for people' required
-                            onChange={(e) => handleSearch(e.target.value)} />
-                        <IconContext.Provider value={{ color: "#C6C6C6", className: "search-icon", size: "25px" }}>
-                            <BsSearch />
-                        </IconContext.Provider>
-                    </ContainerInput>
-
+                    {handleDebounceInput()};
                     {users.length > 0 ?
                         handleUsersDesktop() :
                         <></>
@@ -184,82 +176,179 @@ function Header() {
     )
 }
 
-const Logout = styled.div`
-    margin: auto 0;
-`
-const ContainerHead = styled.div`
+const MobileContainer = styled.div`
+    width: 100%;
 
-    display: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 72px;
+    margin-top: 72px;
+
+    position: relative;
+    z-index: 10;
+
+    @media (min-width: 800px) {
+        display: none;
+    }
+`
+const ContainerInput = styled.div`
+    width: 95%;
+    max-width: 563px;
+    height: 45px;
+
+    display: flex;
+    align-items:center;
+
+    background-color: #FFFFFF;
+    border-radius: 8px;
+
+    padding-left: 10px;
+    padding-right: 15px;
+    margin: 10px;
+
+    position: relative;
 
     .debounce {
         width: 95%;
         max-width: 563px;
         height: 45px;
-        
-
-        background-color: #FFFFFF;
-        color: #151515;
 
         font-family: 'Lato';
         font-weight: 400;
         font-size: 17px;
         line-height: 20px;
+        color: #151515;
 
+        background-color: #FFFFFF;
         border: none;
         border-radius: 8px;
 
-        position: relative;
-        z-index: 10;
-        
         &:focus {
             outline: none;
         }
 
         &::placeholder {
-        color: #9F9F9F;
-            }
+            color: #9F9F9F;
         }
-
-    @media (min-width: 800px) {
-        min-width: 563px;
-
-        margin: 0 auto;
-
-        display: block;
     }
 `
-const UsersHead = styled.div`
+const UsersMobile = styled.div`
+    width: 95%;
+    max-width: 563px;
+    max-height: 125px;
 
-    display: none;
+    background-color: #E7E7E7;
+    border-radius: 8px;
 
-    @media (min-width: 800px) {
-        display: block;
-        width: 95%;
-        max-width: 563px;
+    padding-top: 14px;
+    padding-bottom: 23px;
+    margin-top:-40px;
 
-        border-radius: 8px;
-        background-color: #E7E7E7;
+    overflow-y: scroll; 
 
-        overflow-y: scroll;
-        /* scrollbar-width: none; */
-/* 
-        ::-webkit-scrollbar {
-        width: 0px;
-        }      */
+    ::-webkit-scrollbar {
+            width: 0px;
+        }   
+`
+const User = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
 
-        position: relative;
-        z-index: 15;
+    padding-top: 14px;
+    padding-left: 17px;
 
-        padding-top: 14px;
-        padding-bottom: 23px;
-        margin-top:-25px;
-        margin-left: 10px;
-        }
+    h1 {
+        font-family: 'Lato';
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 23px;
+        color: #515151;
+        cursor: pointer;
+    }
 `
 const UserImage = styled.img`
     width: 39px;
     height: 39px;
     border-radius: 26px;
+`
+const Following = styled.p`
+    font-family: 'Lato';
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 23px;
+    color: #C5C5C5;
+
+    margin-left: -7px;
+`
+const Head = styled.div`
+    width: 100%;
+    height: 72px;
+
+    display: flex;
+    justify-content: space-between;
+
+    background-color: #151515;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 20;
+`
+const Logo = styled.p`
+    font-family: 'Passion One';
+    font-weight: 700;
+    font-size: 45px;
+    line-height: 50px;
+    letter-spacing: 0.05em;
+    color: #FFFFFF;
+
+    padding-top: 13px;
+    padding-left: 17px;
+    cursor: pointer;
+`
+const ContainerHead = styled.div`
+    display: none;
+
+    @media (min-width: 800px) {
+        min-width: 563px;
+        height: 72px;
+        display: block;
+
+        padding-top:3px;
+        margin: 0 auto;
+
+        position: relative;
+    }
+`
+const UsersDesktop = styled.div`
+    display: none;
+
+    @media (min-width: 800px) {
+        width: 95%;
+        max-height: 175px;
+        max-width: 563px;
+        display: block;
+
+        border-radius: 8px;
+        background-color: #E7E7E7;
+
+        padding-top: 14px;
+        padding-bottom: 23px;
+        margin-top: -40px;
+        margin-left: 10px;
+
+        overflow-y: scroll; 
+        ::-webkit-scrollbar {
+        width: 0px;
+        }      
+    }
+`
+const Logout = styled.div`
+    margin: auto 0;
 `
 const AiOutlineWrap = styled.div`
     position: absolute;
@@ -271,15 +360,18 @@ const AiOutlineWrap = styled.div`
 const Overlay = styled.div`
     width: 100vw;
     height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.1);
-    z-index: 12;
+  
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0.1);
+
     padding: 19px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 12;
 `;
 
 const UserMenu = styled.div(({ displayMenu }) => `
@@ -294,7 +386,6 @@ const UserMenu = styled.div(({ displayMenu }) => `
     align-items: center;
 
     background-color: #171717;
-
     border-radius: 0px 0px 20px 20px;
 
     position: fixed;
@@ -308,7 +399,6 @@ const UserMenu = styled.div(({ displayMenu }) => `
         font-size: 17px;
         line-height: 20px;
         letter-spacing: 0.05em;
-
         color: #FFFFFF;
         cursor: pointer;
     }
@@ -317,138 +407,9 @@ const UserMenu = styled.div(({ displayMenu }) => `
 const Image = styled.img`
     width: 41px;
     height: 41px;
+
     margin-right: 18px;
     border-radius: 26px;
     cursor: pointer;
-`
-const User = styled.div`
-
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    padding-top: 14px;
-    padding-left: 17px;
-
-    h1 {
-        font-family: 'Lato';
-        font-weight: 400;
-        font-size: 17px;
-        line-height: 23px;
-        color: #515151;
-    }
-`
-const Following = styled.p`
-    font-family: 'Lato';
-    font-weight: 400;
-    font-size: 17px;
-    line-height: 23px;
-    color: #C5C5C5;
-
-    margin-left: -7px;
-`
-const Users = styled.div`
-    width: 95%;
-    max-width: 563px;
-
-    border-radius: 8px;
-
-    background-color: #E7E7E7;
-
-    padding-top: 14px;
-    padding-bottom: 23px;
-    margin-top:-25px;
-    margin-left: 10px;
-`
-const Head = styled.div`
-    width: 100%;
-    height: 72px;
-
-    background-color: #151515;
-
-    display: flex;
-    justify-content: space-between;
-
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 10;
-`
-const Logo = styled.p`
-  font-family: 'Passion One';
-  font-weight: 700;
-  font-size: 45px;
-  line-height: 50px;
-  letter-spacing: 0.05em;
-
-  color: #FFFFFF;
-
-  padding-top: 13px;
-  padding-left: 17px;
-  cursor: pointer;
-`
-const Container = styled.div`
-    width: 100%;
-    display: flex;
-
-    margin-top: 72px;
-    margin-top: 72px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    position: relative;
-    z-index: 10;
-
-    .debounce {
-        width: 95%;
-        max-width: 563px;
-        height: 45px;
-
-        background-color: #FFFFFF;
-        color: #151515;
-
-        font-family: 'Lato';
-        font-weight: 400;
-        font-size: 17px;
-        line-height: 20px;
-
-        padding-left: 10px;
-        padding-right: 15px;
-        margin: 10px;
-
-        border: none;
-        border-radius: 8px;
-
-        position: relative;
-        z-index: 10;
-
-    &::placeholder {
-      color: #9F9F9F;
-        }
-
-        @media (min-width: 800px) {
-        display: none;
-        }
-    }
-
-    @media (min-width: 800px) {
-        display: none;
-    }
-`
-
-const ContainerInput = styled.div`
-    display: flex;
-    width: 95%;
-    max-width: 563px;
-    align-items:center;
-    background-color: #ffffff;
-    border-radius: 8px;
-    height: 45px;
-    padding-left: 10px;
-    padding-right: 15px;
-    margin: 10px;
 `
 export default Header;

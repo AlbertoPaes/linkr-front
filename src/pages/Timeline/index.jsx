@@ -6,7 +6,7 @@ import { publishPost, getPostsByFollows } from "../../services/api";
 import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
 
-import Header from "./../Header"
+import Header from "./../../components/timelineReceptacle/Header";
 import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 
 export default function Timeline() {

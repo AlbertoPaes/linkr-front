@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getPosts, getFollow, postFollow, deleteFollow, getUserName } from "../../services/api";
 import styled from "styled-components";
-
-import Header from "./../Header";
+import { getPosts, getFollow, postFollow, deleteFollow, getUserName } from "../../services/api";
+import Header from "./../../components/timelineReceptacle/Header";
 import Posts from "../../components/timelineReceptacle/Posts";
 import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 import Loading from "../../components/Loading";
@@ -13,8 +12,9 @@ export default function User() {
     const [posts, setPosts] = useState([]);
     const [user, setUser] = useState([]);
     const [postLoadind, setPostLoading] = useState(false);
+    const [followLoading, setFollowLoading] = useState(false);
     const [reloadPage, setReloadPage] = useState(false);
-    const [follow, setFollow] = useState("Loading"); //README: VERIFICAR COMO FICA AO CARREGAR
+    const [follow, setFollow] = useState(""); 
     const [toggle, setToggle] = useState(true);
     const [visible, setVisible] = useState(true);
 
@@ -23,6 +23,7 @@ export default function User() {
     const loggedUserId = localStorage.getItem("id");
 
     useEffect(() => {
+
         setPostLoading(true);
 
         async function getUserPostsById() {
@@ -45,9 +46,10 @@ export default function User() {
         setPostLoading(true);
 
         async function getFollows() {
-
+                setFollowLoading(true);
             try {
                 const loggedUser = await getFollow(loggedUserId, id);
+                setFollowLoading(false);
                 if (loggedUser.data === "Myself") setVisible(false);
                 else setVisible(true);
 
@@ -101,8 +103,8 @@ export default function User() {
         }
     }
 
-    function handleUser() { // README: O BOTÃO ERA PRA ENTRAR AQUI
-        if (postLoadind || user.length === 0) return <></>
+    function handleUser() { 
+        if (postLoadind || user.length === 0) return <></>;
         return (
             <UserContainer>
                 <div>
@@ -114,7 +116,7 @@ export default function User() {
     }
 
     function handlePost() {
-        if (postLoadind) return <Loading />
+        if (postLoadind) return <Loading />;
         return posts.length !== 0 ?
             (
                 posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
@@ -140,16 +142,16 @@ export default function User() {
     return (
         <>
             <Header />
-
             <TimelineBox>
-                <Follow selected={toggle} loading={postLoadind} visible={visible}
-                    onClick={() => toggleFollow()}>{follow}</Follow>
                 {handleUser()}
                 <SubContainer>
                     <WrapperTimeline>
                         {handlePost()}
                     </WrapperTimeline >
                     <Div>
+                        {followLoading? <></>: 
+                        <Follow selected={toggle} loading={postLoadind} visible={visible}
+                        onClick={() => toggleFollow()}>{follow}</Follow>}
                         <HashtagBox reloadPage={reloadPage} />
                     </Div>
                 </SubContainer>
@@ -178,19 +180,22 @@ function checkVisible(visible) {
     else return "none";
 }
 
-const Div = styled.div`
-    position: sticky;
-    margin-top: -69px;
-`
+const TimelineBox = styled.main`
+  width: fit-content;
+  max-width: 1042px;
+  height: fit-content;
+  
+  margin: 0 auto;
 
-const SubContainer = styled.div`
-    display: flex;
-    align-items: start;
+  position:absolute;
+  top: 160px;
+  left: 0; 
+  right: 0;
 `
-
 const UserContainer = styled.div`
       display: flex;
       align-items: center;
+
       padding-left: 15px;
 
         div {
@@ -204,7 +209,6 @@ const UserImage = styled.img`
     height: 50px;
     border-radius: 26px;
 `
-
 const UserName = styled.p`
     font-family: 'Oswald';
     font-style: normal;
@@ -213,45 +217,9 @@ const UserName = styled.p`
     line-height: 64px;
     color: #FFFFFF;
 `
-
-const Follow = styled.button`
-    font-family: 'Lato';
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 17px;
-    color: ${(props) => setText(props.selected)};
-    pointer-events: ${(props) => setButton(props.loading)};
-
-    width: 112px;
-    height: 31px;
-
-    border-radius: 5px;
-
-    background-color: ${(props) => setBackground(props.selected)};
-
-    display: ${(props) => checkVisible(props.visible)};
-
-    position: absolute;
-    top: 16px;
-    right: 0;  
-    z-index: 20; 
-
-    @media (max-width: 800px) {
-        top: 23px;
-        right: -100px;
-        z-index: 0;
-    }
+const SubContainer = styled.div`
+    display: flex;
 `
-const TimelineBox = styled.main`
-  position:absolute;
-  top: 160px;
-  width: fit-content;
-  max-width: 1042px;
-  left: 0; 
-  right: 0;
-  margin: 0 auto;
-`
-
 const WrapperTimeline = styled.section`
   width: 100%;
   min-width:375px;
@@ -285,5 +253,35 @@ const WrapperTimeline = styled.section`
     width: 611px;
   }
 `
+const Div = styled.div`
+    margin-top: -69px; 
+    position: relative;
+`
+const Follow = styled.button`
+    font-family: 'Lato';
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+    color: ${(props) => setText(props.selected)};
+    pointer-events: ${(props) => setButton(props.loading)};
 
+    width: 112px;
+    height: 31px;
 
+    border-radius: 5px;
+    background-color: ${(props) => setBackground(props.selected)};
+
+    display: ${(props) => checkVisible(props.visible)};
+    cursor: pointer;
+
+    position: absolute;
+    top: 16px;
+    right: -0;  
+    z-index: 16; 
+
+    @media (max-width: 800px) {
+        top: 23px;
+        right: -100px;
+        z-index: 0;
+    }
+`
