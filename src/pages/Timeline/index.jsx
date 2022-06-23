@@ -9,7 +9,7 @@ import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
 import {GrUpdate} from "react-icons/gr"
 
-import Header from "./../Header"
+import Header from "./../../components/timelineReceptacle/Header";
 import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 
 export default function Timeline() {
