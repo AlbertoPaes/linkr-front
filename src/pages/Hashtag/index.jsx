@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import Posts from "../../components/timelineReceptacle/Posts";
-import Header from "../Header";
+import Header from "./../../components/timelineReceptacle/Header";
 import Loading from "../../components/Loading";
 import { getPostsByHashtag } from "../../services/api";
 
