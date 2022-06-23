@@ -16,7 +16,7 @@ import GlobalStyle from "./styles/GlobalStyle";
 
 const App = () => {
   const Private = ({ children }) => {
-    const authenticated = localStorage.getItem("user")
+    const authenticated = localStorage.getItem("user");
 
     if (!authenticated) {
       return <Navigate to="/" />;

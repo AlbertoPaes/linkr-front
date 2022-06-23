@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useInterval from "use-interval";
+import dayjs from "dayjs";
 
 import styled from "styled-components";
-import { publishPost, getAllPosts } from "../../services/api";
+import { publishPost, getPostsByFollows, getNewPostsByFollows } from "../../services/api";
 import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
 import {GrUpdate} from "react-icons/gr"
@@ -11,7 +13,9 @@ import Header from "./../Header"
 import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 
 export default function Timeline() {
+
   const navigate = useNavigate();
+  const userId = localStorage.getItem("id");
   const image = localStorage.getItem("image");
 
   const [formData, setFormData] = useState({ link: "", description: "" });
@@ -20,23 +24,35 @@ export default function Timeline() {
   const [postLoadind, setPostLoading] = useState(false);
   const [reloadPage, setReloadPage] = useState(false);
   const [isNewPosts, setIsNewPosts] = useState([])
-
+  const [now, setNow] = useState(dayjs().format("YYYY-MM-DD HH:mm:ss"))
+  
+  console.log("🚀 ~ file: index.jsx ~ line 27 ~ Timeline ~ isNewPosts", isNewPosts)
   useEffect(() => {
     setPostLoading(true);
-
     (async () => {
       try {
-        const response = await getAllPosts();
+        const response = await getPostsByFollows(userId);
         setPosts(response.data);
         setPostLoading(false);
       } catch (e) {
         console.log(e);
         alert("An error occured while trying to fetch the posts, please refresh the page")
       }
-
+      
     })();
-
+    
   }, [reloadPage, navigate]);
+  
+  useInterval(async () => {
+    try {
+      const response = await getNewPostsByFollows(now)
+      setIsNewPosts(response.data)
+    } catch (error) {
+      alert(error)
+    }
+
+  }, 15000);
+
 
   async function handlePublishPost(e) {
     e.preventDefault();
@@ -52,27 +68,36 @@ export default function Timeline() {
     }
   };
 
+  function updateTimeline(){
+    setIsNewPosts([])
+    setNow(dayjs().format("YYYY-MM-DD HH-mm-ss"))
+    setReloadPage(!reloadPage)
+  }
+
   function handlePost() {
     if (postLoadind) return <Loading />
-    return posts.length !== 0 ?
-      (
-        posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
-          return (
-            <Posts
-              key={id}
-              id={userId}
-              link={link}
-              description={description}
-              name={name}
-              image={image}
-              urlTitle={urlTitle || "No Title Found"}
-              urlImage={urlImage}
-              urlDescription={urlDescription || "No Description Found"}
-              postId={id}
-              setReloadPage={() => setReloadPage(!reloadPage)} />
-          )
-        })
-      ) : <h5>There are no posts yet</h5>
+    if (posts) {
+      return posts.length !== 0 ?
+        (
+          posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
+            return (
+              <Posts
+                key={id}
+                id={userId}
+                link={link}
+                description={description}
+                name={name}
+                image={image}
+                urlTitle={urlTitle || "No Title Found"}
+                urlImage={urlImage}
+                urlDescription={urlDescription || "No Description Found"}
+                postId={id}
+                setReloadPage={() => setReloadPage(!reloadPage)} />
+            )
+          })
+        ) : <h5>No posts found from your friends</h5>
+    }
+    return <h5>You don't follow anyone yet. Search for new friends!</h5>
   }
 
   function handleInputChange(e) {
@@ -117,8 +142,8 @@ export default function Timeline() {
             </DivPublishPost>
           </ContainerPublishPost>
             <UpdateTimeline>
-              {isNewPosts ?
-                <button>{"new posts, load more!"} 
+              {isNewPosts.length >0 ?
+                <button onClick={updateTimeline}>{isNewPosts.length===1?`1 new post, load more!`:`${isNewPosts.length} new posts, load more!`} 
                   <GrUpdate ClassName="update"/>
                 </button>:
               <>
@@ -169,6 +194,7 @@ const WrapperTimeline = styled.section`
   width: 100%;
   min-width:375px;
   margin-bottom: 30px;
+
 
   h2 {
     font-family: 'Oswald';

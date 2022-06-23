@@ -2,17 +2,19 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import ReactHashtag from "@mdnm/react-hashtag";
 import { useState, useRef, useEffect } from 'react';
-import { updatePost, deletePost } from "../../services/api";
 import ReactModal from "react-modal";
 import { IconContext } from "react-icons";
 import { FaPencilAlt } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 
+import { updatePost, deletePost } from "../../services/api";
+import { getCommentByPostId } from "../../services/api";
 import Like from "./Like";
 import Loading from "../Loading";
+import Comments from "./CommentsIndex"
+import CommentsBox from "./CommentsBox"
 
 import noImage from "./noimage.png"
-
 
 export default function Posts({
   id,
@@ -27,11 +29,14 @@ export default function Posts({
   setReloadPage
 }) {
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedDescription, setEditedDescription] = useState(description)
-  const [isLoading, setIsLoading] = useState(false)
-  const [modalIsOpen, setModalIsOpen] = useState(false)
-  const [delPostId, setDelPostId] = useState()
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedDescription, setEditedDescription] = useState(description);
+  const [isLoading, setIsLoading] = useState(false);
+  const [realoadComments, setRealodComments] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [delPostId, setDelPostId] = useState();
+  const [comments, setComments] = useState([]);
+  const [commentBox, setCommentBox] = useState(false);
 
   const inputRef = useRef(null);
 
@@ -65,6 +70,19 @@ export default function Posts({
     }
   }, [isEditing]);
 
+  useEffect(() => {
+    setRealodComments(false);
+    async function getComments() {
+      try {
+        const response = await getCommentByPostId(postId)
+        setComments(response.data);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    getComments();
+  }, [realoadComments]);
+
   async function update(e, id, description) {
     if (e.keyCode === 13) {
       try {
@@ -83,6 +101,7 @@ export default function Posts({
     setModalIsOpen(!modalIsOpen);
     setDelPostId(id);
   }
+
   async function confirmed() {
     setIsLoading(true)
     try {
@@ -96,10 +115,17 @@ export default function Posts({
   }
 
   return (
-    <>
+    <Wrapper>
       <ContainerPost>
         <DivPost>
-          <Like image={image} userId={loggedUserId} postId={postId} />
+          <LeftSideContainer>
+            <Like image={image} userId={loggedUserId} postId={postId} />
+            <Comments
+              comments={comments}
+              setCommentBox={() => setCommentBox(!commentBox)}
+              commentBox={commentBox}
+            />
+          </LeftSideContainer>
           <PostInfos>
             <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
             {id === parseInt(loggedUserId) ?
@@ -139,7 +165,16 @@ export default function Posts({
           </PostInfos>
         </DivPost>
       </ContainerPost>
+      <CommentsBox
+        comments={comments}
+        userPostId={id}
+        postId={postId}
+        setRealodComments={() => setRealodComments(true)}
+        commentBox={commentBox}
+      />
+
       <ReactModal
+        className="react-modal"
         isOpen={modalIsOpen}
         shouldCloseOnEsc={true}
         preventScroll={true}
@@ -149,13 +184,16 @@ export default function Posts({
             height: '100%'
           },
           content: {
+            top: '50%',
+            left: '50%',
             margin: 'auto',
             overflow: 'hidden',
             padding: '0',
             width: 'calc(59700px/1440%)',
             maxWidth: '597px',
             height: '262px',
-            borderRadius: '50px'
+            borderRadius: '50px',
+            transform: 'translate(0, 90%)'
           }
         }}
         ariaHideApp={false}
@@ -169,12 +207,18 @@ export default function Posts({
           </Delete>
         }
       </ReactModal>
-    </>
+    </Wrapper>
   )
 };
 
+
+const Wrapper = styled.section`
+  position: relative;
+  z-index:0;
+`
 const Delete = styled.div`
     display: flex;
+    position: relative;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
@@ -182,6 +226,7 @@ const Delete = styled.div`
     width: calc(59700px/1440%);
     height: 262px;
     font-weight: 700;
+    z-index:10;
     font-size: 18px;
     line-height: 21.6px;
     border-radius: 50px;
@@ -217,6 +262,8 @@ const ContainerPost = styled.article`
   margin-top: 16px;
   padding: 10px 15px 15px 15px;
   background-color: #171717;
+  position:relative;
+  z-index: 2;
 
   @media(min-width: 800px){
       border-radius: 16px;
@@ -238,6 +285,11 @@ const Icons = styled.div`
 
   .edit {
     margin-right: 10px;
+    cursor:pointer;
+  }
+
+  .delete {
+    cursor:pointer;
   }
 `
 
@@ -247,6 +299,7 @@ const PostInfos = styled.div`
   width: 100%;
   max-width: 503px;
   position: relative;
+  z-index:2;
 
   h3 {
     width: fit-content;
@@ -424,6 +477,20 @@ const UrlInfos = styled.a`
         width: 153.44px;
         height: 155px;
       }
+    }
+  }
+`
+
+const LeftSideContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  .comment {
+    margin-top: 15px;
+    margin-left: 12px;
+
+    @media (max-width: 800px) {
+      margin-left: 7px;
     }
   }
 `
