@@ -5,7 +5,7 @@ import Loading from "../../components/Loading";
 
 import { makeSignUp } from "../../services/api";
 
-import { Wrapper, ContainerPresentation, Logo, Title, ContainerSignUp, StyledLink} from "./style";
+import { Wrapper, ContainerPresentation, Logo, Title, ContainerSignUp, StyledLink } from "./style";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -25,7 +25,6 @@ const SignUp = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    console.log(formData);
 
     isLoading.placeholder = <Loading height={100} width={100} />;
     isLoading.disabled = true;
@@ -49,7 +48,7 @@ const SignUp = () => {
         <Logo>linkr</Logo>
         <Title>save, share and discover <br></br> the best links on the web</Title>
       </ContainerPresentation>
-      <ContainerSignUp onSubmit={handleSignUp} disableButton={isLoading.disabled}>     
+      <ContainerSignUp onSubmit={handleSignUp} disableButton={isLoading.disabled}>
         <input
           type="email"
           value={formData.email}

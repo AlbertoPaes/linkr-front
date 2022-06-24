@@ -2,8 +2,8 @@ import axios from "axios";
 import urlMetadata from "url-metadata";
 
 export const api = axios.create({
-  baseURL: "https://linkr-driven-api.herokuapp.com"
-  // baseURL: "http://localhost:4000"
+  // baseURL: "https://linkr-driven-api.herokuapp.com"
+  baseURL: "http://localhost:4000"
 });
 
 export const makeSignUp = async (formData) => {
@@ -24,8 +24,8 @@ export const getAllPosts = async () => {
   return posts;
 };
 
-export const getPostsByFollows = async (id) => {
-  const userPosts = await api.get(`/timeline/${id}`);
+export const getPostsByFollows = async (id, page) => {
+  const userPosts = await api.get(`/timeline/${id}?page=${page}`);
   return userPosts;
 }
 
@@ -34,8 +34,8 @@ export const getMetadata = async (link) => {
   return urlMeta;
 }
 
-export const getPosts = async (id) => {
-  const userPosts = await api.get(`/users/${id}`);
+export const getPosts = async (id, page) => {
+  const userPosts = await api.get(`/users/${id}?page=${page}`);
   return userPosts;
 }
 
@@ -49,8 +49,8 @@ export const getUserName = async (id) => {
   return user;
 }
 
-export const getPostsByHashtag = async (hashtag) => {
-  const posts = await api.get(`/hashtag/${hashtag}`);
+export const getPostsByHashtag = async (hashtag, page) => {
+  const posts = await api.get(`/hashtag/${hashtag}?page=${page}`);
   return posts;
 };
 
@@ -101,3 +101,19 @@ export const getFollowersById = async (name, loggedUserId) => {
   const followers = await api.get(`/follows/search/${name}/${loggedUserId}`);
   return followers;
 }
+
+export const getRePosts = async (postId) => {
+  const count = await api.get(`/rePost/${postId}`)
+  return count;
+}
+
+export const makeRePost = async (postId) => {
+  const insertRePost = await api.post(`/rePost/${postId}`);
+  return insertRePost;
+}
+
+export const getNewPostsByFollows = async (time) => {
+  const newPosts = await api.post(`/new`, { time });
+  return newPosts;
+}
+
