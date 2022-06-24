@@ -59,7 +59,7 @@ export default function Timeline() {
         if (response.data.length === 0) setHasMore(false);
         setPosts(posts.concat(...response.data));
       } catch (error) {
-        alert(error)
+        console(error)
       }
     }) ();
 
@@ -70,7 +70,7 @@ export default function Timeline() {
       const response = await getNewPostsByFollows(now)
       setIsNewPosts(response.data)
     } catch (error) {
-      alert(error)
+      console(error)
     }
 
   }, 15000);
@@ -177,8 +177,8 @@ export default function Timeline() {
             dataLength={posts.length}
             next={() => setPage(page + 1)}
             hasMore={hasMore}
-            loader={<><Loading /><p style={{ textAlign: "center", color: "#6D6D6D" }}>Loading more posts...</p></>}
-            endMessage={<h5>Nothing more to show</h5>}>
+            loader={!posts ? <></> : <><Loading /><p style={{ textAlign: "center", color: "#6D6D6D" }}>Loading more posts...</p></>}
+            endMessage={posts.length === 0 || !posts ? "" : <h5>Nothing more to show</h5>}>
             {handlePost()}
           </InfiniteScroll>
         </WrapperTimeline >
