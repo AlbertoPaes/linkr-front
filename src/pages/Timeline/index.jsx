@@ -2,18 +2,21 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useInterval from "use-interval";
 import dayjs from "dayjs";
+import InfiniteScroll from 'react-infinite-scroll-component';
+import utc from "dayjs/plugin/utc"
 
 import styled from "styled-components";
 import { publishPost, getPostsByFollows, getNewPostsByFollows } from "../../services/api";
 import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
-import {GrUpdate} from "react-icons/gr"
-import InfiniteScroll from 'react-infinite-scroller';
+import { GrUpdate } from "react-icons/gr"
+
 
 import Header from "./../../components/timelineReceptacle/Header";
 import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 
 export default function Timeline() {
+  dayjs.extend(utc);
 
   const navigate = useNavigate();
   const userId = localStorage.getItem("id");
@@ -25,35 +28,40 @@ export default function Timeline() {
   const [postLoadind, setPostLoading] = useState(false);
   const [reloadPage, setReloadPage] = useState(false);
   const [isNewPosts, setIsNewPosts] = useState([])
-  const [now, setNow] = useState(dayjs().format("YYYY-MM-DD HH:mm:ss"))
+  const [now, setNow] = useState(dayjs().utc().format("YYYY-MM-DD HH:mm:ss"))
   const [page, setPage] = useState(0)
-  
+  const [hasMore, setHasMore] = useState(true);
+
+  console.log("🚀 ~ file: index.jsx ~ line 25 ~ Timeline ~ posts", posts)
+
   useEffect(() => {
     setPostLoading(true);
     (async () => {
       try {
-        const response = await getPostsByFollows(userId,0);
+        const response = await getPostsByFollows(userId, 0);
         setPosts(response.data);
-        setNow(dayjs().format("YYYY-MM-DD HH:mm:ss"))
+        setNow(dayjs().utc().format("YYYY-MM-DD HH:mm:ss"))
         setPostLoading(false);
       } catch (e) {
         console.log(e);
         alert("An error occured while trying to fetch the posts, please refresh the page")
       }
-      
+
     })();
-    
+
   }, [reloadPage, navigate]);
 
-  useEffect(async () =>{
+  useEffect(async () => {
+
     try {
-      const response = await getPostsByFollows(userId,page);
-      setPosts(...posts, response.data);
+      const response = await getPostsByFollows(userId, page);
+      if (response.data.length === 0) setHasMore(false);
+      setPosts(posts.concat(...response.data));
     } catch (error) {
       alert(error)
     }
-  },[page])
-  
+  }, [page])
+
   useInterval(async () => {
     try {
       const response = await getNewPostsByFollows(now)
@@ -79,7 +87,7 @@ export default function Timeline() {
     }
   };
 
-  function updateTimeline(){
+  function updateTimeline() {
     setIsNewPosts([])
     setReloadPage(!reloadPage)
   }
@@ -151,23 +159,23 @@ export default function Timeline() {
               </Form>
             </DivPublishPost>
           </ContainerPublishPost>
-            <UpdateTimeline>
-              {isNewPosts.length >0 ?
-                <button onClick={updateTimeline}>{isNewPosts.length===1?`1 new post, load more!`:`${isNewPosts.length} new posts, load more!`} 
-                  <GrUpdate ClassName="update"/>
-                </button>:
+          <UpdateTimeline>
+            {isNewPosts.length > 0 ?
+              <button onClick={updateTimeline}>{isNewPosts.length === 1 ? `1 new post, load more!` : `${isNewPosts.length} new posts, load more!`}
+                <GrUpdate ClassName="update" />
+              </button> :
               <>
               </>}
-              </UpdateTimeline>
-              <InfiniteScroll
-                pageStart={page}
-                dataLength={posts.length}
-                next={()=>setPage(page+1)}
-                hasMore={true}
-                loader={<><Loading/><p style={{ textAlign: "center", color:"#6D6D6D" }}>Loading more posts...</p></>}
-                endMessage={<></>}>
-                {handlePost()}
-            </InfiniteScroll>
+          </UpdateTimeline>
+          <InfiniteScroll
+            className="infinit-scroll"
+            dataLength={posts.length}
+            next={() => setPage(page + 1)}
+            hasMore={hasMore}
+            loader={<><Loading /><p style={{ textAlign: "center", color: "#6D6D6D" }}>Loading more posts...</p></>}
+            endMessage={<h5>Nothing more to show</h5>}>
+            {handlePost()}
+          </InfiniteScroll>
         </WrapperTimeline >
         <HashtagBox reloadPage={reloadPage} />
       </TimelineBox>
@@ -216,6 +224,10 @@ const WrapperTimeline = styled.section`
   width: 100%;
   min-width:375px;
   margin-bottom: 30px;
+
+  .infinit-scroll::-webkit-scrollbar {
+    display: none;
+  }
 
 
   h2 {
