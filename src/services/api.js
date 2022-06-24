@@ -24,8 +24,8 @@ export const getAllPosts = async () => {
   return posts;
 };
 
-export const getPostsByFollows = async (id) => {
-  const userPosts = await api.get(`/timeline/${id}`);
+export const getPostsByFollows = async (id,page) => {
+  const userPosts = await api.get(`/timeline/${id}?page=${page}`);
   return userPosts;
 }
 

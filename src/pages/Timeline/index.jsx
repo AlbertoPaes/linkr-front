@@ -8,6 +8,7 @@ import { publishPost, getPostsByFollows, getNewPostsByFollows } from "../../serv
 import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
 import {GrUpdate} from "react-icons/gr"
+import InfiniteScroll from 'react-infinite-scroller';
 
 import Header from "./../../components/timelineReceptacle/Header";
 import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
@@ -25,13 +26,13 @@ export default function Timeline() {
   const [reloadPage, setReloadPage] = useState(false);
   const [isNewPosts, setIsNewPosts] = useState([])
   const [now, setNow] = useState(dayjs().format("YYYY-MM-DD HH:mm:ss"))
+  const [page, setPage] = useState(0)
   
-  console.log("🚀 ~ file: index.jsx ~ line 27 ~ Timeline ~ isNewPosts", isNewPosts)
   useEffect(() => {
     setPostLoading(true);
     (async () => {
       try {
-        const response = await getPostsByFollows(userId);
+        const response = await getPostsByFollows(userId,0);
         setPosts(response.data);
         setNow(dayjs().format("YYYY-MM-DD HH:mm:ss"))
         setPostLoading(false);
@@ -43,6 +44,15 @@ export default function Timeline() {
     })();
     
   }, [reloadPage, navigate]);
+
+  useEffect(async () =>{
+    try {
+      const response = await getPostsByFollows(userId,page);
+      setPosts(...posts, response.data);
+    } catch (error) {
+      alert(error)
+    }
+  },[page])
   
   useInterval(async () => {
     try {
@@ -149,7 +159,15 @@ export default function Timeline() {
               <>
               </>}
               </UpdateTimeline>
-          {handlePost()}
+              <InfiniteScroll
+                pageStart={page}
+                dataLength={posts.length}
+                next={()=>setPage(page+1)}
+                hasMore={true}
+                loader={<><Loading/><p style={{ textAlign: "center", color:"#6D6D6D" }}>Loading more posts...</p></>}
+                endMessage={<></>}>
+                {handlePost()}
+            </InfiniteScroll>
         </WrapperTimeline >
         <HashtagBox reloadPage={reloadPage} />
       </TimelineBox>
@@ -164,10 +182,11 @@ const UpdateTimeline = styled.div`
     stroke: #fff;
   }
   button{
+    margin-top: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 611px;
+    width: 375px;
     height: 61px;
     border: none;
     border-radius: 16px;
@@ -177,6 +196,9 @@ const UpdateTimeline = styled.div`
     font-size: 16px;
     line-height: 29px;
     text-align: center;
+    @media(min-width: 800px){
+      width: 611px;
+    }
   }
 `
 
