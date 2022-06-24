@@ -4,11 +4,11 @@ import { IconContext } from "react-icons";
 import { FiRepeat } from "react-icons/fi";
 import ReactModal from "react-modal";
 import Loading from '../../Loading';
-import { getRePosts,makeRePost } from '../../../services/api';
+import { getRePosts, makeRePost } from '../../../services/api';
 
 
-const RePost = ({ postId,setReloadPage }) => {
-  const [rePostQuantity, setRePostQuantity] = useState();
+const RePost = ({ postId, setReloadPage }) => {
+  const [rePostQuantity, setRePostQuantity] = useState(0);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,7 +29,6 @@ const RePost = ({ postId,setReloadPage }) => {
     }
   }
 
-  //postId precisa ser passado como parâmetro
   async function confirmed(makeRePost) {
     setIsLoading(true);
     try {
@@ -75,16 +74,16 @@ const RePost = ({ postId,setReloadPage }) => {
           }
         }}
         ariaHideApp={false}
-        >
-          {isLoading ?
-            <Loading />
-            : <RePostModal>
-                <p>Do you want to re-post this link?</p>
-                <button onClick={() => setModalIsOpen(false)} className="cancel">No, cancel</button>
-                <button onClick={() => confirmed(makeRePost)} className="confirm">Yes, share!</button>
-              </RePostModal>
-          }
-    </ReactModal>
+      >
+        {isLoading ?
+          <Loading />
+          : <RePostModal>
+            <p>Do you want to re-post this link?</p>
+            <button onClick={() => setModalIsOpen(false)} className="cancel">No, cancel</button>
+            <button onClick={() => confirmed(makeRePost)} className="confirm">Yes, share!</button>
+          </RePostModal>
+        }
+      </ReactModal>
     </ImageRePost>
   );
 

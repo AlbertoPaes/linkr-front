@@ -93,6 +93,7 @@ export const postFollow = async (object) => {
 }
 
 export const deleteFollow = async (loggedUserId, id) => {
+
   await api.delete(`/follows/${loggedUserId}/${id}`);
 }
 

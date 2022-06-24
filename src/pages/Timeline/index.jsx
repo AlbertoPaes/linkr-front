@@ -61,7 +61,7 @@ export default function Timeline() {
       } catch (error) {
         console(error)
       }
-    }) ();
+    })();
 
   }, [page])
 
@@ -103,7 +103,7 @@ export default function Timeline() {
           posts.map((p) => {
             return (
               <Posts
-                key={p.id/Math.random()}
+                key={p.id / Math.random()}
                 repostUserName={p.repostUserName}
                 repostUserId={p.repostUserId}
                 id={p.userId}
