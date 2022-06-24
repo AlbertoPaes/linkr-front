@@ -4,7 +4,7 @@ import { FiRepeat } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
 
 
-const RePostInfo = async ({ repostUserId,repostUserName }) => {
+const RePostInfo = async ({ repostUserId, repostUserName }) => {
   const navigate = useNavigate();
 
   const reposterPage = () => {

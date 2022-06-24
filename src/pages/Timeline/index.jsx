@@ -38,6 +38,7 @@ export default function Timeline() {
       try {
         const response = await getPostsByFollows(userId, 0);
         setPosts(response.data);
+        console.log(posts);
         setNow(dayjs().utc().format("YYYY-MM-DD HH:mm:ss"))
         setPostLoading(false);
       } catch (e) {
@@ -95,21 +96,20 @@ export default function Timeline() {
     if (posts) {
       return posts.length !== 0 ?
         (
-          posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription, repostUserName, repostUserId }) => {
+          posts.map((p) => {
             return (
               <Posts
-                key={id}
-                repostUserName={repostUserName}
-                repostUserId={repostUserId}
-                id={userId}
-                link={link}
-                description={description}
-                name={name}
-                image={image}
-                urlTitle={urlTitle || "No Title Found"}
-                urlImage={urlImage}
-                urlDescription={urlDescription || "No Description Found"}
-                postId={id}
+                key={p.id}
+                repost={p}
+                id={p.userId}
+                link={p.link}
+                description={p.description}
+                name={p.name}
+                image={p.image}
+                urlTitle={p.urlTitle || "No Title Found"}
+                urlImage={p.urlImage}
+                urlDescription={p.urlDescription || "No Description Found"}
+                postId={p.id}
                 setReloadPage={() => setReloadPage(!reloadPage)} />
             )
           })

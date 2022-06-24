@@ -29,8 +29,7 @@ export default function Posts({
   urlDescription,
   postId,
   setReloadPage,
-  repostUserName,
-  repostUserId
+  repost
 }) {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
@@ -117,17 +116,18 @@ export default function Posts({
       alert(error)
     }
   }
-
+  console.log(repost.repostUserId);
+  console.log(repost.repostUserName);
   return (
     <Wrapper>
       <ContainerPost>
         <DivPost>
           {
-            repostUserId === null ?
+            repost.repostUserId === undefined ?
             ""
             :
-            repostUserId !== loggedUserId &&
-            <RePostInfo repostUserName={repostUserName} repostUserId={repostUserId}/>
+            repost.repostUserId !== loggedUserId &&
+            <RePostInfo repostUserName={repost?.repostUserName} repostUserId={repost?.repostUserId}/>
           }
           <LeftSideContainer>
             <Like image={image} userId={loggedUserId} postId={postId} />
