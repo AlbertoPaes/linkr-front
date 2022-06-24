@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import InfiniteScroll from 'react-infinite-scroll-component';
+
 import { getPosts, getFollow, postFollow, deleteFollow, getUserName } from "../../services/api";
 import Header from "./../../components/timelineReceptacle/Header";
 import Posts from "../../components/timelineReceptacle/Posts";
@@ -14,9 +16,11 @@ export default function User() {
     const [postLoadind, setPostLoading] = useState(false);
     const [followLoading, setFollowLoading] = useState(false);
     const [reloadPage, setReloadPage] = useState(false);
-    const [follow, setFollow] = useState(""); 
+    const [follow, setFollow] = useState("");
     const [toggle, setToggle] = useState(true);
     const [visible, setVisible] = useState(true);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
 
     const { id } = useParams();
 
@@ -28,7 +32,7 @@ export default function User() {
 
         async function getUserPostsById() {
             try {
-                const users = await getPosts(id);
+                const users = await getPosts(id, 0);
                 const userName = await getUserName(id);
                 setUser(userName.data);
                 setPosts(users.data);
@@ -41,12 +45,22 @@ export default function User() {
         getUserPostsById();
     }, [reloadPage, id]);
 
+    useEffect(async () => {
+        try {
+            const response = await getPosts(id, page);
+            if (response.data.length === 0) setHasMore(false);
+            setPosts(posts.concat(...response.data));
+        } catch (error) {
+            alert(error)
+        }
+    }, [page]);
+
     useEffect(() => {
 
         setPostLoading(true);
 
         async function getFollows() {
-                setFollowLoading(true);
+            setFollowLoading(true);
             try {
                 const loggedUser = await getFollow(loggedUserId, id);
                 setFollowLoading(false);
@@ -103,7 +117,7 @@ export default function User() {
         }
     }
 
-    function handleUser() { 
+    function handleUser() {
         if (postLoadind || user.length === 0) return <></>;
         return (
             <UserContainer>
@@ -116,7 +130,7 @@ export default function User() {
     }
 
     function handlePost() {
-        if (postLoadind) return <Loading />;
+        if (postLoadind) return <></>;
         return posts.length !== 0 ?
             (
                 posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
@@ -146,12 +160,20 @@ export default function User() {
                 {handleUser()}
                 <SubContainer>
                     <WrapperTimeline>
-                        {handlePost()}
+                        <InfiniteScroll
+                            className="infinit-scroll"
+                            dataLength={posts.length}
+                            next={() => setPage(page + 1)}
+                            hasMore={hasMore}
+                            loader={<><Loading /><p style={{ textAlign: "center", color: "#6D6D6D" }}>Loading more posts...</p></>}
+                            endMessage={<h5>Nothing more to show</h5>}>
+                            {handlePost()}
+                        </InfiniteScroll>
                     </WrapperTimeline >
                     <Div>
-                        {followLoading? <></>: 
-                        <Follow selected={toggle} loading={postLoadind} visible={visible}
-                        onClick={() => toggleFollow()}>{follow}</Follow>}
+                        {followLoading ? <></> :
+                            <Follow selected={toggle} loading={postLoadind} visible={visible}
+                                onClick={() => toggleFollow()}>{follow}</Follow>}
                         <HashtagBox reloadPage={reloadPage} />
                     </Div>
                 </SubContainer>
@@ -224,6 +246,10 @@ const WrapperTimeline = styled.section`
   width: 100%;
   min-width:375px;
   margin-bottom: 30px;
+
+  .infinit-scroll::-webkit-scrollbar {
+    display: none;
+  }
 
   h2 {
     font-family: 'Oswald';
