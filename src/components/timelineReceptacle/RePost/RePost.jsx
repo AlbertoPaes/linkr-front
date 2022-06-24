@@ -31,7 +31,7 @@ const RePost = ({ postId,setReloadPage }) => {
 
   //postId precisa ser passado como parâmetro
   async function confirmed(makeRePost) {
-    setIsLoading(!isLoading);
+    setIsLoading(true);
     try {
       await makeRePost(postId);
       setIsLoading(false);
