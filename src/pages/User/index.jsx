@@ -45,14 +45,16 @@ export default function User() {
         getUserPostsById();
     }, [reloadPage, id]);
 
-    useEffect(async () => {
-        try {
-            const response = await getPosts(id, page);
-            if (response.data.length === 0) setHasMore(false);
-            setPosts(posts.concat(...response.data));
-        } catch (error) {
-            alert(error)
-        }
+
+    useEffect( () => {
+        (async () => {
+            try {
+                const response = await getPosts(id, page);
+                if (response.data.length === 0) setHasMore(false);
+                setPosts(posts.concat(...response.data));
+            } catch (error) {
+                alert(error)
+            }})();
     }, [page]);
 
     useEffect(() => {

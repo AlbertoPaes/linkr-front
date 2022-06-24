@@ -34,14 +34,17 @@ export default function Hashtag() {
 
   }, [reloadPage, hashtag]);
 
-  useEffect(async () => {
-    try {
-      const response = await getPostsByHashtag(hashtag, page);
-      if (response.data.length === 0) setHasMore(false);
-      setPosts(posts.concat(...response.data));
-    } catch (error) {
-      alert(error)
-    }
+  useEffect(() => {
+
+    (async () => {
+      try {
+        const response = await getPostsByHashtag(hashtag, page);
+        if (response.data.length === 0) setHasMore(false);
+        setPosts(posts.concat(...response.data));
+      } catch (error) {
+        alert(error)
+      }
+    }) ();
   }, [page])
 
   function handleHashtag() {

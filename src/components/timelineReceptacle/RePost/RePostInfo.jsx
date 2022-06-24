@@ -4,25 +4,27 @@ import { FiRepeat } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
 
 
-const RePostInfo = async ({ repostUserId, repostUserName }) => {
+const RePostInfo = ({repostUserId, repostUserName}) => {
   const navigate = useNavigate();
+  const userId = localStorage.getItem("id");
 
   const reposterPage = () => {
-    navigate(`/profile/${repostUserId}`);
+    navigate(`/users/${repostUserId}`);
   }
 
-  <RePostInfoContainer>
-    <IconContext.Provider value={{ color: "#FFFFFF", className: "firepeat-icon" }}>
-      <FiRepeat />
-      <p>{`Re-posted by `} <span onClick={reposterPage}> {repostUserName} </span></p>
-    </IconContext.Provider>
-  </RePostInfoContainer>
-
+  return (
+    <RePostInfoContainer>
+      <IconContext.Provider value={{ color: "#FFFFFF", className: "firepeat-icon" }}>
+        <FiRepeat />
+        <p>{`Re-posted by `} <span onClick={reposterPage}> {parseInt(userId) === repostUserId ? 'you' : repostUserName} </span></p>
+      </IconContext.Provider>
+    </RePostInfoContainer>
+  );
 }
 
 const RePostInfoContainer = styled.div`
   width: 611px;
-  height: 33px;
+  height: 43px;
 
   display: flex;
   gap: 6px;
@@ -31,11 +33,15 @@ const RePostInfoContainer = styled.div`
   padding-bottom: 10px;
 
   background-color: #1e1e1e;
-  border-radius: 16px;
+  border-radius: 16px 16px 0px 0px;
+
+  position: relative;
+  top: 24px;
 
   .firepeat-icon {
     width: 20px;
     height: 12px;
+    margin-left: 10px;
   }
 
   p {
@@ -49,6 +55,7 @@ const RePostInfoContainer = styled.div`
 
   span {
     font-weight: bold;
+    cursor: pointer;
   }
 
   @media (max-width: 800px){

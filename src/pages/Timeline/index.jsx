@@ -39,6 +39,7 @@ export default function Timeline() {
         const response = await getPostsByFollows(userId, 0);
         setPosts(response.data);
         console.log(posts);
+        console.log(response.data);
         setNow(dayjs().utc().format("YYYY-MM-DD HH:mm:ss"))
         setPostLoading(false);
       } catch (e) {
@@ -50,15 +51,18 @@ export default function Timeline() {
 
   }, [reloadPage, navigate]);
 
-  useEffect(async () => {
+  useEffect(() => {
 
-    try {
-      const response = await getPostsByFollows(userId, page);
-      if (response.data.length === 0) setHasMore(false);
-      setPosts(posts.concat(...response.data));
-    } catch (error) {
-      alert(error)
-    }
+    (async () => {
+      try {
+        const response = await getPostsByFollows(userId, page);
+        if (response.data.length === 0) setHasMore(false);
+        setPosts(posts.concat(...response.data));
+      } catch (error) {
+        alert(error)
+      }
+    }) ();
+
   }, [page])
 
   useInterval(async () => {
@@ -100,7 +104,8 @@ export default function Timeline() {
             return (
               <Posts
                 key={p.id}
-                repost={p}
+                repostUserName={p.repostUserName}
+                repostUserId={p.repostUserId}
                 id={p.userId}
                 link={p.link}
                 description={p.description}

@@ -16,7 +16,7 @@ export default function Comment({ comment, name, image, userId, userPostId }) {
       setFollowers(result.data);
     }
     getFollowers(loggedUserId, userId)
-  }, [])
+  }, [loggedUserId, userId])
 
   return (
     <ContainerComment>

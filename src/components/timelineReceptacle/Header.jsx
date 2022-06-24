@@ -15,7 +15,7 @@ function Header() {
 
     const [users, setUsers] = useState([]);
     const [userMenu, setUserMenu] = useState(true);
-    const [followingUsers, SetFollowingUsers] = useState(new Map());
+    const [followingUsers] = useState(new Map());
 
     const navigate = useNavigate();
 
