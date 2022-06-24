@@ -49,7 +49,7 @@ export default function User() {
     }, [reloadPage, id]);
 
 
-    useEffect( () => {
+    useEffect(() => {
         (async () => {
             try {
                 const response = await getPosts(id, page);
@@ -57,7 +57,8 @@ export default function User() {
                 setPosts(posts.concat(...response.data));
             } catch (error) {
                 alert(error)
-            }})();
+            }
+        })();
     }, [page]);
 
     useEffect(() => {
@@ -72,7 +73,7 @@ export default function User() {
                 if (loggedUser.data === "Myself") setVisible(false);
                 else setVisible(true);
 
-                if (!loggedUser.data) {
+                if (!(loggedUser.data)) {
                     setToggle(false);
                     setFollow("Follow");
                 }
@@ -141,7 +142,7 @@ export default function User() {
                 posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
                     return (
                         <Posts
-                            key={id/Math.random()}
+                            key={id / Math.random()}
                             id={userId}
                             link={link}
                             description={description}
