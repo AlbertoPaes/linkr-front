@@ -29,6 +29,7 @@ export default function User() {
     useEffect(() => {
 
         setPostLoading(true);
+        setHasMore(true);
 
         async function getUserPostsById() {
             try {
@@ -37,6 +38,8 @@ export default function User() {
                 setUser(userName.data);
                 setPosts(users.data);
                 setPostLoading(false);
+                setHasMore(false);
+
             }
             catch (error) {
                 console.log(error);
