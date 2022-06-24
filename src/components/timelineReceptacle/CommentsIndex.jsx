@@ -1,9 +1,6 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
 import { AiOutlineComment } from "react-icons/ai";
 import { IconContext } from "react-icons";
-
-import { getCommentByPostId } from "../../services/api";
 
 export default function Comments({ comments, setCommentBox, commentBox }) {
 

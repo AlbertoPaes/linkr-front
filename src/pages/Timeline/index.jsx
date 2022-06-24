@@ -34,12 +34,14 @@ export default function Timeline() {
 
   useEffect(() => {
     setPostLoading(true);
+    setHasMore(true);
     (async () => {
       try {
         const response = await getPostsByFollows(userId, 0);
         setPosts(response.data);
         setNow(dayjs().utc().format("YYYY-MM-DD HH:mm:ss"))
         setPostLoading(false);
+        setHasMore(false);
       } catch (e) {
         console.log(e);
         alert("An error occured while trying to fetch the posts, please refresh the page")
@@ -49,15 +51,18 @@ export default function Timeline() {
 
   }, [reloadPage, navigate]);
 
-  useEffect(async () => {
+  useEffect(() => {
 
-    try {
-      const response = await getPostsByFollows(userId, page);
-      if (response.data.length === 0) setHasMore(false);
-      setPosts(posts.concat(...response.data));
-    } catch (error) {
-      alert(error)
-    }
+    (async () => {
+      try {
+        const response = await getPostsByFollows(userId, page);
+        if (response.data.length === 0) setHasMore(false);
+        setPosts(posts.concat(...response.data));
+      } catch (error) {
+        alert(error)
+      }
+    }) ();
+
   }, [page])
 
   useInterval(async () => {
@@ -95,19 +100,21 @@ export default function Timeline() {
     if (posts) {
       return posts.length !== 0 ?
         (
-          posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
+          posts.map((p) => {
             return (
               <Posts
-                key={id}
-                id={userId}
-                link={link}
-                description={description}
-                name={name}
-                image={image}
-                urlTitle={urlTitle || "No Title Found"}
-                urlImage={urlImage}
-                urlDescription={urlDescription || "No Description Found"}
-                postId={id}
+                key={p.id/Math.random()}
+                repostUserName={p.repostUserName}
+                repostUserId={p.repostUserId}
+                id={p.userId}
+                link={p.link}
+                description={p.description}
+                name={p.name}
+                image={p.image}
+                urlTitle={p.urlTitle || "No Title Found"}
+                urlImage={p.urlImage}
+                urlDescription={p.urlDescription || "No Description Found"}
+                postId={p.id}
                 setReloadPage={() => setReloadPage(!reloadPage)} />
             )
           })

@@ -2,8 +2,8 @@ import axios from "axios";
 import urlMetadata from "url-metadata";
 
 export const api = axios.create({
-  baseURL: "https://linkr-driven-api.herokuapp.com"
-  // baseURL: "http://localhost:4000"
+  //baseURL: "https://linkr-driven-api.herokuapp.com"
+  baseURL: "http://localhost:4000"
 });
 
 export const makeSignUp = async (formData) => {

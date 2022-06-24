@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { IconContext } from "react-icons";
 import { IoPaperPlaneOutline } from "react-icons/io5";
 

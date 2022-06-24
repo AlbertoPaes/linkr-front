@@ -20,12 +20,14 @@ export default function Hashtag() {
 
   useEffect(() => {
     setReloadHashtag(true);
+    setHasMore(true);
 
     (async () => {
       try {
         const response = await getPostsByHashtag(hashtag, 0);
         setPosts(response.data);
         setReloadHashtag(false);
+        setHasMore(false);
       } catch (e) {
         console.log(e);
         alert("An error occured while trying to fetch the posts, please refresh the page")
@@ -34,14 +36,17 @@ export default function Hashtag() {
 
   }, [reloadPage, hashtag]);
 
-  useEffect(async () => {
-    try {
-      const response = await getPostsByHashtag(hashtag, page);
-      if (response.data.length === 0) setHasMore(false);
-      setPosts(posts.concat(...response.data));
-    } catch (error) {
-      alert(error)
-    }
+  useEffect(() => {
+
+    (async () => {
+      try {
+        const response = await getPostsByHashtag(hashtag, page);
+        if (response.data.length === 0) setHasMore(false);
+        setPosts(posts.concat(...response.data));
+      } catch (error) {
+        alert(error)
+      }
+    }) ();
   }, [page])
 
   function handleHashtag() {
@@ -51,7 +56,7 @@ export default function Hashtag() {
         posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
           return (
             <Posts
-              key={id}
+              key={id/Math.random()}
               id={userId}
               link={link}
               description={description}

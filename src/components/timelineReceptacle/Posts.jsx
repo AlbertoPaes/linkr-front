@@ -16,6 +16,7 @@ import CommentsBox from "./CommentsBox"
 import RePost from "./RePost/RePost";
 
 import noImage from "./noimage.png"
+import RePostInfo from "./RePost/RePostInfo";
 
 export default function Posts({
   id,
@@ -27,7 +28,9 @@ export default function Posts({
   urlImage,
   urlDescription,
   postId,
-  setReloadPage
+  setReloadPage,
+  repostUserName,
+  repostUserId
 }) {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
@@ -117,6 +120,11 @@ export default function Posts({
 
   return (
     <Wrapper>
+      {
+        !repostUserId || !repostUserName ? <></>
+        :
+        <RePostInfo repostUserName={repostUserName} repostUserId={repostUserId}/>
+      }
       <ContainerPost>
         <DivPost>
           <LeftSideContainer>
