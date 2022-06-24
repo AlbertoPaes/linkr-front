@@ -101,3 +101,8 @@ export const getFollowersById = async (name, loggedUserId) => {
   const followers = await api.get(`/follows/search/${name}/${loggedUserId}`);
   return followers;
 }
+
+export const getNewPostsByFollows = async (time) => {
+  const newPosts = await api.post(`/new`, { time });
+  return newPosts;
+}

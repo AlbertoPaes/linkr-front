@@ -1,15 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useInterval from "use-interval";
+import dayjs from "dayjs";
 
 import styled from "styled-components";
-import { publishPost, getPostsByFollows } from "../../services/api";
+import { publishPost, getPostsByFollows, getNewPostsByFollows } from "../../services/api";
 import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
+import {GrUpdate} from "react-icons/gr"
 
 import Header from "./../../components/timelineReceptacle/Header";
 import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 
 export default function Timeline() {
+
   const navigate = useNavigate();
   const userId = localStorage.getItem("id");
   const image = localStorage.getItem("image");
@@ -19,23 +23,37 @@ export default function Timeline() {
   const [isLoading, setIsLoading] = useState(false);
   const [postLoadind, setPostLoading] = useState(false);
   const [reloadPage, setReloadPage] = useState(false);
-
+  const [isNewPosts, setIsNewPosts] = useState([])
+  const [now, setNow] = useState(dayjs().format("YYYY-MM-DD HH:mm:ss"))
+  
+  console.log("🚀 ~ file: index.jsx ~ line 27 ~ Timeline ~ isNewPosts", isNewPosts)
   useEffect(() => {
     setPostLoading(true);
     (async () => {
       try {
         const response = await getPostsByFollows(userId);
         setPosts(response.data);
+        setNow(dayjs().format("YYYY-MM-DD HH:mm:ss"))
         setPostLoading(false);
       } catch (e) {
         console.log(e);
         alert("An error occured while trying to fetch the posts, please refresh the page")
       }
-
+      
     })();
-
-
+    
   }, [reloadPage, navigate]);
+  
+  useInterval(async () => {
+    try {
+      const response = await getNewPostsByFollows(now)
+      setIsNewPosts(response.data)
+    } catch (error) {
+      alert(error)
+    }
+
+  }, 15000);
+
 
   async function handlePublishPost(e) {
     e.preventDefault();
@@ -50,6 +68,11 @@ export default function Timeline() {
       setIsLoading(false);
     }
   };
+
+  function updateTimeline(){
+    setIsNewPosts([])
+    setReloadPage(!reloadPage)
+  }
 
   function handlePost() {
     if (postLoadind) return <Loading />
@@ -118,6 +141,14 @@ export default function Timeline() {
               </Form>
             </DivPublishPost>
           </ContainerPublishPost>
+            <UpdateTimeline>
+              {isNewPosts.length >0 ?
+                <button onClick={updateTimeline}>{isNewPosts.length===1?`1 new post, load more!`:`${isNewPosts.length} new posts, load more!`} 
+                  <GrUpdate ClassName="update"/>
+                </button>:
+              <>
+              </>}
+              </UpdateTimeline>
           {handlePost()}
         </WrapperTimeline >
         <HashtagBox reloadPage={reloadPage} />
@@ -125,6 +156,29 @@ export default function Timeline() {
     </>
   );
 };
+
+const UpdateTimeline = styled.div`
+  display: flex;
+  align-items: center;
+  svg path{
+    stroke: #fff;
+  }
+  button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 611px;
+    height: 61px;
+    border: none;
+    border-radius: 16px;
+    background-color: #1877F2;
+    color: #ffffff;
+    font-family: 'Lato';
+    font-size: 16px;
+    line-height: 29px;
+    text-align: center;
+  }
+`
 
 const TimelineBox = styled.main`
   position:absolute;
