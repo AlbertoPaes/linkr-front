@@ -1,15 +1,23 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useInterval from "use-interval";
+import dayjs from "dayjs";
+import InfiniteScroll from 'react-infinite-scroll-component';
+import utc from "dayjs/plugin/utc"
 
 import styled from "styled-components";
-import { publishPost, getAllPosts, getPostsByFollows } from "../../services/api";
+import { publishPost, getPostsByFollows, getNewPostsByFollows } from "../../services/api";
 import Posts from "../../components/timelineReceptacle/Posts";
 import Loading from "../../components/Loading";
+import { GrUpdate } from "react-icons/gr"
 
-import Header from "./../Header"
+
+import Header from "./../../components/timelineReceptacle/Header";
 import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 
 export default function Timeline() {
+  dayjs.extend(utc);
+
   const navigate = useNavigate();
   const userId = localStorage.getItem("id");
   const image = localStorage.getItem("image");
@@ -19,13 +27,20 @@ export default function Timeline() {
   const [isLoading, setIsLoading] = useState(false);
   const [postLoadind, setPostLoading] = useState(false);
   const [reloadPage, setReloadPage] = useState(false);
+  const [isNewPosts, setIsNewPosts] = useState([])
+  const [now, setNow] = useState(dayjs().utc().format("YYYY-MM-DD HH:mm:ss"))
+  const [page, setPage] = useState(0)
+  const [hasMore, setHasMore] = useState(true);
+
+  console.log("🚀 ~ file: index.jsx ~ line 25 ~ Timeline ~ posts", posts)
 
   useEffect(() => {
     setPostLoading(true);
     (async () => {
       try {
-        const response = await getPostsByFollows(userId);
+        const response = await getPostsByFollows(userId, 0);
         setPosts(response.data);
+        setNow(dayjs().utc().format("YYYY-MM-DD HH:mm:ss"))
         setPostLoading(false);
       } catch (e) {
         console.log(e);
@@ -34,8 +49,29 @@ export default function Timeline() {
 
     })();
 
-
   }, [reloadPage, navigate]);
+
+  useEffect(async () => {
+
+    try {
+      const response = await getPostsByFollows(userId, page);
+      if (response.data.length === 0) setHasMore(false);
+      setPosts(posts.concat(...response.data));
+    } catch (error) {
+      alert(error)
+    }
+  }, [page])
+
+  useInterval(async () => {
+    try {
+      const response = await getNewPostsByFollows(now)
+      setIsNewPosts(response.data)
+    } catch (error) {
+      alert(error)
+    }
+
+  }, 15000);
+
 
   async function handlePublishPost(e) {
     e.preventDefault();
@@ -50,6 +86,11 @@ export default function Timeline() {
       setIsLoading(false);
     }
   };
+
+  function updateTimeline() {
+    setIsNewPosts([])
+    setReloadPage(!reloadPage)
+  }
 
   function handlePost() {
     if (postLoadind) return <Loading />
@@ -88,7 +129,7 @@ export default function Timeline() {
           <h2>timeline</h2>
           <ContainerPublishPost>
             <DivImage>
-              <img src={image} alt="User" />
+              <img src={image} alt="User" onClick={() => navigate(`/users/${userId}`)} />
             </DivImage >
 
             <DivPublishPost>
@@ -118,13 +159,56 @@ export default function Timeline() {
               </Form>
             </DivPublishPost>
           </ContainerPublishPost>
-          {handlePost()}
+          <UpdateTimeline>
+            {isNewPosts.length > 0 ?
+              <button onClick={updateTimeline}>{isNewPosts.length === 1 ? `1 new post, load more!` : `${isNewPosts.length} new posts, load more!`}
+                <GrUpdate ClassName="update" />
+              </button> :
+              <>
+              </>}
+          </UpdateTimeline>
+          <InfiniteScroll
+            className="infinit-scroll"
+            dataLength={posts.length}
+            next={() => setPage(page + 1)}
+            hasMore={hasMore}
+            loader={<><Loading /><p style={{ textAlign: "center", color: "#6D6D6D" }}>Loading more posts...</p></>}
+            endMessage={<h5>Nothing more to show</h5>}>
+            {handlePost()}
+          </InfiniteScroll>
         </WrapperTimeline >
         <HashtagBox reloadPage={reloadPage} />
       </TimelineBox>
     </>
   );
 };
+
+const UpdateTimeline = styled.div`
+  display: flex;
+  align-items: center;
+  svg path{
+    stroke: #fff;
+  }
+  button{
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 375px;
+    height: 61px;
+    border: none;
+    border-radius: 16px;
+    background-color: #1877F2;
+    color: #ffffff;
+    font-family: 'Lato';
+    font-size: 16px;
+    line-height: 29px;
+    text-align: center;
+    @media(min-width: 800px){
+      width: 611px;
+    }
+  }
+`
 
 const TimelineBox = styled.main`
   position:absolute;
@@ -140,6 +224,10 @@ const WrapperTimeline = styled.section`
   width: 100%;
   min-width:375px;
   margin-bottom: 30px;
+
+  .infinit-scroll::-webkit-scrollbar {
+    display: none;
+  }
 
 
   h2 {
@@ -195,7 +283,9 @@ const ContainerPublishPost = styled.article`
 `
 
 const DivImage = styled.div`
+  
   img {
+    cursor: pointer;
     display: none;
   }
   

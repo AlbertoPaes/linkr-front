@@ -60,6 +60,10 @@ body {
 	background-color: #333333;
 	font-family: 'Lato', sans-serif;
 }
+textarea:focus, input:focus {
+    box-shadow: 0 0 0 0;
+    outline: 0;
+}
 `
 
 export default GlobalStyle;
