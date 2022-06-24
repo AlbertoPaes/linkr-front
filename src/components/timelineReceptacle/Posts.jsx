@@ -13,6 +13,7 @@ import Like from "./Like";
 import Loading from "../Loading";
 import Comments from "./CommentsIndex"
 import CommentsBox from "./CommentsBox"
+import RePost from "./RePost/RePost";
 
 import noImage from "./noimage.png"
 
@@ -125,6 +126,7 @@ export default function Posts({
               setCommentBox={() => setCommentBox(!commentBox)}
               commentBox={commentBox}
             />
+            <RePost postId={postId} setReloadPage={setReloadPage}/>
           </LeftSideContainer>
           <PostInfos>
             <h3 onClick={() => navigate(`/users/${id}`)}>{name}</h3>
