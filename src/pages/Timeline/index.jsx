@@ -32,8 +32,6 @@ export default function Timeline() {
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true);
 
-  console.log("🚀 ~ file: index.jsx ~ line 25 ~ Timeline ~ posts", posts)
-
   useEffect(() => {
     setPostLoading(true);
     (async () => {
@@ -93,7 +91,7 @@ export default function Timeline() {
   }
 
   function handlePost() {
-    if (postLoadind) return <Loading />
+    if (postLoadind) return <></>
     if (posts) {
       return posts.length !== 0 ?
         (
