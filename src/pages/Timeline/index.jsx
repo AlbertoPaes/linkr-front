@@ -34,14 +34,14 @@ export default function Timeline() {
 
   useEffect(() => {
     setPostLoading(true);
+    setHasMore(true);
     (async () => {
       try {
         const response = await getPostsByFollows(userId, 0);
         setPosts(response.data);
-        console.log(posts);
-        console.log(response.data);
         setNow(dayjs().utc().format("YYYY-MM-DD HH:mm:ss"))
         setPostLoading(false);
+        setHasMore(false);
       } catch (e) {
         console.log(e);
         alert("An error occured while trying to fetch the posts, please refresh the page")
@@ -103,7 +103,7 @@ export default function Timeline() {
           posts.map((p) => {
             return (
               <Posts
-                key={p.id}
+                key={p.id/Math.random()}
                 repostUserName={p.repostUserName}
                 repostUserId={p.repostUserId}
                 id={p.userId}

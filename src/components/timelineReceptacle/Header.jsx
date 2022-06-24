@@ -145,7 +145,7 @@ function Header() {
             <Head>
                 <Logo onClick={() => navigate("/timeline")}>linkr</Logo>
                 <ContainerHead>
-                    {handleDebounceInput()};
+                    {handleDebounceInput()}
                     {users.length > 0 ?
                         handleUsersDesktop() :
                         <></>
@@ -372,7 +372,7 @@ const Overlay = styled.div`
     top: 0;
     left: 0;
     z-index: 12;
-`;
+`
 
 const UserMenu = styled.div(({ displayMenu }) => `
     height: 47px;
@@ -402,7 +402,7 @@ const UserMenu = styled.div(({ displayMenu }) => `
         color: #FFFFFF;
         cursor: pointer;
     }
-`);
+`)
 
 const Image = styled.img`
     width: 41px;

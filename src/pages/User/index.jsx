@@ -29,6 +29,7 @@ export default function User() {
     useEffect(() => {
 
         setPostLoading(true);
+        setHasMore(true);
 
         async function getUserPostsById() {
             try {
@@ -37,6 +38,8 @@ export default function User() {
                 setUser(userName.data);
                 setPosts(users.data);
                 setPostLoading(false);
+                setHasMore(false);
+
             }
             catch (error) {
                 console.log(error);
@@ -138,7 +141,7 @@ export default function User() {
                 posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
                     return (
                         <Posts
-                            key={id}
+                            key={id/Math.random()}
                             id={userId}
                             link={link}
                             description={description}
