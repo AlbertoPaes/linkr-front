@@ -37,7 +37,9 @@ const RePost = ({ postId, setReloadPage }) => {
       setModalIsOpen(false);
       setReloadPage();
     } catch (error) {
-      alert(error)
+      alert("Ops, something went wrong!");
+      setIsLoading(false);
+      setModalIsOpen(false);
     }
   }
 
