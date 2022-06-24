@@ -46,11 +46,8 @@ function Header() {
 
                 let searchFollow = await getFollowersById(userInitials, loggedUserId);
 
-                if (searchFollow.data.length > 0) {
-                    searchFollow.data.forEach(search => {
-                        followingUsers.set(search)
-                    })
-                };
+                if (searchFollow.data.length > 0)
+                    searchFollow.data.forEach(search => followingUsers.set(search));
                 setUsers(search.data);
             }
             else setUsers([])
@@ -63,6 +60,22 @@ function Header() {
     function goToUsersPage(id) {
         navigate(`/users/${id}`);
         setUsers([]);
+    }
+
+    function handleDebounceInput() {
+        return (
+            <ContainerInput>
+                <DebounceInput
+                    minLength={3}
+                    debounceTimeout={300}
+                    className="debounce"
+                    placeholder='Search for people and friends' required
+                    onChange={(e) => handleSearch(e.target.value)} />
+                <IconContext.Provider value={{ color: "#C6C6C6", className: "search-icon", size: "25px" }}>
+                    <BsSearch />
+                </IconContext.Provider>
+            </ContainerInput>
+        )
     }
 
     function handleUsersMobile() {
@@ -123,17 +136,7 @@ function Header() {
     return (
         <>
             <MobileContainer>
-                <ContainerInput>
-                    <DebounceInput
-                        minLength={3}
-                        debounceTimeout={300}
-                        className="debounce"
-                        placeholder='Search for people and friends' required
-                        onChange={(e) => handleSearch(e.target.value)} />
-                    <IconContext.Provider value={{ color: "#C6C6C6", className: "search-icon", size: "25px" }}>
-                        <BsSearch />
-                    </IconContext.Provider>
-                </ContainerInput>
+                {handleDebounceInput()};
                 {users.length > 0 ?
                     handleUsersMobile() :
                     <></>
@@ -142,18 +145,7 @@ function Header() {
             <Head>
                 <Logo onClick={() => navigate("/timeline")}>linkr</Logo>
                 <ContainerHead>
-                    <ContainerInput>
-                        <DebounceInput
-                            minLength={3}
-                            debounceTimeout={300}
-                            className="debounce"
-                            placeholder='Search for people' required
-                            onChange={(e) => handleSearch(e.target.value)} />
-                        <IconContext.Provider value={{ color: "#C6C6C6", className: "search-icon", size: "25px" }}>
-                            <BsSearch />
-                        </IconContext.Provider>
-                    </ContainerInput>
-
+                    {handleDebounceInput()};
                     {users.length > 0 ?
                         handleUsersDesktop() :
                         <></>
@@ -184,117 +176,84 @@ function Header() {
     )
 }
 
-const Logout = styled.div`
-    margin: auto 0;
-`
-const ContainerHead = styled.div`
+const MobileContainer = styled.div`
+    width: 100%;
 
-    display: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 72px;
+    margin-top: 72px;
+
+    position: relative;
+    z-index: 10;
 
     @media (min-width: 800px) {
-
-        min-width: 563px;
-        height: 72px;
-        display: block;
-        position: relative;
-
-        padding-top:3px;
-        margin: 0 auto;
-
+        display: none;
     }
 `
-const UsersDesktop = styled.div`
+const ContainerInput = styled.div`
+    width: 95%;
+    max-width: 563px;
+    height: 45px;
 
-    display: none;
+    display: flex;
+    align-items:center;
 
-    @media (min-width: 800px) {
-        display: block;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+
+    padding-left: 10px;
+    padding-right: 15px;
+    margin: 10px;
+
+    position: relative;
+
+    .debounce {
         width: 95%;
-        max-height: 175px;
         max-width: 563px;
+        height: 45px;
 
-        border-radius: 8px;
-        background-color: #E7E7E7;
-
-        overflow-y: scroll; 
-        
-        ::-webkit-scrollbar {
-        width: 0px;
-        }      
-
-        padding-top: 14px;
-        padding-bottom: 23px;
-        margin-top: -20px;
-        margin-left: 10px;
-        }
-`
-const UserImage = styled.img`
-    width: 39px;
-    height: 39px;
-    border-radius: 26px;
-`
-const AiOutlineWrap = styled.div`
-    position: absolute;
-    top: 25px;
-    right: 67px;
-    cursor: pointer;
-    z-index: 11;
-`
-const Overlay = styled.div`
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.1);
-    z-index: 12;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 19px;
-`;
-
-const UserMenu = styled.div(({ displayMenu }) => `
-    height: 47px;
-    width: 150px;
-
-    visibility: ${displayMenu ? "hidden" : "visible"};
-    z-index: 11;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background-color: #171717;
-
-    border-radius: 0px 0px 20px 20px;
-
-    position: fixed;
-    top: 72px;
-    right: -20px;
-    padding: 0px 20px 10px 0px;
-
-    span {
         font-family: 'Lato';
-        font-weight: 700;
+        font-weight: 400;
         font-size: 17px;
         line-height: 20px;
-        letter-spacing: 0.05em;
+        color: #151515;
 
-        color: #FFFFFF;
-        cursor: pointer;
+        background-color: #FFFFFF;
+        border: none;
+        border-radius: 8px;
+
+        &:focus {
+            outline: none;
+        }
+
+        &::placeholder {
+            color: #9F9F9F;
+        }
     }
-`);
+`
+const UsersMobile = styled.div`
+    width: 95%;
+    max-width: 563px;
+    max-height: 125px;
 
-const Image = styled.img`
-    width: 41px;
-    height: 41px;
-    margin-right: 18px;
-    border-radius: 26px;
-    cursor: pointer;
+    background-color: #E7E7E7;
+    border-radius: 8px;
+
+    padding-top: 14px;
+    padding-bottom: 23px;
+    margin-top:-40px;
+
+    overflow-y: scroll; 
+
+    ::-webkit-scrollbar {
+            width: 0px;
+        }   
 `
 const User = styled.div`
-
     display: flex;
     align-items: center;
     gap: 12px;
@@ -311,6 +270,11 @@ const User = styled.div`
         cursor: pointer;
     }
 `
+const UserImage = styled.img`
+    width: 39px;
+    height: 39px;
+    border-radius: 26px;
+`
 const Following = styled.p`
     font-family: 'Lato';
     font-weight: 400;
@@ -320,32 +284,14 @@ const Following = styled.p`
 
     margin-left: -7px;
 `
-const UsersMobile = styled.div`
-    width: 95%;
-    max-width: 563px;
-    max-height: 125px;
-    border-radius: 8px;
-
-    background-color: #E7E7E7;
-
-    padding-top: 14px;
-    padding-bottom: 23px;
-    margin-top:-25px;
-
-    overflow-y: scroll; 
-
-    ::-webkit-scrollbar {
-            width: 0px;
-        }   
-`
 const Head = styled.div`
     width: 100%;
     height: 72px;
 
-    background-color: #151515;
-
     display: flex;
     justify-content: space-between;
+
+    background-color: #151515;
 
     position: fixed;
     top: 0;
@@ -356,72 +302,114 @@ const Logo = styled.p`
     font-family: 'Passion One';
     font-weight: 700;
     font-size: 45px;
-     line-height: 50px;
+    line-height: 50px;
     letter-spacing: 0.05em;
-
-     color: #FFFFFF;
+    color: #FFFFFF;
 
     padding-top: 13px;
     padding-left: 17px;
     cursor: pointer;
 `
-const MobileContainer = styled.div`
-    width: 100%;
-    display: flex;
+const ContainerHead = styled.div`
+    display: none;
 
-    margin-top: 72px;
-    margin-top: 72px;
+    @media (min-width: 800px) {
+        min-width: 563px;
+        height: 72px;
+        display: block;
+
+        padding-top:3px;
+        margin: 0 auto;
+
+        position: relative;
+    }
+`
+const UsersDesktop = styled.div`
+    display: none;
+
+    @media (min-width: 800px) {
+        width: 95%;
+        max-height: 175px;
+        max-width: 563px;
+        display: block;
+
+        border-radius: 8px;
+        background-color: #E7E7E7;
+
+        padding-top: 14px;
+        padding-bottom: 23px;
+        margin-top: -40px;
+        margin-left: 10px;
+
+        overflow-y: scroll; 
+        ::-webkit-scrollbar {
+        width: 0px;
+        }      
+    }
+`
+const Logout = styled.div`
+    margin: auto 0;
+`
+const AiOutlineWrap = styled.div`
+    position: absolute;
+    top: 25px;
+    right: 67px;
+    cursor: pointer;
+    z-index: 11;
+`
+const Overlay = styled.div`
+    width: 100vw;
+    height: 100vh;
+  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.1);
+
+    padding: 19px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 12;
+`;
+
+const UserMenu = styled.div(({ displayMenu }) => `
+    height: 47px;
+    width: 150px;
+
+    visibility: ${displayMenu ? "hidden" : "visible"};
+    z-index: 11;
 
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    position: relative;
-    z-index: 10;
+    background-color: #171717;
+    border-radius: 0px 0px 20px 20px;
 
-    @media (min-width: 800px) {
-        display: none;
-    }
-`
+    position: fixed;
+    top: 72px;
+    right: -20px;
+    padding: 0px 20px 10px 0px;
 
-const ContainerInput = styled.div`
-    display: flex;
-    width: 95%;
-    max-width: 563px;
-    align-items:center;
-    background-color: #FFFFFF;
-    border-radius: 8px;
-    height: 45px;
-    padding-left: 10px;
-    padding-right: 15px;
-    margin: 10px;
-
-    position: relative;
-
-    .debounce {
-         width: 95%;
-        max-width: 563px;
-        height: 45px;
-
-        background-color: #FFFFFF;
-        color: #151515;
-
+    span {
         font-family: 'Lato';
-        font-weight: 400;
+        font-weight: 700;
         font-size: 17px;
         line-height: 20px;
-
-        border: none;
-        border-radius: 8px;
-
-        &:focus {
-            outline: none;
-        }
-
-        &::placeholder {
-            color: #9F9F9F;
-        }
+        letter-spacing: 0.05em;
+        color: #FFFFFF;
+        cursor: pointer;
     }
+`);
+
+const Image = styled.img`
+    width: 41px;
+    height: 41px;
+
+    margin-right: 18px;
+    border-radius: 26px;
+    cursor: pointer;
 `
 export default Header;

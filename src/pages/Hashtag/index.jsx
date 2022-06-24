@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import Posts from "../../components/timelineReceptacle/Posts";
-import Header from "../Header";
+import Header from "./../../components/timelineReceptacle/Header";
 import Loading from "../../components/Loading";
 import { getPostsByHashtag } from "../../services/api";
 
@@ -12,6 +13,8 @@ export default function Hashtag() {
   const [posts, setPosts] = useState([]);
   const [reloadHashtag, setReloadHashtag] = useState(false);
   const [reloadPage, setReloadPage] = useState(false);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
   const { hashtag } = useParams();
 
@@ -20,7 +23,7 @@ export default function Hashtag() {
 
     (async () => {
       try {
-        const response = await getPostsByHashtag(hashtag);
+        const response = await getPostsByHashtag(hashtag, 0);
         setPosts(response.data);
         setReloadHashtag(false);
       } catch (e) {
@@ -29,10 +32,20 @@ export default function Hashtag() {
       }
     })();
 
-  }, [reloadPage, hashtag])
+  }, [reloadPage, hashtag]);
+
+  useEffect(async () => {
+    try {
+      const response = await getPostsByHashtag(hashtag, page);
+      if (response.data.length === 0) setHasMore(false);
+      setPosts(posts.concat(...response.data));
+    } catch (error) {
+      alert(error)
+    }
+  }, [page])
 
   function handleHashtag() {
-    if (reloadHashtag) return <Loading />
+    if (reloadHashtag) return <></>
     return posts.length !== 0 ?
       (
         posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
@@ -60,7 +73,15 @@ export default function Hashtag() {
       <Header />
       <Wrapper>
         <h2>{`# ${hashtag}`}</h2>
-        {handleHashtag()}
+        <InfiniteScroll
+          className="infinit-scroll"
+          dataLength={posts.length}
+          next={() => setPage(page + 1)}
+          hasMore={hasMore}
+          loader={<><Loading /><p style={{ textAlign: "center", color: "#6D6D6D" }}>Loading more posts...</p></>}
+          endMessage={<h5>Nothing more to show</h5>}>
+          {handleHashtag()}
+        </InfiniteScroll>
       </Wrapper>
     </>
   )
@@ -73,6 +94,10 @@ const Wrapper = styled.section`
   right: 0;
   margin: 0 auto;
   max-width: 611px;
+
+  .infinit-scroll::-webkit-scrollbar {
+    display: none;
+  }
 
   h2 {
     font-family: 'Oswald';

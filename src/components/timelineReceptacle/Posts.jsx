@@ -151,7 +151,7 @@ export default function Posts({
               </Icons> : <></>}
             {isEditing ?
               <>
-                <input
+                <textarea
                   type="text"
                   ref={inputRef}
                   value={editedDescription}
@@ -192,13 +192,14 @@ export default function Posts({
         preventScroll={true}
         style={{
           overlay: {
-            overflowY: 'hidden',
+            overflow: 'hidden',
             height: '100%'
           },
           content: {
             top: '50%',
             left: '50%',
             margin: 'auto',
+            overflow: 'hidden',
             padding: '0',
             width: 'calc(59700px/1440%)',
             maxWidth: '597px',
@@ -335,6 +336,7 @@ const PostInfos = styled.div`
     line-height: 18px;
     color: #B7B7B7;
     margin-bottom: 7px;
+    word-break: break-all;
 
     span{
     font-family: 'Lato';
@@ -345,6 +347,11 @@ const PostInfos = styled.div`
     color: #FFFFFF;
     margin-bottom: 7px;
     cursor: pointer;
+    }
+    #text{
+      max-width: 100%;
+      overflow-x: hidden;
+      word-break: break-all;
     }
   };
 
@@ -357,6 +364,36 @@ const PostInfos = styled.div`
     p {
       font-size: 17px;
       line-height: 20px;
+    }
+  }
+  textarea {
+    width: 100%;
+    height: 47px;
+    resize: none;
+    padding: 10px 11px 0 11px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: #EFEFEF;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 16px;
+
+    &::placeholder {
+      color: #949494;
+    }
+
+    @media(min-width: 800px){
+      height: 66px;
+      font-size: 15px;
+      line-height: 18px;
+
+      &::placeholder{
+        font-size: 15px;
+        line-height: 18px;
+      }
     }
   }
 `

@@ -7,7 +7,6 @@ import { getFollow } from "../../services/api";
 export default function Comment({ comment, name, image, userId, userPostId }) {
   const navigate = useNavigate();
   const [followers, setFollowers] = useState(false);
-  console.log(followers)
 
   const loggedUserId = localStorage.getItem("id")
 

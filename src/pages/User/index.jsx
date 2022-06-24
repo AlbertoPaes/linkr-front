@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getPosts, getFollow, postFollow, deleteFollow, getUserName } from "../../services/api";
 import styled from "styled-components";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
-import Header from "./../Header";
+import { getPosts, getFollow, postFollow, deleteFollow, getUserName } from "../../services/api";
+import Header from "./../../components/timelineReceptacle/Header";
 import Posts from "../../components/timelineReceptacle/Posts";
 import HashtagBox from "../../components/timelineReceptacle/HashtagBox";
 import Loading from "../../components/Loading";
@@ -15,20 +16,23 @@ export default function User() {
     const [postLoadind, setPostLoading] = useState(false);
     const [followLoading, setFollowLoading] = useState(false);
     const [reloadPage, setReloadPage] = useState(false);
-    const [follow, setFollow] = useState("Loading"); //README: VERIFICAR COMO FICA AO CARREGAR
+    const [follow, setFollow] = useState("");
     const [toggle, setToggle] = useState(true);
     const [visible, setVisible] = useState(true);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
 
     const { id } = useParams();
 
     const loggedUserId = localStorage.getItem("id");
 
     useEffect(() => {
+
         setPostLoading(true);
 
         async function getUserPostsById() {
             try {
-                const users = await getPosts(id);
+                const users = await getPosts(id, 0);
                 const userName = await getUserName(id);
                 setUser(userName.data);
                 setPosts(users.data);
@@ -41,14 +45,22 @@ export default function User() {
         getUserPostsById();
     }, [reloadPage, id]);
 
+    useEffect(async () => {
+        try {
+            const response = await getPosts(id, page);
+            if (response.data.length === 0) setHasMore(false);
+            setPosts(posts.concat(...response.data));
+        } catch (error) {
+            alert(error)
+        }
+    }, [page]);
+
     useEffect(() => {
 
         setPostLoading(true);
 
         async function getFollows() {
-
-                setFollowLoading(true);
-
+            setFollowLoading(true);
             try {
                 const loggedUser = await getFollow(loggedUserId, id);
                 setFollowLoading(false);
@@ -105,8 +117,8 @@ export default function User() {
         }
     }
 
-    function handleUser() { // README: O BOTÃO ERA PRA ENTRAR AQUI
-        if (postLoadind || user.length === 0) return <></>
+    function handleUser() {
+        if (postLoadind || user.length === 0) return <></>;
         return (
             <UserContainer>
                 <div>
@@ -118,7 +130,7 @@ export default function User() {
     }
 
     function handlePost() {
-        if (postLoadind) return <Loading />
+        if (postLoadind) return <></>;
         return posts.length !== 0 ?
             (
                 posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
@@ -143,19 +155,25 @@ export default function User() {
 
     return (
         <>
-
             <Header />
-
             <TimelineBox>
                 {handleUser()}
                 <SubContainer>
                     <WrapperTimeline>
-                        {handlePost()}
+                        <InfiniteScroll
+                            className="infinit-scroll"
+                            dataLength={posts.length}
+                            next={() => setPage(page + 1)}
+                            hasMore={hasMore}
+                            loader={<><Loading /><p style={{ textAlign: "center", color: "#6D6D6D" }}>Loading more posts...</p></>}
+                            endMessage={<h5>Nothing more to show</h5>}>
+                            {handlePost()}
+                        </InfiniteScroll>
                     </WrapperTimeline >
                     <Div>
-                        {followLoading? <></>: 
-                        <Follow selected={toggle} loading={postLoadind} visible={visible}
-                        onClick={() => toggleFollow()}>{follow}</Follow>}
+                        {followLoading ? <></> :
+                            <Follow selected={toggle} loading={postLoadind} visible={visible}
+                                onClick={() => toggleFollow()}>{follow}</Follow>}
                         <HashtagBox reloadPage={reloadPage} />
                     </Div>
                 </SubContainer>
@@ -184,18 +202,22 @@ function checkVisible(visible) {
     else return "none";
 }
 
-const Div = styled.div`
-    position: relative;
-    margin-top: -69px; 
-`
+const TimelineBox = styled.main`
+  width: fit-content;
+  max-width: 1042px;
+  height: fit-content;
+  
+  margin: 0 auto;
 
-const SubContainer = styled.div`
-    display: flex;
+  position:absolute;
+  top: 160px;
+  left: 0; 
+  right: 0;
 `
-
 const UserContainer = styled.div`
       display: flex;
       align-items: center;
+
       padding-left: 15px;
 
         div {
@@ -209,7 +231,6 @@ const UserImage = styled.img`
     height: 50px;
     border-radius: 26px;
 `
-
 const UserName = styled.p`
     font-family: 'Oswald';
     font-style: normal;
@@ -218,49 +239,17 @@ const UserName = styled.p`
     line-height: 64px;
     color: #FFFFFF;
 `
-
-const Follow = styled.button`
-    font-family: 'Lato';
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 17px;
-    color: ${(props) => setText(props.selected)};
-    pointer-events: ${(props) => setButton(props.loading)};
-
-    width: 112px;
-    height: 31px;
-    border-radius: 5px;
-    background-color: ${(props) => setBackground(props.selected)};
-
-    display: ${(props) => checkVisible(props.visible)};
-    cursor: pointer;
-
-    position: absolute;
-    top: 16px;
-    right: -0;  
-    z-index: 16; 
-
-    @media (max-width: 800px) {
-        top: 23px;
-        right: -100px;
-        z-index: 0;
-    }
+const SubContainer = styled.div`
+    display: flex;
 `
-const TimelineBox = styled.main`
-  position:absolute;
-  top: 160px;
-  width: fit-content;
-  max-width: 1042px;
-  height: fit-content;
-  left: 0; 
-  right: 0;
-  margin: 0 auto;
-`
-
 const WrapperTimeline = styled.section`
   width: 100%;
   min-width:375px;
   margin-bottom: 30px;
+
+  .infinit-scroll::-webkit-scrollbar {
+    display: none;
+  }
 
   h2 {
     font-family: 'Oswald';
@@ -290,5 +279,35 @@ const WrapperTimeline = styled.section`
     width: 611px;
   }
 `
+const Div = styled.div`
+    margin-top: -69px; 
+    position: relative;
+`
+const Follow = styled.button`
+    font-family: 'Lato';
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+    color: ${(props) => setText(props.selected)};
+    pointer-events: ${(props) => setButton(props.loading)};
 
+    width: 112px;
+    height: 31px;
 
+    border-radius: 5px;
+    background-color: ${(props) => setBackground(props.selected)};
+
+    display: ${(props) => checkVisible(props.visible)};
+    cursor: pointer;
+
+    position: absolute;
+    top: 16px;
+    right: -0;  
+    z-index: 16; 
+
+    @media (max-width: 800px) {
+        top: 23px;
+        right: -100px;
+        z-index: 0;
+    }
+`
