@@ -56,10 +56,12 @@ export default function Timeline() {
     if (posts) {
       return posts.length !== 0 ?
         (
-          posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription }) => {
+          posts.map(({ id, userId, link, description, image, name, urlTitle, urlImage, urlDescription, repostUserName, repostUserId }) => {
             return (
               <Posts
                 key={id}
+                repostUserName={repostUserName}
+                repostUserId={repostUserId}
                 id={userId}
                 link={link}
                 description={description}
